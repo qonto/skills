@@ -30,6 +30,7 @@ A portfolio of Agent Skills built on the [Qonto MCP](https://qonto.com) for the 
 
 ```
 qonto-<name>/
+├── PROMPTS.md             ← example prompts: getting started, going further, chaining
 ├── skill/
 │   ├── qonto-<name>.md    ← the Agent Skill (import this .md, or the .zip)
 │   └── qonto-<name>.zip   ← ready to import in claude.ai (contains SKILL.md, as required)
