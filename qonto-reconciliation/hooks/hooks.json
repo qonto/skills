@@ -1,0 +1,102 @@
+{
+  "description": "Stateful orchestration and attachment-integrity enforcement for Qonto reconciliation runs.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/harness.js",
+              "activate"
+            ],
+            "timeout": 10,
+            "statusMessage": "Activating reconciliation guardrails"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/harness.js",
+              "pre-tool"
+            ],
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/harness.js",
+              "post-tool"
+            ],
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "^qonto-reconciliation:qonto-reconciliation-(researcher|verifier)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/harness.js",
+              "subagent-start"
+            ],
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "^qonto-reconciliation:qonto-reconciliation-(researcher|verifier)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/harness.js",
+              "subagent-stop"
+            ],
+            "timeout": 10,
+            "statusMessage": "Validating reconciliation handoff"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/harness.js",
+              "stop"
+            ],
+            "timeout": 10,
+            "statusMessage": "Checking reconciliation completeness"
+          }
+        ]
+      }
+    ]
+  }
+}

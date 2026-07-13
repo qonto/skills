@@ -1,0 +1,21 @@
+{
+  "name": "qonto-reconciliation",
+  "displayName": "Qonto Bank Reconciliation",
+  "version": "0.2.2",
+  "description": "Automated bank reconciliation and receipt/invoice matching for Qonto transactions. Finds the right supporting document for every unreconciled payment (debit or credit) by researching every available channel — email, hosted links, web portals, local files, web search — verifies the match, and attaches it via the Qonto MCP. Learns supplier-specific retrieval patterns over time so each run gets faster and more automatic.",
+  "author": {
+    "name": "Qonto"
+  },
+  "homepage": "https://github.com/qonto/skills",
+  "repository": "https://github.com/qonto/skills",
+  "license": "MIT",
+  "keywords": [
+    "qonto",
+    "reconciliation",
+    "bank reconciliation",
+    "receipt matching",
+    "invoice matching",
+    "bookkeeping",
+    "accounting"
+  ]
+}

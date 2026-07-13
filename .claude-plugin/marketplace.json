@@ -1,0 +1,14 @@
+{
+  "name": "qonto-skills",
+  "description": "Official Qonto AI skills and plugins for Claude Code.",
+  "owner": {
+    "name": "Qonto"
+  },
+  "plugins": [
+    {
+      "name": "qonto-reconciliation",
+      "source": "./qonto-reconciliation",
+      "description": "Automated bank reconciliation and receipt/invoice matching for Qonto business accounts. Finds, verifies, and attaches the right supporting document for every unreconciled payment, learning supplier-specific retrieval patterns over time."
+    }
+  ]
+}
