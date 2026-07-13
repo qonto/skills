@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "cosigna": {
+      "command": "python3.12",
+      "args": ["-m", "cosigna_mcp.server"],
+      "env": {
+        "COSIGNA_SESSION_TOKEN": "REPLACE_WITH_YOUR_SESSION_TOKEN",
+        "COSIGNA_MCP_BASE_URL": "https://cosigna.eu",
+        "COSIGNA_MCP_ALLOWED_DOMAINS": "your-founder-domain.example",
+        "PYTHONPATH": "_verifycore"
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+COSIGNA MCP connector — provenance NOTICE
+=========================================
+
+This folder is a self-contained public distribution of the COSIGNA MCP connector,
+prepared for the Qonto x Anthropic hackathon (qonto/skills).
+
+Vendored verification core (`_verifycore/verify.py`, `chain.py`, `hashing.py`):
+  These three stdlib-only files originate from the COSIGNA source tree. They are also
+  available under the proprietary COSIGNA license; they are provided under MIT for this
+  connector (relicensed by the founder, 2026-07-07). No other part of the COSIGNA source
+  tree is included or implied to be MIT-licensed.
+
+The connector never holds signing keys beyond the local session token (see README.md).
