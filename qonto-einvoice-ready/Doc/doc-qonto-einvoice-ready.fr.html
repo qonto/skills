@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-einvoice-ready — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic MCP</span>
+  <h1>qonto-einvoice-ready</h1>
+  <p class="sub">Prêt pour la facturation électronique du 1er septembre 2026 ? L'audit qui mesure l'écart — puis le comble, fiche par fiche.</p>
+  <div class="badges">
+    <span>📥 Réception obligatoire 01/09/2026</span><span>🔎 SIREN retrouvés au registre public</span>
+    <span>🔒 Écritures confirmées, jamais en masse</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Le 1er septembre 2026, toutes les entreprises françaises assujetties à la TVA devront pouvoir <strong>recevoir</strong> des factures électroniques (émission : 2026 pour les GE/ETI, 2027 pour les PME/TPE). Le piège n'est pas la date — c'est le <strong>fichier clients</strong> : sans SIREN, sans TVA intracom, sans adresse structurée, pas de Factur-X valide. Le skill transforme le compte Qonto en check-up de préparation :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Score de readiness</h4><p>Fichier clients complet pour Factur-X, qualité des factures émises, calendrier connu, e-reporting cartographié — formule transparente, avant/après.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Calendrier applicable</h4><p>Taille de l'entreprise retrouvée au registre public (GE/ETI/PME) ou demandée, jamais devinée → ta date d'émission, 2026 ou 2027.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Exposition e-reporting</h4><p>Clients étrangers et B2C repérés dans les fiches ET dans les flux réels : hors e-invoicing, mais données à transmettre.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Correction en live</h4><p>SIREN retrouvés via l'API publique recherche-entreprises (sans clé), aperçu ligne par ligne → <code>update_client</code> après ta confirmation.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><strong>Réforme française.</strong> Autres pays Qonto (DE, ES, IT…) : audit générique de complétude du fichier clients, jamais de calendrier inventé</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Des fiches clients dans Qonto</b></td><td>La matière première de l'audit ; sans clients, le skill explique le référentiel et s'arrête là</td><td>⭕</td></tr>
+    <tr><td><b>API registre public joignable</b></td><td>recherche-entreprises.api.gouv.fr — sans clé ; si indisponible, l'audit tourne, seule la correction en live attend</td><td>⭕</td></tr>
+    <tr><td><b>Taille de l'entreprise</b></td><td>Retrouvée au registre (<code>categorie_entreprise</code>) ou demandée — fixe ta date d'émission</td><td>ℹ️ détecté</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Nom commercial ≠ raison sociale</strong> : recherche au registre par nom + code postal ; sans correspondance, le skill demande le SIREN ou passe la fiche — jamais d'auto-match</li>
+    <li><strong>Homonymes du registre</strong> : les candidats sont affichés (nom, ville, SIREN) et c'est l'utilisateur qui tranche, systématiquement</li>
+    <li><strong>TVA intracom dérivée du SIREN</strong> (clé FR + 2 chiffres) : toujours marquée « dérivée, à confirmer » — jamais présentée comme vérifiée</li>
+    <li>Adresse en vrac dans un seul champ → comptée comme incomplète, signalée à restructurer</li>
+    <li>Aucune fiche client, registre indisponible, pays ≠ FR : le skill dit ce qu'il peut et ne peut pas faire, sans rien inventer</li>
+    <li>Pagination ≤ 50 partout · <code>get_organization</code> toujours en premier (<code>list_transactions</code> exige <code>bank_account_id</code>/<code>iban</code>)</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Une écriture qui ne touche jamais à l'argent :</b> la lecture est sans risque ; l'écriture est <b>update_client</b> — fiches clients uniquement. Aperçu complet (actuel → proposé, avec la source), confirmation explicite dans la conversation, écriture champ par champ. <b>Jamais de mise à jour en masse silencieuse.</b></p>
+  </div>
+</section>
+
+<section>
+  <h2>📅 Référentiel réforme embarqué (arrêté à juillet 2026 — à revérifier ensuite)</h2>
+  <div class="scroll"><table>
+    <tr><th>Date</th><th>Obligation</th><th>Qui</th></tr>
+    <tr><td><strong>01/09/2026</strong></td><td><strong>Recevoir</strong> des factures électroniques</td><td><strong>Toutes les entreprises françaises assujetties à la TVA</strong></td></tr>
+    <tr><td>01/09/2026</td><td>Émettre en électronique</td><td>Grandes entreprises &amp; ETI</td></tr>
+    <tr><td>01/09/2027</td><td>Émettre en électronique</td><td>PME, TPE, micro-entreprises</td></tr>
+    <tr><td>Aligné sur l'émission</td><td>E-reporting (B2C + transactions internationales)</td><td>Tous, selon leur date d'émission</td></tr>
+  </table></div>
+  <ul style="margin-top:.8rem">
+    <li><strong>Formats</strong> : Factur-X (PDF/A-3 + XML CII embarqué), UBL 2.1, CII — socle EN 16931 ; l'identification de l'acheteur (SIREN/SIRET) y est obligatoire</li>
+    <li><strong>Circuit</strong> : factures échangées via des <strong>plateformes agréées (PDP)</strong> ; un annuaire central relie chaque SIREN/SIRET à sa plateforme — le choix de la PDP appartient à l'utilisateur</li>
+    <li><strong>Mentions</strong> déjà obligatoires (décret 2022) : SIREN du client, adresse de livraison si différente, nature de l'opération, option « TVA sur les débits »</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🔎 La correction en live (le cœur du skill)</h2>
+  <div class="scroll"><table>
+    <tr><th>Étape</th><th>Ce qui se passe</th></tr>
+    <tr><td>Recherche</td><td><code>recherche-entreprises.api.gouv.fr</code> par nom + code postal — API publique data.gouv, sans clé</td></tr>
+    <tr><td>Homonymes</td><td>Plusieurs candidats plausibles → nom, ville, SIREN affichés, le skill <strong>demande</strong></td></tr>
+    <tr><td>TVA intracom</td><td>Dérivée du SIREN — toujours marquée « dérivée, à confirmer »</td></tr>
+    <tr><td>Aperçu</td><td>Un tableau unique : fiche · champ · valeur actuelle → proposée · source (registre / dérivé / utilisateur)</td></tr>
+    <tr><td>Écriture</td><td>Après confirmation explicite : <code>update_client</code> champ par champ, résultat annoncé honnêtement</td></tr>
+  </table></div>
+  <p style="margin-top:.8rem"><em>Exemple (fictif, chiffres inventés) : « Readiness : 62 %. 9 de tes 14 clients n'ont pas de SIRET — j'en ai retrouvé 7 au registre national. Aperçu ligne par ligne, tu confirmes ? » → après écriture : 91 %.</em></p>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : score détaillé, fiches incomplètes, calendrier, exposition e-reporting</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Aperçu de correction</b></td><td>Tableau fiche · champ · actuel → proposé · source, soumis à confirmation</td><td>À chaque correction proposée</td></tr>
+    <tr><td><b>Rapport de readiness</b></td><td>Fichier/artifact <strong>HTML</strong> : jauge avant/après, compte à rebours, plan d'action</td><td>Si l'hôte affiche les fichiers ; repli automatique sur les tableaux sinon</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le mur du 01/09/2026 → audit et score → <strong>correction en live</strong> (registre public → aperçu → confirmation) → score après / plan d'action. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Vérification périodique (« re-scanne mon fichier clients chaque mois »)</td><td>Faible</td><td>Le score se dégrade à chaque nouveau client incomplet</td></tr>
+    <tr><td>Contrôle de validité des n° de TVA européens (VIES)</td><td>Moyen</td><td>Même logique « API publique sans clé »</td></tr>
+    <tr><td>Extension fournisseurs : audit des fiches côté achats</td><td>Moyen</td><td>Réutilise le moteur de scoring tel quel</td></tr>
+    <tr><td>Modules pays (DE XRechnung · IT SdI · ES Verifactu…)</td><td>Moyen</td><td>Qonto est paneuropéen ; v1 = France + détection du pays</td></tr>
+    <tr><td>Duo naturel avec <code>qonto-vat-return</code> et <code>qonto-meeting-invoice</code></td><td>—</td><td>La réforme alimente la TVA ; des factures propres dès le premier jour</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Audit ≠ conseil juridique ou fiscal</strong> — annoncé dans chaque rapport ; cas limites → expert-comptable</li>
+    <li>Le <strong>choix de la PDP appartient à l'utilisateur</strong> : critères fournis, décision jamais prise à sa place</li>
+    <li>Homonymes du registre → confirmation systématique ; TVA dérivée → marquée comme telle</li>
+    <li><code>update_client</code> : aperçu complet + confirmation explicite, champ par champ, <strong>jamais en masse silencieux</strong> ; échec annoncé, jamais présenté comme réussi</li>
+    <li>Exemples des rapports inventés et annoncés comme tels · pagination ≤ 50 partout · dégradation propre (compte vide, pays ≠ FR, registre indisponible)</li>
+  </ul>
+</section>
+
+<footer>qonto-einvoice-ready · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-einvoice-ready.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
