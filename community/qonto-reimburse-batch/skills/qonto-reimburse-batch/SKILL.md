@@ -1,6 +1,12 @@
 ---
 name: qonto-reimburse-batch
 description: Batch expense reimbursement for teams on Qonto. Collects employee expense claims from a Slack channel or Notion base (optional — pasted claims work too), verifies each one (receipt present and consistent, no duplicate of a company-card expense or of a past reimbursement, expense policy respected), then builds ONE grouped transfer request — N pending transfers the owner approves in a single SCA gesture in the Qonto app. Use for "rembourse les notes de frais de l'équipe", "process this month's expense claims", "pay back my team's expenses", "did we already pay this by card?", "reimburse everyone in one go".
+permissions:
+  mcp:
+    qonto: [create_multi_transfer_request, decline_request, get_organization, list_memberships, list_requests, list_teams, list_transactions]
+  network: []
+  env: []
+  tools: [Read]
 ---
 
 # Qonto Reimburse Batch
