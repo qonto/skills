@@ -3,6 +3,12 @@ name: meet2invoice
 description: "Turn a sales meeting artifact (transcript, notes, calendar event) into money movement in Qonto: extract the deal, preview it, create the quote, hash the authoritative PDF locally (SHA-256), and on acceptance create + finalize the invoice with an offline-verifiable proof injected into its terms — then send it from Qonto. The document never leaves your machine; only the hash travels."
 when-to-use: "Use after a sales call or when meeting notes contain an agreed deal: 'turn this transcript into a quote', 'they accepted — invoice them', 'meet2invoice these notes', 'close the loop with proof in Qonto'. Also for escalating an existing Qonto quote to a proven, sent invoice."
 argument-hint: "[meeting transcript/notes + client hints, or an existing Qonto quote ID + 'accepted']"
+permissions:
+  mcp:
+    qonto: [change_client_invoice_status, create_client, create_client_invoice, create_credit_note, create_payment_link, create_quote, delete_client, delete_client_invoice, delete_quote, get_attachment, get_client_invoice, get_organization, get_payment_link, get_quote, list_clients, send_client_invoice, update_client, update_quote]
+  network: []
+  env: []
+  tools: [Read, Bash]
 ---
 
 # Meet2Invoice
