@@ -1,6 +1,12 @@
 ---
 name: qonto-board-pack
 description: Monthly investor and banker update generator for Qonto accounts. From one prompt, builds the full board pack — the month's numbers (cash in, spend by category, end-of-month cash, burn & runway), month-over-month and rolling-year comparisons, auto-detected highlights (big contract collected, new significant expense), a three-paragraph executive narrative the user reviews BEFORE any formatting — then a self-contained HTML deck (5-6 slides) or a Canva export when that MCP is present, plus a ready-to-send email (Gmail draft when present). Audience-aware, bankers, investors and the internal team don't get the same level of detail. Use for "prepare my monthly investor update", "board pack for June", "rapport mensuel investisseurs", "mon banquier veut les chiffres du mois", "write my monthly update email".
+permissions:
+  mcp:
+    qonto: [get_organization, get_statement, list_cash_flow_categories, list_client_invoices, list_labels, list_statements, list_transactions]
+  network: []
+  env: []
+  tools: [Read]
 ---
 
 # Qonto Board Pack
