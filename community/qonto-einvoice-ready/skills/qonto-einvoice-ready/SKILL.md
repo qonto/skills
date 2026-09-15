@@ -1,6 +1,12 @@
 ---
 name: qonto-einvoice-ready
-description: French e-invoicing readiness audit for Qonto accounts. From 2026-09-01 every French VAT-registered company must be able to RECEIVE electronic invoices (issuing becomes mandatory 2026-09-01 for large companies and mid-caps, 2027-09-01 for SMEs). The skill scores the account's readiness — client records complete for Factur-X (SIREN/SIRET, intra-EU VAT number, structured address), quality of issued invoices, the timeline that applies to the company, e-reporting exposure (foreign/B2C flows) — then fixes incomplete client records live: SIREN recovered from the public French company registry API (no key), previewed line by line, written with update_client only after explicit confirmation. Use for "suis-je prêt pour la facturation électronique ?", "am I ready for the September 2026 e-invoicing mandate?", "complète mes fiches clients (SIREN, TVA)", "audit my client file for Factur-X", "quel calendrier s'applique à mon entreprise ?".
+description: "French e-invoicing readiness audit for Qonto accounts. From 2026-09-01 every French VAT-registered company must be able to RECEIVE electronic invoices (issuing becomes mandatory 2026-09-01 for large companies and mid-caps, 2027-09-01 for SMEs). The skill scores the account's readiness — client records complete for Factur-X (SIREN/SIRET, intra-EU VAT number, structured address), quality of issued invoices, the timeline that applies to the company, e-reporting exposure (foreign/B2C flows) — then fixes incomplete client records live: SIREN recovered from the public French company registry API (no key), previewed line by line, written with update_client only after explicit confirmation. Use for \"suis-je prêt pour la facturation électronique ?\", \"am I ready for the September 2026 e-invoicing mandate?\", \"complète mes fiches clients (SIREN, TVA)\", \"audit my client file for Factur-X\", \"quel calendrier s'applique à mon entreprise ?\"."
+permissions:
+  mcp:
+    qonto: [get_client, get_organization, list_client_invoices, list_clients, list_transactions, update_client]
+  network: []
+  env: []
+  tools: [Read]
 ---
 
 # Qonto E-invoice Ready
