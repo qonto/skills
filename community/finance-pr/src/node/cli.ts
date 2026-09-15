@@ -1,4 +1,4 @@
-#!/usr/bin/env -S npx tsx
+#!/usr/bin/env -S npx tsx@4.23.0
 // Finance PR CLI — the local engine the Claude Skill invokes.
 // Observe -> Prepare -> Act. Synthetic by default. Qonto WRITES ARE DISABLED.
 
