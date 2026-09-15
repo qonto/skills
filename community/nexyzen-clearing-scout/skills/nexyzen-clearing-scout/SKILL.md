@@ -9,6 +9,12 @@ description: >
   frozen working capital, unpaid/overdue invoices, offsetting debts with a
   counterparty, invoice clearing, netting, or "compensazione" of receivables
   and payables.
+permissions:
+  mcp:
+    qonto: [change_supplier_invoice_status, get_organization, list_client_invoices, list_supplier_invoices, mark_client_invoice_as_paid]
+  network: [webapp.cameracompensazione.it]
+  env: [NEXYZEN_AFFILIATE_CODE, NEXYZEN_BASE_URL, NEXYZEN_TOKEN]
+  tools: [Read, Bash]
 ---
 
 # Nexyzen Clearing Scout
