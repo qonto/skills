@@ -1,6 +1,12 @@
 ---
 name: qonto-chargeback-defender
 description: End-to-end payment dispute handling for Qonto accounts. Detects open chargebacks (via a Stripe/PayPal MCP when connected, otherwise by spotting clawback debits in Qonto transactions), finds the matching debit, assembles a sourced defense file (Shopify order, proof of delivery, Gmail customer threads), states the real response deadline, and — with explicit consent — attaches a dated evidence memo to the Qonto transaction for accounting traceability. Use for "j'ai reçu un chargeback", "why did Stripe take money back?", "defend this dispute", "assemble my dispute evidence", "when is my chargeback response due?".
+permissions:
+  mcp:
+    qonto: [get_organization, get_transaction, list_client_invoices, list_transaction_attachments, list_transactions, request_attachment_upload]
+  network: []
+  env: []
+  tools: [Read]
 ---
 
 # Qonto Chargeback Defender
