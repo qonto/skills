@@ -1,6 +1,12 @@
 ---
 name: qonto-support-cashdesk
 description: Customer-support billing desk for Qonto accounts. Takes a customer conversation ("I never received my invoice", "the payment link expired", "you charged me twice" — pulled from Intercom when that MCP is connected, or simply pasted into the chat), matches the customer against Qonto clients (confirmed by the user), verifies the facts against invoices, payment links and incoming transactions, then answers with the fix attached — resend the invoice, create a fresh payment link, or a credit note when a double collection is PROVEN by two dated credits — every write explicitly confirmed, the customer reply delivered as a draft to review. Use for "je n'ai pas reçu ma facture", "le lien de paiement a expiré", "vous m'avez facturé deux fois", "a customer says they paid twice", "handle this billing complaint", "answer this support ticket about an invoice".
+permissions:
+  mcp:
+    qonto: [create_credit_note, create_payment_link, delete_client, delete_client_invoice, get_client_invoice, get_organization, get_payment_link, list_client_invoices, list_clients, list_payment_links, list_transactions, send_client_invoice]
+  network: []
+  env: []
+  tools: [Read]
 ---
 
 # Qonto Support Cashdesk
