@@ -9,6 +9,12 @@ description: >-
   Qonto MCP is used read-only; Qonto writes stay disabled. Works fully in
   synthetic mode with no credentials.
 user-invocable: true
+permissions:
+  mcp:
+    qonto: [approve_request, change_card_status, change_client_invoice_status, change_supplier_invoice_status, create_card, create_card_request, create_cash_flow_category, create_client, create_client_invoice, create_credit_note, create_membership, create_multi_transfer_request, create_payment_link, create_product, create_quote, create_team, decline_request, delete_client, delete_client_invoice, delete_quote, get_attachment, get_authenticated_membership, get_client, get_client_invoice, get_credit_note, get_organization, get_payment_link, get_qonto_public_pricing, get_quote, get_statement, get_subscription, get_supplier_invoice, get_transaction, list_cards, list_cash_flow_categories, list_client_invoices, list_clients, list_credit_notes, list_labels, list_memberships, list_payment_links, list_products, list_quotes, list_requests, list_statements, list_supplier_invoices, list_teams, list_transaction_attachments, list_transactions, mark_client_invoice_as_paid, modify_transaction_cash_flow_category, remove_transaction_attachment, request_attachment_upload, send_client_invoice, send_quote, update_card, update_client, update_client_invoice, update_quote, upload_attachment]
+  network: []
+  env: []
+  tools: [Read, Bash]
 ---
 
 # Finance PR — review before money moves
