@@ -4,6 +4,7 @@ Repository for Qonto AI skills.
 
 <!-- Temporary private-gate rollout test. This PR will not be merged. -->
 <!-- Second commit verifies approvals are bound to current SHA. -->
+<!-- Third commit verifies GitHub App review delivery. -->
 
 👉 Register here to the Qonto x Anthropic MCP Hackathon: https://luma.com/497kgbv7
 
