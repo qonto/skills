@@ -1,0 +1,9 @@
+{
+  "name": "qonto",
+  "owner": {
+    "name": "Qonto",
+    "url": "https://qonto.com"
+  },
+  "description": "Agent Skills for business banking and financial tools on Qonto. Featured plugins are built by Qonto, community plugins are reviewed by Qonto before they ship.",
+  "plugins": []
+}

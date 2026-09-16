@@ -1,0 +1,395 @@
+{
+  "count": 65,
+  "tools": [
+    {
+      "name": "approve_request",
+      "title": "Approve request",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "change_card_status",
+      "title": "Change card status",
+      "read_only": false,
+      "destructive": true
+    },
+    {
+      "name": "change_client_invoice_status",
+      "title": "Change client invoice status",
+      "read_only": false,
+      "destructive": true
+    },
+    {
+      "name": "change_supplier_invoice_status",
+      "title": "Change supplier invoice status",
+      "read_only": false,
+      "destructive": true
+    },
+    {
+      "name": "create_card",
+      "title": "Create card",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_card_request",
+      "title": "Create card request",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_cash_flow_category",
+      "title": "Create cash flow category",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_client",
+      "title": "Create client",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_client_invoice",
+      "title": "Create client invoice",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_credit_note",
+      "title": "Create credit note",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_membership",
+      "title": "Invite member",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_multi_transfer_request",
+      "title": "Create multi-transfer request",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_payment_link",
+      "title": "Create payment link",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_product",
+      "title": "Create product",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_quote",
+      "title": "Create quote",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "create_team",
+      "title": "Create team",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "decline_request",
+      "title": "Decline request",
+      "read_only": false,
+      "destructive": true
+    },
+    {
+      "name": "delete_client",
+      "title": "Delete client",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "delete_client_invoice",
+      "title": "Delete client invoice",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "delete_quote",
+      "title": "Delete quote",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "export_statements",
+      "title": "Download account statements as a zip",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "export_transaction_attachments",
+      "title": "Download transaction attachments as a zip",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "export_transactions",
+      "title": "Export transactions to CSV",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_attachment",
+      "title": "Get attachment",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_authenticated_membership",
+      "title": "Get authenticated membership",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_client",
+      "title": "Get client",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_client_invoice",
+      "title": "Get client invoice",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_credit_note",
+      "title": "Get credit note",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_organization",
+      "title": "Get organization",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_payment_link",
+      "title": "Get payment link",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_qonto_public_pricing",
+      "title": "Get Qonto public pricing reference",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_quote",
+      "title": "Get quote",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_statement",
+      "title": "Get statement",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_subscription",
+      "title": "Get subscription",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_supplier_invoice",
+      "title": "Get supplier invoice",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_transaction",
+      "title": "Get transaction",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_bank_accounts",
+      "title": "List bank accounts",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_cards",
+      "title": "List cards",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_cash_flow_categories",
+      "title": "List cash flow categories",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_client_invoices",
+      "title": "List client invoices",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_clients",
+      "title": "List clients",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_credit_notes",
+      "title": "List credit notes",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_labels",
+      "title": "List labels",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_memberships",
+      "title": "List memberships",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_payment_links",
+      "title": "List payment links",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_products",
+      "title": "List products",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_quotes",
+      "title": "List quotes",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_requests",
+      "title": "List requests",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_statements",
+      "title": "List statements",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_supplier_invoices",
+      "title": "List supplier invoices",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_teams",
+      "title": "List teams",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_transaction_attachments",
+      "title": "List transaction attachments",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_transactions",
+      "title": "List transactions",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "list_user_organizations",
+      "title": "List user organizations",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "mark_client_invoice_as_paid",
+      "title": "Mark client invoice as paid",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "modify_transaction_cash_flow_category",
+      "title": "Modify transaction cash flow category",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "remove_transaction_attachment",
+      "title": "Remove transaction attachment",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "request_attachment_upload",
+      "title": "Request an attachment upload URL",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "send_client_invoice",
+      "title": "Send client invoice",
+      "read_only": false,
+      "destructive": true
+    },
+    {
+      "name": "send_quote",
+      "title": "Send quote",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "update_card",
+      "title": "Update card",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "update_client",
+      "title": "Update client",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "update_client_invoice",
+      "title": "Update client invoice",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "update_quote",
+      "title": "Update quote",
+      "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "upload_attachment",
+      "title": "Upload a staged attachment to Qonto",
+      "read_only": false,
+      "destructive": false
+    }
+  ]
+}

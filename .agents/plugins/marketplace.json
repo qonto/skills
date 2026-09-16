@@ -1,0 +1,7 @@
+{
+  "name": "qonto",
+  "interface": {
+    "displayName": "Qonto"
+  },
+  "plugins": []
+}
