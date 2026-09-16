@@ -1,0 +1,59 @@
+# Regenerates the marketplace manifests and the README table from the plugin directories after every merge to
+# main, and validates the result before committing it. Contributors never edit .claude-plugin/marketplace.json,
+# .agents/plugins/marketplace.json or the table in README.md.
+name: marketplace
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "featured/**"
+      - "community/**"
+      - ".github/scripts/marketplace.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: marketplace
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Rebuild the manifests and the README table
+        run: python3 .github/scripts/marketplace.py
+
+      - name: Validate them with the plugin validator (pinned)
+        # --strict turns warnings into errors, and an empty marketplace is a warning: skip until the first plugin lands.
+        run: |
+          count=$(python3 -c 'import json; print(len(json.load(open(".claude-plugin/marketplace.json"))["plugins"]))')
+          if [ "$count" = "0" ]; then
+            echo "no plugins yet, nothing to validate"; exit 0
+          fi
+          npm install --global --no-fund --no-audit @anthropic-ai/claude-code@2.1.269
+          claude plugin validate . --strict
+
+      - name: Commit them when they changed
+        run: |
+          if git diff --quiet -- .claude-plugin/marketplace.json .agents/plugins/marketplace.json README.md; then
+            echo "manifests already up to date"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .claude-plugin/marketplace.json .agents/plugins/marketplace.json README.md
+          git commit -m "Regenerate the marketplace manifests"
+          git push

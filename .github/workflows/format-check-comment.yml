@@ -1,0 +1,50 @@
+# Posts the format check report as a pull request comment. Runs in the base repository with a write token once the
+# `format check` workflow has finished, which is what makes the comment possible on pull requests from forks.
+# It never checks out or executes anything from the pull request: it only reads the report artifact the check
+# uploaded, and the report itself is text rendered by the checker with HTML escaped.
+name: format check comment
+
+on:
+  workflow_run:
+    workflows: ["format check"]
+    types: [completed]
+
+permissions:
+  actions: read
+  pull-requests: write
+
+jobs:
+  comment:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: format-check
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post or update the comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const { owner, repo } = context.repo;
+            const raw = fs.readFileSync('pr-number.txt', 'utf8').trim();
+            if (!/^[0-9]{1,9}$/.test(raw)) { core.setFailed(`bad pull request number in the artifact: ${raw}`); return; }
+            const issue_number = Number(raw);
+            const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: issue_number });
+            if (pr.head.sha !== context.payload.workflow_run.head_sha) {
+              core.info(`pull request ${issue_number} moved on (${pr.head.sha} vs ${context.payload.workflow_run.head_sha}), nothing to post`);
+              return;
+            }
+            const body = fs.readFileSync('format-check.md', 'utf8');
+            if (!body.startsWith('<!-- format-check -->')) { core.setFailed('unexpected report'); return; }
+            const { data: comments } = await github.rest.issues.listComments({ owner, repo, issue_number, per_page: 100 });
+            const mine = comments.find(c => c.user && c.user.type === 'Bot' && c.body && c.body.startsWith('<!-- format-check -->'));
+            if (mine) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: mine.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
