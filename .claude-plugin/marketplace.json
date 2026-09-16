@@ -5,21 +5,5 @@
     "url": "https://qonto.com"
   },
   "description": "Agent Skills for business banking and financial tools on Qonto. Featured plugins are built by Qonto, community plugins are reviewed by Qonto before they ship.",
-  "plugins": [
-    {
-      "name": "qonto-mcp-data-model",
-      "source": "./community/qonto-mcp-data-model",
-      "description": "Data model reference for the Qonto MCP server. Use when reading or writing Qonto data through MCP tools (transactions, invoices, clients, cards, memberships, statements, cash flow categories) \u2014 to know entity shapes, required fields, enums, pagination formats, money representations, and cross-tool\u2026",
-      "version": "0.1.0",
-      "category": "Community",
-      "tags": [
-        "community"
-      ],
-      "author": {
-        "name": "Henri Lepic",
-        "url": "https://github.com/ritoon"
-      },
-      "license": "MIT"
-    }
-  ]
+  "plugins": []
 }
