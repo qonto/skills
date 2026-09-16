@@ -1,0 +1,11 @@
+# Protected paths need a review from a maintainer: GitHub enforces it when "require review from code owners"
+# is on for main. The format check reads MAINTAINERS to tell whether a pull request author may touch them at all,
+# so a contributor gets that answer at open time, before anyone reviews.
+/.github/         @stefanoamorelli @ayoul3 @ariary
+/.claude-plugin/  @stefanoamorelli @ayoul3 @ariary
+/.codex-plugin/   @stefanoamorelli @ayoul3 @ariary
+/.agents/         @stefanoamorelli @ayoul3 @ariary
+/featured/        @stefanoamorelli @ayoul3 @ariary
+/LICENSE          @stefanoamorelli @ayoul3 @ariary
+/MAINTAINERS      @stefanoamorelli @ayoul3 @ariary
+/CODEOWNERS       @stefanoamorelli @ayoul3 @ariary

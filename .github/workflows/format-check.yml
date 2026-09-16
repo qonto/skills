@@ -1,0 +1,76 @@
+# Format check: public, deterministic shape rules for skill submissions. Logs are readable by anyone. The report is
+# uploaded as an artifact and the `format check comment` workflow posts it on the pull request, so it shows up on
+# pull requests from forks too, where this workflow only holds a read-only token. No secrets, no pull_request_target,
+# no self-hosted runner.
+name: format check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: format-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  format:
+    name: format check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install the checker and the plugin validator (pinned)
+        run: |
+          python -m pip install --quiet -r .github/format-check/requirements.txt
+          npm install --global --no-fund --no-audit @anthropic-ai/claude-code@2.1.269
+
+      - name: Run the format check
+        id: format
+        env:
+          FORMAT_CHECK_ACTOR: ${{ github.event.pull_request.user.login }}
+        # stdout stays connected: the `::error` annotations the checker prints are read from it
+        run: |
+          set +e
+          python3 .github/format-check/format_check.py \
+            --base "${{ github.event.pull_request.base.sha }}" \
+            --head HEAD \
+            --annotations \
+            --json format-check.json \
+            --markdown format-check.md
+          code=$?
+          cat format-check.md >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ github.event.pull_request.number }}" > pr-number.txt
+          echo "exit=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload the report for the comment workflow
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: format-check
+          path: |
+            format-check.md
+            format-check.json
+            pr-number.txt
+          retention-days: 7
+
+      - name: Result
+        run: |
+          if [ "${{ steps.format.outputs.exit }}" != "0" ]; then
+            echo "format check failed, see the summary and the PR comment"; exit 1
+          fi
