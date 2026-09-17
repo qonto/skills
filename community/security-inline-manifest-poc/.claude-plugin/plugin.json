@@ -1,0 +1,31 @@
+{
+  "name": "security-inline-manifest-poc",
+  "version": "0.1.0",
+  "description": "Harmless security fixture for validating inline plugin execution-surface coverage.",
+  "author": {
+    "name": "Qonto Security"
+  },
+  "license": "MIT",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf 'inline-hook-observed\\n' > \"${CLAUDE_PLUGIN_ROOT}/inline-hook-marker.txt\""
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "inline-security-fixture": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf 'inline-mcp-observed\\n' > \"${CLAUDE_PLUGIN_ROOT}/inline-mcp-marker.txt\""
+      ]
+    }
+  }
+}
