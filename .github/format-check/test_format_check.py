@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 HERE = Path(__file__).parent
@@ -57,6 +58,45 @@ class AutomaticExecutionTests(unittest.TestCase):
 
         self.assertFalse(report.failed)
         self.assertTrue(any(f.level == "note" and f.check == "hooks" for f in report.findings))
+
+
+class LayoutTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+        self.old_root = fc.ROOT
+        fc.ROOT = self.root
+
+    def tearDown(self):
+        fc.ROOT = self.old_root
+        self.temp.cleanup()
+
+    def test_mixed_root_and_nested_skills_fail(self):
+        plugin = self.root / "community" / "plugin"
+        skill = plugin / "skills" / "nested"
+        manifest = plugin / ".claude-plugin"
+        skill.mkdir(parents=True)
+        manifest.mkdir()
+        (plugin / "SKILL.md").write_text("legacy")
+        (skill / "SKILL.md").write_text("nested")
+        (manifest / "plugin.json").write_text(json.dumps({
+            "name": "plugin", "version": "0.1.0", "description": "A sufficiently detailed plugin description."
+        }))
+        report = fc.Report()
+
+        fc.check_plugin("community/plugin", report)
+
+        self.assertTrue(any(f.level == "fail" and "mixes a root" in f.message for f in report.findings))
+
+
+class GitPathTests(unittest.TestCase):
+    def test_changed_files_uses_nul_delimited_paths(self):
+        output = "community/caf\N{LATIN SMALL LETTER E WITH ACUTE}/SKILL.md\0community/acme/file\nname.md\0".encode()
+        with mock.patch.object(fc.subprocess, "run", return_value=fc.subprocess.CompletedProcess([], 0, output, b"")) as run:
+            paths = fc.changed_files("base", "head")
+
+        self.assertEqual(paths, ["community/acme/file\nname.md", "community/caf\N{LATIN SMALL LETTER E WITH ACUTE}/SKILL.md"])
+        self.assertIn("-z", run.call_args.args[0])
 
 
 class AllowedToolsTests(unittest.TestCase):

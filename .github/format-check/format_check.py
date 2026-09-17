@@ -148,18 +148,21 @@ def git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, text=True, capture_output=True, check=True).stdout
 
 
+def git_paths(*args: str) -> list[str]:
+    out = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, check=True).stdout
+    return sorted(os.fsdecode(path) for path in out.split(b"\0") if path)
+
+
 def changed_files(base: str, head: str) -> list[str]:
     # three-dot: only what the branch adds since it forked from base. In CI head is the merge commit, so
     # this equals the plain diff; locally it keeps base's own newer commits out of the picture.
     # --no-renames so a rename shows as delete + add, and D/T so a deletion or a file turned into a symlink
     # cannot slip past the protected-path rule.
-    out = git("diff", "--name-only", "--no-renames", "--diff-filter=ACDMTUXB", f"{base}...{head}")
-    return sorted(p for p in out.splitlines() if p.strip())
+    return git_paths("diff", "--name-only", "-z", "--no-renames", "--diff-filter=ACDMTUXB", f"{base}...{head}")
 
 
 def all_plugin_files() -> list[str]:
-    out = git("ls-files", "--", *PLUGIN_ROOTS, "README.md")
-    return sorted(p for p in out.splitlines() if p.strip())
+    return git_paths("ls-files", "-z", "--", *PLUGIN_ROOTS, "README.md")
 
 
 def rel(p: Path) -> str:
@@ -835,6 +838,9 @@ def check_plugin(name: str, rep: Report):
     check_plugin_manifest(pdir, rep)
     skills_dir = pdir / SKILLS_DIR
     skill_dirs = sorted(d for d in skills_dir.iterdir() if d.is_dir()) if skills_dir.is_dir() else []
+    if (pdir / "SKILL.md").is_file() and skill_dirs:
+        rep.add("fail", "layout", f"`{rel(pdir)}/` mixes a root `SKILL.md` with nested skills.", file=rel(pdir),
+                fix="Remove the root `SKILL.md`. Marketplace skills live under `skills/<skill-name>/SKILL.md`.")
     if not skill_dirs:
         rep.add("fail", "layout", f"`{rel(pdir)}/{SKILLS_DIR}/` has no skill.", file=rel(pdir),
                 fix=f"Add at least one `{SKILLS_DIR}/<skill-name>/SKILL.md`.")
