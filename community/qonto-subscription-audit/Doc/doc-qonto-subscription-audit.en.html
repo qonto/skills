@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-subscription-audit — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic MCP Hackathon</span>
+  <h1>qonto-subscription-audit</h1>
+  <p class="sub">The complete recurring-spend audit — what you pay, what you forgot, what quietly went up, and what just started.</p>
+  <div class="badges">
+    <span>🔍 Pure Qonto</span><span>🔒 Zero Qonto writes</span>
+    <span>🌱 Early detection of newborns</span><span>📊 Dashboard in Claude</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>Subscriptions pile up, prices creep up silently, trials convert, nobody cancels. The skill runs the COMPLETE recurring-spend audit over <strong>24–36 months</strong>:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>The full inventory</h4><p>Every recurring charge (cards AND direct debits), monthly/quarterly/yearly cadence, the TOTAL annualized cost — the shock number — and a status per line: ✅ active · 👥 duplicate · 🧟 zombie (user-confirmed) · 🎣 trial gone paid.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>The newborns 🌱</h4><p>Notorious subscription merchants — SaaS, AI, course platforms (Systeme.io, Skool…), hosting &amp; domain registrars (OVH, Gandi…) — recognized <strong>from the very first charge, no history needed</strong>; then round amounts, label hints, 2nd occurrence ~30 d → "probable subscription, to confirm". Catch the trial before it becomes rent.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Every hike detected</h4><p>Price plateaus (±2 %, a jump persisting ≥ 2 cycles), FX and VAT excluded, 🟢🟡🔴 tags vs inflation, ⚪ variable usage kept apart — plus the cumulated annual overcost of all hikes.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Dashboard + emails</h4><p>A dashboard built directly in Claude, exportable as a self-contained HTML file in Qonto colors; an argued negotiation email and a monthly digest — Gmail drafts, never sent without you.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>It's the audit every founder postpones because it means opening 30 months of statements. Here it's one prompt.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td>Country-agnostic core: inventory, statuses and hike detection work on every Qonto country (FR, DE, ES, IT…). Only the inflation benchmark is localized, reference always stated</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>≥ 24 months of history</b></td><td>A YEARLY subscription only shows with 2 occurrences: on a 12-month window, annual renewals fly under the radar. Below that: honest degradation — the skill states what may be missing</td><td>⭕ recommended</td></tr>
+    <tr><td><b>Gmail MCP</b></td><td>Detected dynamically: present → monthly digest + negotiation drafts; absent → copy-paste text. The core needs Qonto only</td><td>⭕ optional</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Counterparty normalization</strong>: references, dates and card-processor prefixes (<code>PAYPAL *</code>, <code>SUMUP *</code>…) stripped; SEPA and card variants of the same supplier merged into one line</li>
+    <li><strong>Yearly lines no longer fly under the radar</strong>: 24–36 month target window, the 350–380 d cadence is recognized — and below 24 months the skill says yearly lines may be missing instead of pretending</li>
+    <li><strong>Steps, not noise</strong>: a plateau = ≥ 2 stable charges (±2 %); a hike = a jump that persists ≥ 2 cycles. Single outliers, prorated first months, FX wobble and VAT-rate changes excluded by design</li>
+    <li><strong>VAT neutralized</strong>: excl-VAT comparison when <code>list_supplier_invoices</code> has the matching invoice — a tax change is never blamed on the supplier</li>
+    <li><strong>Variable usage said plainly</strong>: "implicit price not isolable from payment data" rather than a fake conclusion; 🌱 and 🧟 are hypotheses to confirm, never verdicts</li>
+    <li>Short history, empty account, no recurring charges: the skill states what it can see and what it can't yet · cadence math on <code>emitted_at</code> · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Zero Qonto writes:</b> this skill only reads — risk-free by construction. The only outbound artifacts are email <b>drafts</b> (negotiation, digest) that the user reviews, edits and sends (or not) themselves. To protect a subscription with a <b>capped virtual card</b>, that's the <code>qonto-subscription-guardian</code> skill.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📊 Portfolio statuses</h2>
+  <div class="scroll"><table>
+    <tr><th>Status</th><th>Criterion</th><th>Meaning</th><th>Proposed action</th></tr>
+    <tr><td>✅ Active</td><td>Regular cadence, usage confirmed by the user</td><td>The budget's backbone</td><td>Watch, alert on the next hike</td></tr>
+    <tr><td>👥 Duplicate</td><td>Two suppliers in the same tool category (2 meeting tools, 2 hosts…)</td><td>One of the two is extra</td><td>Keep one, quantify the saving</td></tr>
+    <tr><td>🧟 Zombie</td><td>Charged ≥ 6 months, zero variation, dormant category — <strong>a hypothesis</strong></td><td>Probably unused</td><td>Cancel after user confirmation</td></tr>
+    <tr><td>🎣 Trial gone paid</td><td>Recent first full-price charge, preceded by nothing or a token amount</td><td>Silent conversion</td><td>Immediate decision: keep or cut</td></tr>
+    <tr><td>🌱 New (probable)</td><td>Notorious merchant recognized from the 1st charge (no history) · round amount · label · 2nd occ. ~30 d</td><td>A subscription being born, to confirm</td><td>"New" section — catch it early</td></tr>
+    <tr><td>⚪ Variable usage</td><td>High variability (API, cloud, ads)</td><td>A rising bill ≠ a rising price</td><td>Implicit price when isolable, said plainly otherwise</td></tr>
+  </table></div>
+  <h3>Hikes, benchmarked against inflation</h3>
+  <div class="scroll"><table>
+    <tr><th>Tag</th><th>Criterion</th><th>Proposed action</th></tr>
+    <tr><td>🟢 Normal indexing</td><td>Annualized increase ≤ general inflation</td><td>None — mentioned for the record</td></tr>
+    <tr><td>🟡 Above inflation</td><td>Annualized increase &gt; inflation</td><td>Listed in the report, email on request</td></tr>
+    <tr><td>🔴 Aggressive hike</td><td>≥ 3× inflation or ≥ 10 % in one step</td><td><strong>Negotiation email proposed by default</strong></td></tr>
+  </table></div>
+  <p>Cross-cutting alerts: 💥 double charge (&lt; 72 h) · 🔁 cadence switch (often a disguised repricing).</p>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: shock number, portfolio by status, New 🌱 section, hikes, variable usage kept separate</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Dashboard in Claude</b></td><td>Rendered directly in the conversation (artifact): annual-cost counter, category breakdown, statuses ✅👥🧟🎣🌱, hikes with deltas, 3-month forecast</td><td>When the host allows it (claude.ai, Claude Desktop, Claude Code)</td></tr>
+    <tr><td><b>HTML export</b></td><td>The same dashboard as one self-contained file, Qonto palette (violet #6B4EFF / black #1D1B29 / white, light/dark)</td><td>On request — keep it or share it</td></tr>
+    <tr><td><b>Emails</b></td><td>Gmail draft (MCP present + explicit consent) or copy-paste text: negotiation + monthly digest</td><td>Never sent without the user</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem → the live inventory and statuses → the hikes and the overcost → <strong>the dashboard building itself in Claude with the shock number, and the 🌱 New section catching a fresh trial</strong> → wrap-up. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Continuous watch: alert on the first charge of a confirmed 🌱 or a new plateau</td><td>Low</td><td>The monthly ritual becomes automatic</td></tr>
+    <tr><td>Public-price benchmark: compare to the supplier's published pricing</td><td>Medium</td><td>Also catches over-paying grandfathered plans</td></tr>
+    <tr><td>Auto-label detected subscriptions in Qonto</td><td>Low</td><td>The portfolio reads in the app too</td></tr>
+    <tr><td>Post-negotiation follow-up: verify the price actually dropped</td><td>Low</td><td>Closed loop — the price series already exists</td></tr>
+    <tr><td>Capped-card bridge: chain into <code>qonto-subscription-guardian</code></td><td>Low</td><td>The audit finds, the guardian protects</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Zero Qonto writes</strong> — reads only; the capped card is <code>qonto-subscription-guardian</code> territory</li>
+    <li>🧟 is a hypothesis, always user-confirmed; 🌱 is "probable, to confirm", never asserted</li>
+    <li>Never accuses a supplier when the data says usage, FX or VAT — doubtful lines go to variable usage with the reason</li>
+    <li>Emails are <em>drafts</em>: never sent, no recipient added without the user; payment-data estimates ≠ contract audit</li>
+    <li>Honest degradation under 24 months of history (yearly lines may be missing — and the skill says so) · masked IBANs · pagination ≤ 50</li>
+  </ul>
+</section>
+
+<footer>qonto-subscription-audit · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-subscription-audit.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
