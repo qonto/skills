@@ -1,0 +1,10 @@
+{
+  "name": "qonto-reimburse-batch",
+  "version": "0.1.0",
+  "description": "Batch expense reimbursement for teams on Qonto. Collects employee expense claims from a Slack channel or Notion base (optional — pasted claims work too), verifies each one (receipt present and consistent, no duplicate of a company-card expense or of a past reimbursement, expense policy respected)…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
