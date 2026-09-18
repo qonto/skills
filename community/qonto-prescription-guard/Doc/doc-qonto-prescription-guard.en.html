@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-prescription-guard — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon</span>
+  <h1>qonto-prescription-guard</h1>
+  <p class="sub">Every unpaid invoice has a legal death date — the skill finds it, and tells you by when to act.</p>
+  <div class="badges">
+    <span>🔍 100% read-only — zero writes</span><span>⚖️ French rules built in, articles cited</span>
+    <span>🔄 Partial payment = clock reset</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>An unpaid invoice doesn't die when you forget it — it dies when the <strong>limitation period</strong> runs out: <strong>5 years between businesses</strong> (art. L110-4 French Commercial Code), <strong>2 years against a consumer</strong> (art. L218-2 French Consumer Code). And the reverse trap is real too: a <strong>partial payment resets the clock</strong> — receivables you wrote off may still be alive.</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Full scan</h4><p>Every unpaid client invoice, across the entire history — old, messy invoices are exactly the point.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>B2B/B2C qualification</h4><p>SIREN / VAT number on the client record → likely a business (5 years); otherwise the skill asks — certainty is never claimed.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Clock-resetting events</h4><p>Partial payment spotted in the transactions → "period probably reset on [date] — confirm with a lawyer".</p></div>
+    <div class="pcard"><span class="n">4</span><h4>The "act before…" schedule</h4><p>A death date per receivable, time left, sorted by urgency × amount: 🔴 &lt; 6 months · 🟠 &lt; 12 months · 🟡 &lt; 2 years · ⚫ probably time-barred.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><strong>Limitation rules: France only.</strong> Other Qonto countries (DE, ES, IT…): age-of-receivables report, no legal qualification, never an invented rule</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Client invoicing in Qonto</b></td><td>The skill reads <code>list_client_invoices</code> — invoices issued outside Qonto aren't visible</td><td>✅</td></tr>
+    <tr><td><b>Client records filled in</b></td><td>SIREN / VAT number → automatic B2B qualification; otherwise the skill asks</td><td>⭕ recommended</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works, 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Rules embedded statically</strong> (no external dependency): 5 years L110-4 / 2 years L218-2, prudent starting point = the issue date (art. 2224 Civil Code) — conservative choice, never overstate time left</li>
+    <li><strong>Misconception #1 corrected</strong>: a dunning letter, even registered, does <strong>NOT interrupt</strong> the period — only an acknowledgment of the debt, a partial payment, or a legal act restarts the clock (art. 2240–2244)</li>
+    <li><strong>Qualification never guessed</strong>: ambiguous client → the skill asks, and computes <em>both dates</em> meanwhile, highlighting the shorter one</li>
+    <li><strong>Heuristic stated as such</strong>: payments matched to invoices via normalized counterparty (case/accents), reference and amount — payments collected outside Qonto are invisible, the skill says so and asks</li>
+    <li>Invoice paid but not updated → flagged, never modified (100% read-only); empty account → the skill says so and stops cleanly</li>
+    <li>Pagination ≤ 50 everywhere, history windowed by quarter, masked IBANs</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔍</div>
+    <p><b>100% read-only — there is nothing to approve:</b> the skill creates nothing, modifies nothing, moves nothing. Every arrow is solid (risk-free reads). The risk isn't in the tool, it's in the calendar: time is what acts here, not the skill. And the report is <b>not legal advice</b> — a lawyer validates before acting or writing off.</p>
+  </div>
+</section>
+
+<section>
+  <h2>⚖️ Embedded limitation rules (France)</h2>
+  <div class="scroll"><table>
+    <tr><th>Situation</th><th>Period</th><th>Legal basis</th></tr>
+    <tr><td>Debt between businesses (or arising from the debtor's commercial activity)</td><td><strong>5 years</strong></td><td>art. L110-4 Commercial Code</td></tr>
+    <tr><td>Professional against a <strong>consumer</strong> (private individual, non-professional purpose)</td><td><strong>2 years</strong></td><td>art. L218-2 Consumer Code</td></tr>
+    <tr><td>Starting point: day the creditor knew the facts — for an invoice, prudently the <strong>issue date</strong></td><td>—</td><td>art. 2224 Civil Code</td></tr>
+    <tr><td>Interruption → <strong>the clock fully restarts</strong>: acknowledgment of the debt (a <strong>partial payment</strong> counts as a tacit one), legal action, enforcement act</td><td>new full period (art. 2231)</td><td>art. 2240–2244 Civil Code</td></tr>
+    <tr><td>⚠️ NOT interruptive: reminders, emails, even a registered dunning letter</td><td>—</td><td>settled case law</td></tr>
+  </table></div>
+  <p style="margin-top:.7rem">Worth knowing: limitation must be raised by the debtor — a judge won't apply it automatically (art. 2247). In practice, treat the date as the death of the claim; still, the skill never declares a receivable definitively dead… nor definitively alive.</p>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: "act before…" schedule, totals at risk within 6/12 months, detected resets</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Interactive timeline</b></td><td><strong>HTML</strong> file/artifact: one bar per receivable (start → death date), today marker, color by urgency, width by amount</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); automatic fallback to tables otherwise</td></tr>
+    <tr><td><b>"Probably time-barred" list</b></td><td>Separate report section, never mixed with living receivables</td><td>Every scan</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem (receivables dying silently) → the scan and the schedule → the highlight: <strong>a detected partial payment resurrecting an invoice the user had written off</strong> → the final timeline and the pipeline with <code>qonto-invoice-chaser</code>. The detailed shooting script is kept internal (outside the repository).</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Calendar reminders on "act before…" dates (calendar MCP detected dynamically)</td><td>Low</td><td>Optional multi-MCP — activates if present, otherwise the skill says so and continues</td></tr>
+    <tr><td>Country modules (DE: 3 years §195 BGB, ES, IT…)</td><td>Medium</td><td>Same engine, per-country period tables</td></tr>
+    <tr><td>Suspension tracking (mediation, art. 2238 Civil Code)</td><td>Medium</td><td>Declarative — refines the dates</td></tr>
+    <tr><td>Draft handoff letter for the bailiff</td><td>Low</td><td>Text output, still zero MCP writes</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Not legal advice</strong> — every report says so: prudent dates, validated by a lawyer or bailiff before acting or writing off</li>
+    <li><strong>Never certain on B2C</strong>: always an assumption to confirm (a sole trader buying for business → back to 5 years)</li>
+    <li>Interruption detection <strong>announced as a heuristic</strong>: "partial payment detected on [date] → period probably reset — confirm with a lawyer"</li>
+    <li>France only for legal dates; elsewhere → plain aging report, clearly labeled</li>
+    <li>100% read-only · masked IBANs (last 4 digits) · pagination ≤ 50 everywhere</li>
+    <li>All examples in this documentation are invented (INV-YYYY-NNN numbers, fictional amounts)</li>
+  </ul>
+</section>
+
+<footer>qonto-prescription-guard · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-prescription-guard.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
