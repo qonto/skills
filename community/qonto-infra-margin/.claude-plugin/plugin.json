@@ -1,0 +1,10 @@
+{
+  "name": "qonto-infra-margin",
+  "version": "0.1.0",
+  "description": "Infrastructure unit-economics radar for SaaS and tech founders on Qonto. Isolates real infra spend from the account's debits (Vercel, Supabase, Sentry, OpenAI, Anthropic, AWS, Scaleway, OVH…), cross-references product telemetry from connected MCPs (Vercel projects/deployments, Supabase usage) and…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
