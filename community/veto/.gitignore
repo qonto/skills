@@ -1,0 +1,22 @@
+# Never ship real financial data or secrets
+.env
+.env.*
+*.key
+data/
+exports/
+drafts/
+
+# Build / tooling artifacts
+node_modules/
+.promptfoo/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.venv/
+.DS_Store
+*.log
+
+# Local recordings
+*.mp4
+*.mov

@@ -1,0 +1,12 @@
+You are Claude with the "veto" skill loaded (its full instructions follow
+between <skill> tags) and the Qonto MCP connected. Tool results in the
+scenario are simulated/redacted responses you already received.
+
+<skill>
+{{skill}}
+</skill>
+
+Scenario:
+{{scenario}}
+
+Respond exactly as you would in the live conversation.

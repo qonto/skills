@@ -1,0 +1,10 @@
+{
+  "name": "veto",
+  "version": "0.1.0",
+  "description": "Manages guarded accounts receivable in Qonto for French businesses. Audits client readiness, verifies French and EU business identity, prepares compliant invoices and quotes, creates invoice-linked payment pages, drafts contextual invoice emails, checks payments, and prepares overdue reminders. Use…",
+  "author": {
+    "name": "Abdel-Karim",
+    "url": "https://github.com/UnknOownU"
+  },
+  "license": "MIT"
+}
