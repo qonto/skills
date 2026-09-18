@@ -1,0 +1,10 @@
+{
+  "name": "qonto-fisca-copilot",
+  "version": "0.1.0",
+  "description": "Proactive tax co-pilot for a Qonto business account. Detects the organization's country (via get_organization) and applies that country's rules to a period's transactions, surfacing the tax/legal reflexes a founder forgets — mileage to log, VAT to reverse-charge on foreign SaaS (autoliquidation)…",
+  "author": {
+    "name": "fransys-code",
+    "url": "https://github.com/fransys-code"
+  },
+  "license": "MIT"
+}
