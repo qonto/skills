@@ -1,0 +1,10 @@
+{
+  "name": "qonto-grant-scout",
+  "version": "0.1.0",
+  "description": "Public-funding scout for Qonto accounts. Builds the company's real profile from the account — sector, location, size, actual spending structure (training, equipment, digital, hiring, export, energy) — then cross-references it with French public aid referentials on data.gouv.fr (via the Datagouv MCP…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}

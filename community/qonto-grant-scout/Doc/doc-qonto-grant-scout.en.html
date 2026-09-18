@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-grant-scout — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon · Agent Skill</span>
+  <h1>qonto-grant-scout</h1>
+  <p class="sub">Your bank account knows what you invest in — public databases know who gets helped for it. This skill introduces them.</p>
+  <div class="badges">
+    <span>🔎 Read-only — zero writes</span><span>🧭 Real profile from the flows</span>
+    <span>🗂 Dated sources (data.gouv.fr)</span><span>🤝 Optional multi-MCP</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>France runs hundreds of public aid schemes for small businesses — and most SMEs claim none of them, because nobody has time to dig. Yet <strong>the account already tells the story of what the company invests in</strong>. The skill makes the introduction:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Real company profile</h4><p>Sector (NAF when present, inferred from the flows otherwise), region, size, age — all from the account, zero forms.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Real spending structure</h4><p>12–24 months of flows classified: training, equipment, digital, hiring, export, energy — each category priced in €/year.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Datagouv crossing</h4><p>Search across the public aid referentials — each dataset's update date is checked and displayed.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Honest shortlist</h4><p>Every lead: criteria to confirm, dated source, one concrete next step. Never "you are eligible" — always "worth checking".</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>"Am I leaving public money on the table?" is a question every founder asks — and never has time to answer.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><strong>Scheme cross-referencing: France only</strong> (aid is national/regional). Other Qonto countries: spending profile only, generic families, no scheme ever invented</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Datagouv MCP</b></td><td>Unlocks the referential search. Absent: the skill says so and still delivers profile + aid families + official portals</td><td>⭕ recommended</td></tr>
+    <tr><td><b>≥ 12 months of history</b></td><td>Below that, fragile signals — stated (🟡 tags)</td><td>⭕</td></tr>
+    <tr><td><b>Qonto labels maintained</b></td><td>Sharpen spending classification (<code>list_labels</code>); counterparty-based otherwise</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Structural honesty — what keeps the skill credible on uncertain data</h3>
+  <ul>
+    <li><strong>Every lead carries its source AND its date</strong>: aid referentials on data.gouv.fr are heterogeneous and sometimes stale — <code>get_dataset_info</code> checks freshness; a dataset older than ~18 months degrades the lead's tag</li>
+    <li><strong>Never "you are eligible"</strong>: schemes open, close, and change criteria — every lead is "worth checking", with the criteria the dataset exposes and the body to contact</li>
+    <li><strong>Non-queryable resource</strong> (PDF, malformed CSV): the lead becomes a sourced link to the dataset page, stated as such</li>
+    <li><strong>Datagouv MCP absent or failing</strong>: spending profile + generic aid families + the right official portals — stated plainly, and the skill continues</li>
+    <li><strong>Sector missing</strong> from <code>get_organization</code>: inferred from counterparties, confidence lowered, user can correct</li>
+    <li>Labels unavailable? <code>list_cash_flow_categories</code> returns 403 on the claude.ai connector → fallback to <code>list_labels</code> · card spending matched by <code>emitted_at</code> · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Zero writes, and the banking data stays with Qonto:</b> the skill creates no transfer, no invoice, no application. Only <b>generic search keywords</b> (sector, region, aid family) ever reach Datagouv — never an amount, a counterparty name, or an IBAN.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🗂 Detected spending → aid families</h2>
+  <div class="scroll"><table>
+    <tr><th>Spending seen in the flows</th><th>Aid family</th><th>Examples (verify at the source)</th><th>Typical next step</th></tr>
+    <tr><td>Training (training bodies, e-learning, certifications)</td><td>Training funding</td><td>Training-fund (OPCO) coverage, FNE-Formation</td><td>Ask your training fund about coverage</td></tr>
+    <tr><td>Equipment / machinery</td><td>Regional investment aid</td><td>Regional council schemes</td><td>Check your region's economic desk</td></tr>
+    <tr><td>Digital (software, SaaS, website)</td><td>Digital transformation</td><td>France Num, regional digital vouchers</td><td>Go through a France Num advisor</td></tr>
+    <tr><td>R&amp;D-like spending (prototyping, technical subcontracting)</td><td>Tax incentives</td><td>Research/innovation tax credits (CIR/CII), JEI status</td><td>Review with the accountant</td></tr>
+    <tr><td>Hiring / apprenticeship</td><td>Hiring aid</td><td>Apprenticeship aid, France Travail schemes</td><td>Simulate on the official portals</td></tr>
+    <tr><td>Energy / vehicles / works</td><td>Ecological transition</td><td>ADEME (Tremplin PME), energy-saving certificates</td><td>File on the ADEME portal</td></tr>
+    <tr><td>Export / foreign clients</td><td>International</td><td>Bpifrance Assurance Prospection, Team France Export</td><td>Contact the regional export advisor</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: profile + signals, sourced and dated shortlist, limits</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Grant radar</b></td><td><strong>HTML</strong> file/artifact: signals × aid families, leads at the intersections, 🟢🟡🔵 tags</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); automatic fallback to tables</td></tr>
+    <tr><td><b>Per-lead brief</b></td><td>Ready-to-send text block (training fund, accountant, regional desk): signal, scheme, criteria, source</td><td>On request, for each retained lead</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem (aid nobody goes hunting for) → the profile emerging from the flows alone → the dated, sourced Datagouv search → <strong>the crossing</strong> (€9,600/year of training spend spotted → the exact scheme, the link, and what to ask the training fund) → honesty by design. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Quarterly re-scan: re-cross the profile, alert only on new leads</td><td>Low</td><td>Reuses the profile already built</td></tr>
+    <tr><td>Aides-territoires enrichment (dedicated API)</td><td>Medium</td><td>Often fresher — same dating discipline</td></tr>
+    <tr><td>Pre-filled email draft to the training fund / regional desk with the account's numbers</td><td>Low</td><td>Still zero writes — the user sends it</td></tr>
+    <tr><td>Country modules (DE: KfW · ES: ENISA · IT: Invitalia…)</td><td>High</td><td>Qonto is pan-European; v1 = France + country detection</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Zero writes</strong>; only generic keywords reach Datagouv — never amounts, names, or IBANs</li>
+    <li><strong>Never "you are eligible"</strong> — every lead is dated, sourced, phrased "to verify"; confirmation with the issuing body or the accountant recommended</li>
+    <li>Honest degradation: no Datagouv MCP, empty account, undetectable sector, non-FR country → the skill states its limits and never invents a scheme, an amount, or a deadline</li>
+    <li>IBANs masked (last 4 digits) · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<footer>qonto-grant-scout · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-grant-scout.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
