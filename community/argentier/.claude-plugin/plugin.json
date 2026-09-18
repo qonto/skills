@@ -1,0 +1,10 @@
+{
+  "name": "argentier",
+  "version": "0.1.0",
+  "description": "The read-only CFO agent for Qonto. Use when the user wants to review, audit, optimize or cut business spending on their Qonto account — \"where is my money going\", \"find savings\", \"spot duplicate tools / ghost subscriptions\", \"cancel or renegotiate a subscription\", \"am I overpaying\", \"prepare a…",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,319 @@
+<style>
+  :root {
+    --paper: #fafaf7; --surface: #ffffff; --surface-2: #fcfbf8;
+    --ink: #17140f; --ink-2: #5b554c; --muted: #8f887c;
+    --line: #e4e0d6; --line-strong: #b8b2a5; --hair: rgba(23,20,15,0.07);
+    --vert: #2f6f5b; --vert-soft: #e7f0ec; --amber: #b9812b; --clay: #a9432b;
+    --accent: #2f6f5b;
+    --shadow: 0 1px 2px rgba(23,20,15,.05), 0 3px 12px rgba(23,20,15,.05);
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #100f0c; --surface: #1b1a16; --surface-2: #211f1a;
+      --ink: #f4f1ea; --ink-2: #c3bdaf; --muted: #8b8577;
+      --line: #2d2b25; --line-strong: #4a463d; --hair: rgba(244,241,234,0.07);
+      --vert: #4a9b81; --vert-soft: #1c3a31; --amber: #d8a24a; --clay: #d76a4f;
+      --accent: #4a9b81;
+      --shadow: 0 1px 2px rgba(0,0,0,.5), 0 3px 14px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #fafaf7; --surface: #ffffff; --surface-2: #fcfbf8;
+    --ink: #17140f; --ink-2: #5b554c; --muted: #8f887c;
+    --line: #e4e0d6; --line-strong: #b8b2a5; --hair: rgba(23,20,15,0.07);
+    --vert: #2f6f5b; --vert-soft: #e7f0ec; --amber: #b9812b; --clay: #a9432b;
+    --accent: #2f6f5b;
+    --shadow: 0 1px 2px rgba(23,20,15,.05), 0 3px 12px rgba(23,20,15,.05);
+  }
+  :root[data-theme="dark"] {
+    --paper: #100f0c; --surface: #1b1a16; --surface-2: #211f1a;
+    --ink: #f4f1ea; --ink-2: #c3bdaf; --muted: #8b8577;
+    --line: #2d2b25; --line-strong: #4a463d; --hair: rgba(244,241,234,0.07);
+    --vert: #4a9b81; --vert-soft: #1c3a31; --amber: #d8a24a; --clay: #d76a4f;
+    --accent: #4a9b81;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 3px 14px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 34px 20px 80px; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* header */
+  header.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  .brand-row { display: flex; align-items: center; gap: 11px; }
+  .mark { width: 32px; height: 32px; border-radius: 9px; background: var(--ink); color: var(--paper);
+    display: grid; place-items: center; font-size: 19px; font-weight: 700; flex: none; }
+  .brand { font-size: 25px; font-weight: 800; letter-spacing: -.02em; }
+  .kicker { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); margin-bottom: 5px; }
+  .sub { color: var(--ink-2); font-size: 14px; margin-top: 8px; max-width: 620px; }
+  .badge { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700;
+    padding: 6px 11px; border-radius: 999px; background: var(--vert-soft); color: var(--vert);
+    border: 1px solid color-mix(in srgb, var(--vert) 30%, transparent); white-space: nowrap; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--vert); }
+  .meta { text-align: right; color: var(--muted); font-size: 12px; margin-top: 9px; line-height: 1.75; }
+  .meta code { font-family: var(--mono); color: var(--ink-2); }
+
+  h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--muted); margin: 40px 0 14px; display: flex; align-items: center; gap: 10px; }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--hair); }
+
+  /* principes */
+  .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 720px) { .rules { grid-template-columns: 1fr; } }
+  .rule { background: var(--surface); border: 1px solid var(--line); border-radius: 11px;
+    padding: 12px 14px; box-shadow: var(--shadow); border-left: 3px solid var(--vert); }
+  .rule .rt { font-size: 13.5px; font-weight: 700; letter-spacing: -.01em; }
+  .rule .rd { font-size: 11.5px; color: var(--ink-2); margin-top: 3px; }
+  .rule.claude { border-left-color: var(--amber); }
+  .rule.human { border-left-color: var(--clay); }
+
+  /* pipeline sections */
+  .lane { position: relative; margin-top: 6px; }
+  .lane-tag { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono);
+    font-size: 11px; font-weight: 600; color: var(--ink-2); background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 7px; padding: 3px 9px; margin: 16px 0 10px; }
+  .lane-tag.route { color: var(--vert); border-color: color-mix(in srgb, var(--vert) 35%, var(--line)); }
+
+  /* nodes row (entrées / sorties) */
+  .nodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 720px) { .nodes { grid-template-columns: 1fr; } }
+  .node { background: var(--surface); border: 1px solid var(--line); border-radius: 11px;
+    padding: 12px 13px; box-shadow: var(--shadow); }
+  .node .nh { font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 7px; letter-spacing: -.01em; }
+  .node .nd { font-size: 11.5px; color: var(--ink-2); margin-top: 4px; }
+  .pill { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; white-space: nowrap; margin-top: 9px; display: inline-block; letter-spacing: .02em; }
+  .pill.ro { background: var(--vert-soft); color: var(--vert); border: 1px solid color-mix(in srgb, var(--vert) 30%, transparent); }
+  .pill.pii { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 32%, transparent); }
+
+  /* spine */
+  .spine { display: flex; flex-direction: column; }
+  .station { display: grid; grid-template-columns: 34px 1fr; gap: 13px; align-items: start; }
+  .rail { display: flex; flex-direction: column; align-items: center; }
+  .rail .num { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--mono); font-size: 13px; font-weight: 700; color: #fff; background: var(--vert);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--vert) 13%, transparent); flex: none; z-index: 1; }
+  .rail .link { width: 2px; flex: 1; min-height: 14px; background: var(--line-strong); margin: 3px 0; opacity: .5; }
+  .station:last-child .rail .link { display: none; }
+
+  .st-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 11px; box-shadow: var(--shadow); flex: 1; }
+  .st-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .st-name { font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
+  .st-actor { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .a-qonto { background: var(--vert-soft); color: var(--vert); }
+  .a-claude { background: color-mix(in srgb, var(--amber) 16%, transparent); color: var(--amber); }
+  .a-engine { background: color-mix(in srgb, var(--vert) 16%, transparent); color: var(--vert); }
+  .a-front { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink-2); }
+  .a-human { background: color-mix(in srgb, var(--clay) 15%, transparent); color: var(--clay); }
+  .st-desc { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; }
+  .st-desc b { color: var(--ink); }
+  .st-file { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-top: 7px; }
+
+  /* engine axis note between 2 and 3 */
+  .axis { display: flex; align-items: center; gap: 10px; margin: 2px 0 11px 47px;
+    font-size: 11.5px; color: var(--ink-2); }
+  .axis .chip { font-weight: 700; padding: 3px 9px; border-radius: 7px; font-size: 11px; }
+  .axis .c-claude { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
+  .axis .c-engine { background: var(--vert-soft); color: var(--vert); }
+
+  /* gate wall */
+  .station.gate .num { background: var(--clay); box-shadow: 0 0 0 4px color-mix(in srgb, var(--clay) 16%, transparent); }
+  .station.gate .st-card { border-color: color-mix(in srgb, var(--clay) 45%, var(--line));
+    background: color-mix(in srgb, var(--clay) 6%, var(--surface)); }
+  .gate-tag { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--clay);
+    background: color-mix(in srgb, var(--clay) 12%, transparent); padding: 3px 9px; border-radius: 6px; display: inline-block; margin-top: 8px; }
+
+  /* deliverables under AGIR */
+  .deliver { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 10px; }
+  @media (max-width: 640px) { .deliver { grid-template-columns: 1fr; } }
+  .dl { background: var(--surface-2); border: 1px dashed var(--line-strong); border-radius: 9px; padding: 9px 11px; }
+  .dl .dt { font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .dl .dd { font-size: 11px; color: var(--ink-2); margin-top: 2px; }
+
+  /* deux cerveaux */
+  .brains { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .brains { grid-template-columns: 1fr; } }
+  .brain { border-radius: 12px; padding: 14px 15px; box-shadow: var(--shadow); border: 1px solid var(--line); }
+  .brain.claude { background: color-mix(in srgb, var(--amber) 7%, var(--surface)); border-color: color-mix(in srgb, var(--amber) 32%, var(--line)); }
+  .brain.engine { background: var(--vert-soft); border-color: color-mix(in srgb, var(--vert) 32%, var(--line)); }
+  .brain .bh { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; letter-spacing: -.01em; }
+  .brain .bh .tag { font-family: var(--mono); font-size: 11px; font-weight: 700; }
+  .brain .bd { font-size: 12px; color: var(--ink-2); margin-top: 6px; }
+  .brain .brule { font-size: 11px; margin-top: 8px; font-style: italic; }
+  .c-amber { color: var(--amber); } .c-vert { color: var(--vert); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 11.5px; color: var(--ink-2); margin-top: 14px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 11px; height: 11px; border-radius: 3px; }
+
+  .foot { margin-top: 26px; padding: 15px 17px; background: var(--surface); border: 1px dashed var(--line);
+    border-radius: 12px; font-size: 12.5px; color: var(--ink-2); }
+  .foot b { color: var(--ink); }
+  .foot code { font-family: var(--mono); font-size: .92em; color: var(--ink-2); }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="kicker">Schéma workflow · produit (M0 + M1)</div>
+      <div class="brand-row">
+        <span class="mark">₳</span>
+        <span class="brand">Argentier</span>
+      </div>
+      <div class="sub">Comment l'agent transforme un compte Qonto en un plan d'action chiffré —
+        <b>ton vrai run-rate, pas ton relevé</b> — puis prépare les livrables que <b>tu</b> envoies.</div>
+    </div>
+    <div>
+      <div class="badge"><span class="dot"></span>Qonto lecture seule</div>
+      <div class="meta">Stack : <code>Next.js</code> · <code>Anthropic</code><br/>Endpoint : <code>/api/analyze</code><br/>Modèle : <code>claude-sonnet-5</code></div>
+    </div>
+  </header>
+
+  <!-- PRINCIPES -->
+  <h2>Les principes du workflow</h2>
+  <div class="rules">
+    <div class="rule"><div class="rt">Lecture seule Qonto</div><div class="rd">Uniquement des <span class="mono">GET</span>. Aucun paiement, aucune résiliation automatique.</div></div>
+    <div class="rule claude"><div class="rt">Le LLM classe, le moteur calcule</div><div class="rd">Claude ne pose que des étiquettes ; tout euro vient de <span class="mono">engine.ts</span>.</div></div>
+    <div class="rule human"><div class="rt">Zéro action bancaire — tu envoies</div><div class="rd">Argentier prépare les livrables ; l'envoi reste entre tes mains.</div></div>
+  </div>
+
+  <!-- PIPELINE -->
+  <h2>Le pipeline</h2>
+
+  <div class="lane-tag route">▸ /api/analyze</div>
+  <div class="spine">
+
+    <!-- ENTRÉES -->
+    <div class="station">
+      <div class="rail"><div class="num" style="background:var(--line-strong);box-shadow:none;color:var(--ink);font-size:12px">◇</div><div class="link"></div></div>
+      <div class="st-card" style="background:var(--surface-2)">
+        <div class="st-name" style="font-size:13px">Entrées</div>
+        <div class="nodes" style="margin-top:9px">
+          <div class="node">
+            <div class="nh">🔒 Qonto</div>
+            <div class="nd">Compte, solde, 60 j de transactions.</div>
+            <span class="pill ro">GET only</span>
+          </div>
+          <div class="node">
+            <div class="nh">🗂️ Profil</div>
+            <div class="nd">Critères, fournisseurs intouchables.</div>
+          </div>
+          <div class="node">
+            <div class="nh">🌐 Claude</div>
+            <div class="nd">Nom + catégorie du marchand.</div>
+            <span class="pill pii">zéro PII</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1 OBSERVE -->
+    <div class="station">
+      <div class="rail"><div class="num">1</div><div class="link"></div></div>
+      <div class="st-card">
+        <div class="st-top"><span class="st-name">OBSERVE</span><span class="st-actor a-qonto">Qonto · lecture seule</span></div>
+        <div class="st-desc"><span class="mono">GET /organization</span> + <span class="mono">GET /transactions</span> sur 60 j → normalisation en <b>Tx[]</b>. Aucun POST.</div>
+        <div class="st-file">lib/qonto.ts</div>
+      </div>
+    </div>
+
+    <!-- 2 CATÉGORISE -->
+    <div class="station">
+      <div class="rail"><div class="num" style="background:var(--amber);box-shadow:0 0 0 4px color-mix(in srgb,var(--amber) 13%,transparent)">2</div><div class="link"></div></div>
+      <div class="st-card">
+        <div class="st-top"><span class="st-name">CATÉGORISE</span><span class="st-actor a-claude">Claude · étiquettes</span></div>
+        <div class="st-desc">Regroupe par marchand. Claude renvoie des <b>étiquettes</b> : nature (pilotable / structurel / ponctuel / perso), pôle, action, ratio d'économie. <b>Jamais d'euros.</b> Fallback règles si pas de clé.</div>
+        <div class="st-file">lib/categorize.ts · structured outputs</div>
+      </div>
+    </div>
+
+    <div class="axis">
+      <span class="chip c-claude" style="background:color-mix(in srgb,var(--amber) 15%,transparent)">Claude → labels</span>
+      <span>→ passe au moteur, qui multiplie →</span>
+      <span class="chip c-engine">engine.ts → €</span>
+    </div>
+
+    <!-- 3 CALCULE -->
+    <div class="station">
+      <div class="rail"><div class="num">3</div><div class="link"></div></div>
+      <div class="st-card">
+        <div class="st-top"><span class="st-name">CALCULE</span><span class="st-actor a-engine">engine.ts · déterministe</span></div>
+        <div class="st-desc"><b>Tous les euros</b> : run-rate mensuel normalisé, natures observées, pôles, score /100, runway, leviers (<span class="mono">saving = mensuel × ratio</span>), anomalies (nouveaux, doublons, dormants).</div>
+        <div class="st-file">lib/engine.ts → AnalyzeResult (JSON typé)</div>
+      </div>
+    </div>
+
+    <!-- 4 RESTITUE -->
+    <div class="station">
+      <div class="rail"><div class="num" style="background:var(--ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--ink) 10%,transparent)">4</div><div class="link"></div></div>
+      <div class="st-card">
+        <div class="st-top"><span class="st-name">RESTITUE</span><span class="st-actor a-front">le tableau de bord</span></div>
+        <div class="st-desc">Hero <b>« X €/an récupérables »</b>, score de santé, runway, barre ledger 4 natures, pôles, simulateur, fil d'anomalies.</div>
+        <div class="st-file">app/Argentier.tsx</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lane-tag">▸ passage à l'action — M1</div>
+  <div class="spine">
+    <!-- 5 AGIR -->
+    <div class="station">
+      <div class="rail"><div class="num" style="background:var(--ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--ink) 10%,transparent)">5</div><div class="link"></div></div>
+      <div class="st-card">
+        <div class="st-top"><span class="st-name">AGIR</span><span class="st-actor a-front">simulateur → livrables</span></div>
+        <div class="st-desc">Tu coches les leviers (toggles + horizon). Argentier prépare trois livrables :</div>
+        <div class="deliver">
+          <div class="dl"><div class="dt">✉️ Lettres</div><div class="dd">résiliation / renégo rédigées par Claude, éditables.</div></div>
+          <div class="dl"><div class="dt">📊 Export CSV</div><div class="dd">le plan, ouvrable dans Excel.</div></div>
+          <div class="dl"><div class="dt">🖨️ Rapport PDF</div><div class="dd"><span class="mono">/rapport</span> imprimable.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 GATE HUMAIN -->
+    <div class="station gate">
+      <div class="rail"><div class="num">6</div></div>
+      <div class="st-card">
+        <div class="st-top"><span class="st-name">GATE HUMAIN</span><span class="st-actor a-human">Toi</span></div>
+        <div class="st-desc">Tu relis, complètes les <span class="mono">[crochets]</span>, et <b>tu envoies</b>. Aucune action bancaire n'est déclenchée par l'app.</div>
+        <span class="gate-tag">« PRÊT — À ENVOYER PAR TOI »</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEUX CERVEAUX -->
+  <h2>Les deux cerveaux (la règle d'or)</h2>
+  <div class="brains">
+    <div class="brain claude">
+      <div class="bh"><span class="c-amber">🧭</span> Claude <span class="tag c-amber">catégorise</span></div>
+      <div class="bd">Étiquette chaque marchand : nature, pôle, action, risque, <b>ratio</b> d'économie. Rédige aussi les lettres.</div>
+      <div class="brule c-amber">Renvoie des labels et un ratio — jamais un montant.</div>
+    </div>
+    <div class="brain engine">
+      <div class="bh"><span class="c-vert">⚙️</span> engine.ts <span class="tag c-vert">calcule</span></div>
+      <div class="bd">Déterministe : run-rate, natures, pôles, score, runway, économies (mensuel × ratio), anomalies.</div>
+      <div class="brule c-vert">Tout euro affiché vient d'ici. Reproductible, testable.</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--vert)"></i>Qonto (lecture seule) &amp; engine.ts (€)</span>
+    <span><i style="background:var(--amber)"></i>Claude (étiquettes &amp; lettres)</span>
+    <span><i style="background:var(--ink)"></i>Front (restitution)</span>
+    <span><i style="background:var(--clay)"></i>Toi (gate &amp; envoi)</span>
+  </div>
+
+  <div class="foot">
+    <b>Rien n'est envoyé ni modifié sur le compte.</b> Sans clés Qonto/Anthropic, le pipeline
+    sert des données de démo (mock) pour rester démontrable ; avec les clés, il analyse le vrai compte.
+    Le contrat <code>AnalyzeResult</code> (<code>lib/types.ts</code>) fait foi entre le back et le front.
+  </div>
+
+</div>

@@ -1,0 +1,20 @@
+/node_modules
+/.next
+/out
+/build
+*.tsbuildinfo
+next-env.d.ts
+
+# secrets — jamais commités
+.env
+.env.local
+.env*.local
+
+# données bancaires réelles (snapshot Qonto) — jamais commitées
+/data/qonto-snapshot.json
+/data/flows-*.json
+
+# Cloudflare / OpenNext build artefacts
+.open-next/
+.vercel/
+.vercel

@@ -1,0 +1,337 @@
+<style>
+  :root {
+    --plane: #f6f5f2; --surface: #fcfcfb; --surface-2: #ffffff;
+    --ink: #0b0b0b; --ink-2: #4f4e4a; --muted: #8a887f;
+    --grid: #e3e2db; --border: rgba(11,11,11,0.11); --hair: rgba(11,11,11,0.07);
+    --pro: #2a78d6; --perso: #4a3aa7; --clarifier: #eb6834;
+    --good: #0ca30c; --warn: #f0a415; --fx: #159c6e; --human: #d9612a;
+    --engine: #6b5bd0; --accent: #2a78d6;
+    --shadow: 0 1px 2px rgba(11,11,11,.05), 0 3px 12px rgba(11,11,11,.045);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --plane: #0c0c0b; --surface: #181817; --surface-2: #201f1d;
+      --ink: #f5f4ef; --ink-2: #bebcb2; --muted: #86847b;
+      --grid: #2b2b28; --border: rgba(255,255,255,0.12); --hair: rgba(255,255,255,0.07);
+      --pro: #4a90ea; --perso: #9085e9; --clarifier: #e0703c;
+      --good: #35b535; --warn: #f0b23a; --fx: #22b183; --human: #ef7a3f;
+      --engine: #9385e6; --accent: #4a90ea;
+      --shadow: 0 1px 2px rgba(0,0,0,.5), 0 3px 14px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --plane: #f6f5f2; --surface: #fcfcfb; --surface-2: #ffffff;
+    --ink: #0b0b0b; --ink-2: #4f4e4a; --muted: #8a887f;
+    --grid: #e3e2db; --border: rgba(11,11,11,0.11); --hair: rgba(11,11,11,0.07);
+    --pro: #2a78d6; --perso: #4a3aa7; --clarifier: #eb6834;
+    --good: #0ca30c; --warn: #f0a415; --fx: #159c6e; --human: #d9612a;
+    --engine: #6b5bd0; --accent: #2a78d6;
+    --shadow: 0 1px 2px rgba(11,11,11,.05), 0 3px 12px rgba(11,11,11,.045);
+  }
+  :root[data-theme="dark"] {
+    --plane: #0c0c0b; --surface: #181817; --surface-2: #201f1d;
+    --ink: #f5f4ef; --ink-2: #bebcb2; --muted: #86847b;
+    --grid: #2b2b28; --border: rgba(255,255,255,0.12); --hair: rgba(255,255,255,0.07);
+    --pro: #4a90ea; --perso: #9085e9; --clarifier: #e0703c;
+    --good: #35b535; --warn: #f0b23a; --fx: #22b183; --human: #ef7a3f;
+    --engine: #9385e6; --accent: #4a90ea;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 3px 14px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--plane); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 34px 20px 80px; }
+
+  /* ---------- header ---------- */
+  header.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  .brand { font-size: 27px; font-weight: 800; letter-spacing: -.025em; }
+  .brand span { color: var(--accent); }
+  .kicker { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 4px; }
+  .sub { color: var(--ink-2); font-size: 14px; margin-top: 6px; max-width: 640px; }
+  .badge { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700;
+    padding: 6px 11px; border-radius: 999px; background: color-mix(in srgb, var(--good) 13%, transparent);
+    color: var(--good); border: 1px solid color-mix(in srgb, var(--good) 34%, transparent); white-space: nowrap; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--good); }
+  .meta { text-align: right; color: var(--muted); font-size: 12px; margin-top: 8px; line-height: 1.7; }
+  .meta code { font-family: var(--mono); color: var(--ink-2); }
+
+  h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--muted); margin: 42px 0 15px; display: flex; align-items: center; gap: 10px; }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--hair); }
+
+  /* ---------- constitution band ---------- */
+  .rules { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 780px) { .rules { grid-template-columns: repeat(2, 1fr); } }
+  .rule { background: var(--surface); border: 1px solid var(--border); border-radius: 11px;
+    padding: 12px 13px; box-shadow: var(--shadow); border-top: 2.5px solid var(--warn); }
+  .rule .rn { font-size: 10.5px; font-weight: 800; letter-spacing: .09em; color: var(--warn); text-transform: uppercase; }
+  .rule .rt { font-size: 13.5px; font-weight: 700; margin-top: 3px; letter-spacing: -.01em; }
+  .rule .rd { font-size: 11.5px; color: var(--ink-2); margin-top: 3px; }
+
+  /* ---------- the map ---------- */
+  .map { display: grid; grid-template-columns: 220px 1fr 220px; gap: 0; align-items: stretch;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+  @media (max-width: 940px) { .map { grid-template-columns: 1fr; } }
+
+  .col { padding: 18px 16px; min-width: 0; }
+  .col-side { background: color-mix(in srgb, var(--accent) 3.5%, var(--surface)); }
+  .col.mid { border-left: 1px solid var(--hair); border-right: 1px solid var(--hair);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 2%, var(--surface)), var(--surface)); }
+  @media (max-width: 940px) {
+    .col.mid { border-left: none; border-right: none; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+  }
+  .col-h { font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 13px; display: flex; align-items: center; gap: 7px; }
+  .col-h .k { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* source / output nodes */
+  .node { background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px;
+    padding: 12px 13px; margin-bottom: 11px; box-shadow: var(--shadow); position: relative; }
+  .node:last-child { margin-bottom: 0; }
+  .node .nh { font-size: 14px; font-weight: 700; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+  .node .nd { font-size: 11.5px; color: var(--ink-2); margin-top: 4px; }
+  .node .pill { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; white-space: nowrap; margin-top: 9px; display: inline-block; letter-spacing: .02em; }
+  .pill.ro { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good); border: 1px solid color-mix(in srgb, var(--good) 30%, transparent); }
+  .pill.pii { background: color-mix(in srgb, var(--fx) 14%, transparent); color: var(--fx); border: 1px solid color-mix(in srgb, var(--fx) 30%, transparent); }
+  .pill.wr { background: color-mix(in srgb, var(--clarifier) 15%, transparent); color: var(--clarifier); border: 1px solid color-mix(in srgb, var(--clarifier) 32%, transparent); }
+  .mono { font-family: var(--mono); font-size: .92em; }
+
+  .lock { font-size: 11px; }
+
+  /* ---------- the loop (spine) ---------- */
+  .loop-h { font-size: 12px; font-weight: 800; letter-spacing: .04em; color: var(--ink); text-align: center; margin-bottom: 4px; }
+  .loop-h .cmd { font-family: var(--mono); color: var(--accent); }
+  .loop-cap { font-size: 11.5px; color: var(--muted); text-align: center; margin-bottom: 16px; }
+
+  .spine { display: flex; flex-direction: column; gap: 0; }
+  .station { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; }
+  .rail { display: flex; flex-direction: column; align-items: center; }
+  .rail .num { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 13px; font-weight: 800; color: #fff; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent); flex: none; z-index: 1; }
+  .rail .link { width: 2px; flex: 1; min-height: 16px; background: linear-gradient(var(--grid), var(--grid)); margin: 3px 0; }
+  .station:last-child .rail .link { display: none; }
+
+  .st-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px;
+    padding: 11px 13px; margin-bottom: 12px; box-shadow: var(--shadow); flex: 1; }
+  .st-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .st-name { font-size: 14.5px; font-weight: 800; letter-spacing: -.01em; }
+  .st-actor { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; letter-spacing: .02em; }
+  .a-qonto { background: color-mix(in srgb, var(--pro) 15%, transparent); color: var(--pro); }
+  .a-engine { background: color-mix(in srgb, var(--engine) 16%, transparent); color: var(--engine); font-family: var(--mono); font-size: 10px; }
+  .a-web { background: color-mix(in srgb, var(--fx) 15%, transparent); color: var(--fx); }
+  .a-claude { background: color-mix(in srgb, var(--ink) 9%, transparent); color: var(--ink-2); }
+  .a-human { background: color-mix(in srgb, var(--human) 16%, transparent); color: var(--human); }
+  .st-desc { font-size: 12px; color: var(--ink-2); margin-top: 5px; }
+  .st-note { font-size: 11px; color: var(--muted); margin-top: 6px; padding-left: 11px; border-left: 2px solid var(--hair); }
+
+  /* the gate wall */
+  .station.gate .num { background: var(--human); box-shadow: 0 0 0 4px color-mix(in srgb, var(--human) 18%, transparent); }
+  .station.gate .st-card { border-color: color-mix(in srgb, var(--human) 45%, var(--border));
+    background: color-mix(in srgb, var(--human) 6%, var(--surface-2)); }
+  .gate-tag { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--human);
+    background: color-mix(in srgb, var(--human) 12%, transparent); padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 8px; }
+
+  /* verify return */
+  .verify { margin-top: 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-2);
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface-2)); border: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--border));
+    border-radius: 10px; padding: 10px 13px; }
+  .verify .rc { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+  .verify b { color: var(--ink); }
+
+  /* ---------- brains strip ---------- */
+  .brains { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  @media (max-width: 640px) { .brains { grid-template-columns: 1fr; } }
+  .brain { border-radius: 12px; padding: 14px 15px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .brain.calc { background: color-mix(in srgb, var(--engine) 7%, var(--surface)); border-color: color-mix(in srgb, var(--engine) 32%, var(--border)); }
+  .brain.orch { background: var(--surface); }
+  .brain .bh { font-size: 14px; font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+  .brain .bh .tag { font-family: var(--mono); font-size: 11px; font-weight: 700; }
+  .brain .bd { font-size: 12px; color: var(--ink-2); margin-top: 6px; }
+  .brain .brule { font-size: 11px; color: var(--muted); margin-top: 8px; font-style: italic; }
+  .engine-c { color: var(--engine); }
+
+  /* ---------- legend ---------- */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 11.5px; color: var(--ink-2); margin-top: 14px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 11px; height: 11px; border-radius: 3px; }
+
+  .foot { margin-top: 28px; padding: 15px 17px; background: var(--surface); border: 1px dashed var(--border);
+    border-radius: 12px; font-size: 12.5px; color: var(--ink-2); }
+  .foot b { color: var(--ink); }
+  .foot code { font-family: var(--mono); font-size: .92em; color: var(--ink-2); }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="kicker">Schéma macro</div>
+      <div class="brand">ARGENTIER<span>.</span> Agent DAF</div>
+      <div class="sub">Comment l'agent lit un compte Qonto <b>en lecture seule</b>, benchmarke sur le web
+        avec ton accord, et <b>prépare</b> des livrables — sans jamais agir à ta place.</div>
+    </div>
+    <div>
+      <div class="badge"><span class="dot"></span>Qonto lecture seule</div>
+      <div class="meta">Exécution : <code>Claude Code</code><br/>Compte : EI · perso + pro mêlés<br/>Garde-fou : <code>.claude/settings.json</code></div>
+    </div>
+  </header>
+
+  <!-- ============ CONSTITUTION ============ -->
+  <h2>La constitution — 4 règles non négociables</h2>
+  <div class="rules">
+    <div class="rule"><div class="rn">Règle 1</div><div class="rt">Read-only Qonto</div><div class="rd">Écriture dure-bloquée (<span class="mono">deny &gt; allow</span>). Aucun mouvement d'argent.</div></div>
+    <div class="rule"><div class="rn">Règle 2</div><div class="rt">engine.py calcule</div><div class="rd">Tout montant € vient du moteur. Le LLM ne fait aucune arithmétique.</div></div>
+    <div class="rule"><div class="rn">Règle 3</div><div class="rt">Zéro PII vers le web</div><div class="rd">Vers le benchmark : nom du marchand + catégorie. Rien d'autre.</div></div>
+    <div class="rule"><div class="rn">Règle 4</div><div class="rt">Prix = source + date</div><div class="rd">Sinon rejet, 1 retry, puis « non vérifié ». Jamais inventé.</div></div>
+  </div>
+
+  <!-- ============ THE MAP ============ -->
+  <h2>La boucle de travail</h2>
+  <div class="map">
+
+    <!-- SOURCES -->
+    <div class="col col-side">
+      <div class="col-h"><span class="k" style="background:var(--pro)"></span>Entrées</div>
+
+      <div class="node">
+        <div class="nh"><span class="lock">🔒</span> Qonto MCP</div>
+        <div class="nd">90 jours de transactions, cartes, virements. Ce que tu vois déjà dans Qonto.</div>
+        <span class="pill ro">Lecture seule</span>
+      </div>
+
+      <div class="node">
+        <div class="nh">🌐 Web</div>
+        <div class="nd"><span class="mono">Linkup</span> / <span class="mono">Bright Data</span> — grilles tarifaires publiques du marché.</div>
+        <span class="pill pii">Nom + catégorie only</span>
+      </div>
+
+      <div class="node">
+        <div class="nh">🗂️ Ton profil</div>
+        <div class="nd"><span class="mono">data/profile.json</span> — critères, fournisseurs intouchables, refus passés.</div>
+      </div>
+    </div>
+
+    <!-- LOOP -->
+    <div class="col mid">
+      <div class="loop-h">Commande <span class="cmd">/audit</span></div>
+      <div class="loop-cap">OBSERVE → ANALYSE → BENCHMARK → RECOMMANDE → GATE → LEDGER</div>
+
+      <div class="spine">
+
+        <div class="station">
+          <div class="rail"><div class="num">1</div><div class="link"></div></div>
+          <div class="st-card">
+            <div class="st-top"><span class="st-name">OBSERVE</span><span class="st-actor a-qonto">Qonto</span></div>
+            <div class="st-desc">Lit 90 j de flux, les archive en local (<span class="mono">data/flows-*.json</span>, gitignorés).</div>
+          </div>
+        </div>
+
+        <div class="station">
+          <div class="rail"><div class="num">2</div><div class="link"></div></div>
+          <div class="st-card">
+            <div class="st-top"><span class="st-name">ANALYSE</span><span class="st-actor a-engine">engine.py</span></div>
+            <div class="st-desc">Récurrence, doublons, frais FX, tri <b>PRO / PERSO / à-clarifier</b>.</div>
+            <div class="st-note">Récurrent = vu ≥ 2× / 90 j à montant similaire. Annualisation = mensuel × 12. Un one-off n'est jamais annualisé.</div>
+          </div>
+        </div>
+
+        <div class="station">
+          <div class="rail"><div class="num">3</div><div class="link"></div></div>
+          <div class="st-card">
+            <div class="st-top"><span class="st-name">BENCHMARK</span><span class="st-actor a-web">Web · sur accord</span></div>
+            <div class="st-desc">Compare les prix des plus gros postes. Déclenché seulement avec ton feu vert.</div>
+            <div class="st-note">N'envoie que le nom du marchand + la catégorie. Aucune donnée du compte.</div>
+          </div>
+        </div>
+
+        <div class="station">
+          <div class="rail"><div class="num">4</div><div class="link"></div></div>
+          <div class="st-card">
+            <div class="st-top"><span class="st-name">RECOMMANDE</span><span class="st-actor a-claude">Claude</span></div>
+            <div class="st-desc">Une carte par levier : économie €/an (du moteur) + prix <b>sourcé &amp; daté</b>.</div>
+            <div class="st-note">Passe de vérification : chaque prix sans source datée est rejeté.</div>
+          </div>
+        </div>
+
+        <div class="station gate">
+          <div class="rail"><div class="num">5</div><div class="link"></div></div>
+          <div class="st-card">
+            <div class="st-top"><span class="st-name">GATE HUMAIN</span><span class="st-actor a-human">Toi</span></div>
+            <div class="st-desc">Le livrable (mail, lettre) atterrit dans <span class="mono">drafts/</span>. Rien n'est envoyé.</div>
+            <span class="gate-tag">« PRÊT — À ENVOYER PAR TOI »</span>
+          </div>
+        </div>
+
+        <div class="station">
+          <div class="rail"><div class="num">6</div></div>
+          <div class="st-card">
+            <div class="st-top"><span class="st-name">LEDGER</span><span class="st-actor a-engine">decisions.json</span></div>
+            <div class="st-desc">Trace la décision : économie prouvée / en attente.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="verify">
+        <span class="rc">/verify</span>
+        <span>À <b>J+30</b>, l'agent relit Qonto et <b>prouve</b> l'économie réelle — ou la reclasse en attente. La boucle se referme.</span>
+      </div>
+    </div>
+
+    <!-- OUTPUTS -->
+    <div class="col col-side">
+      <div class="col-h"><span class="k" style="background:var(--clarifier)"></span>Sorties</div>
+
+      <div class="node">
+        <div class="nh">✉️ <span class="mono">drafts/</span></div>
+        <div class="nd">Mails &amp; lettres prêts. Tu relis, tu approuves, tu envoies.</div>
+        <span class="pill wr">Jamais envoyé par l'agent</span>
+      </div>
+
+      <div class="node">
+        <div class="nh">📒 <span class="mono">decisions.json</span></div>
+        <div class="nd">Le ledger : décisions + économies prouvées et en attente.</div>
+      </div>
+
+      <div class="node">
+        <div class="nh">📊 Dashboard</div>
+        <div class="nd">Rendu HTML de l'audit — postes, doublons, frais FX, variables.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ BRAINS ============ -->
+  <h2>Les deux cerveaux</h2>
+  <div class="brains">
+    <div class="brain calc">
+      <div class="bh"><span class="engine-c">⚙️</span> Le moteur <span class="tag engine-c">engine.py</span></div>
+      <div class="bd">Déterministe. Détecte récurrences, doublons, frais de change ; classe PRO/PERSO/à-clarifier ; calcule chaque euro.</div>
+      <div class="brule">Règle 2 — c'est lui qui chiffre, jamais le LLM.</div>
+    </div>
+    <div class="brain orch">
+      <div class="bh">🧭 L'orchestrateur <span class="tag" style="color:var(--ink-2)">Claude</span></div>
+      <div class="bd">Lit Qonto, déclenche les benchmarks sur ton accord, rédige les cartes et les brouillons, tient le ledger.</div>
+      <div class="brule">Reprend les chiffres du moteur — n'en invente aucun.</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--pro)"></i>Qonto (lecture seule)</span>
+    <span><i style="background:var(--engine)"></i>engine.py (calcul)</span>
+    <span><i style="background:var(--fx)"></i>Web (benchmark, sur accord)</span>
+    <span><i style="background:var(--human)"></i>Toi (gate &amp; envoi)</span>
+  </div>
+
+  <div class="foot">
+    <b>Rien n'est envoyé ni modifié sur le compte.</b> Argentier observe, calcule, propose — tu décides.
+    Les tools d'écriture Qonto sont durs-bloqués dans <code>.claude/settings.json</code> (<code>deny &gt; allow</code>) ;
+    les clés MCP restent en scope local, hors du repo.
+  </div>
+
+</div>
