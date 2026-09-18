@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-rgpd-register — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon</span>
+  <h1>qonto-rgpd-register</h1>
+  <p class="sub">Your bank account knows your data processors better than you do — the GDPR Article 30 register, drafted from your spending.</p>
+  <div class="badges">
+    <span>🔍 100% read — zero write</span><span>🇪🇺 Pan-European (GDPR = the whole EU)</span>
+    <span>🗂 CNIL card format, card by card</span><span>⚠️ Draft to validate (DPO/lawyer)</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>The record of processing activities (GDPR Article 30) is the document <strong>90% of small businesses don't have</strong> — and the first thing a supervisory authority asks for. Yet the list of processors handling your personal data is already written somewhere: <strong>in your debits</strong>. The skill reads it:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Processor detection</h4><p>The SaaS tools that process personal data (CRM, email marketing, analytics, AI, cloud, payroll, support) — recognized from their first occurrence, Claude's general knowledge.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Classification by activity</h4><p>Purpose, typical data categories, data subjects, EU / non-EU headquarters and hosting — every attribute tagged "to validate".</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Pre-filled Article 30 register</h4><p>One card per activity in the CNIL format, controller header filled from <code>get_organization</code>, visible placeholders for the human decisions.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Actionable flags</h4><p>🔴 non-EU transfer → SCCs to verify · 🟠 DPA to locate or sign · 🟡 tool gone from the debits for 6 months → retire it from the register?</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>It's the Monday a client's security questionnaire — or an authority letter — lands.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><strong>GDPR = the whole EU — a pan-European skill.</strong> France: CNIL card format and references; other Qonto countries: same register, local authority (BfDI/LfDI, AEPD, Garante, DSB, AP, APD/GBA, CNPD)</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Spending history</b></td><td>Ideally 12–24 months; thin account → register skeleton + missing parts named explicitly</td><td>⭕</td></tr>
+    <tr><td><b>A DPO or lawyer to validate</b></td><td>The skill produces a <em>draft</em>: qualification, legal bases and retention remain human decisions</td><td>✅ at the end</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Recognition from the first occurrence</strong>: Claude's general knowledge identifies the vendor (HQ, role, typical data) — no recurrence threshold, so yearly-billed tools are caught too</li>
+    <li><strong>Spellings normalized and merged</strong>: <code>GOOGLE *WORKSPACE</code>, <code>GOOGLE IRELAND LTD</code>, <code>Google Cloud EMEA</code> = one vendor; cross-checked with <code>list_supplier_invoices</code> (cleaner legal names than card labels)</li>
+    <li><strong>Nothing silently disappears</strong>: out-of-scope spend (bank fees, travel, hardware) is listed in an "out of scope" appendix</li>
+    <li><strong>Ambiguity stated, never decided</strong>: genuinely ambiguous roles (payment providers are often independent controllers) → announced as such, "to validate"</li>
+    <li>Vendor masked by a reseller, marketplace or app store → 🟡 flag, the skill <em>asks</em> instead of guessing</li>
+    <li>Unknown vendor → "unidentified — check the invoice", never an invented HQ · pagination ≤ 50 everywhere · <code>emitted_at</code> (not <code>settled_at</code>) for the last-used date</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Zero write, by design:</b> four read tools, no write tool. Nothing moves on the account, no vendor is contacted. And the document produced is a <b>draft register, not legal advice</b> — qualification, legal bases and retention periods are validated by a DPO or lawyer. The skill repeats this on every output.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🗂 Recognized processor categories</h2>
+  <p><em>Illustrative</em> examples (Claude's general knowledge), not taken from a real account.</p>
+  <div class="scroll"><table>
+    <tr><th>Category</th><th>Examples of recognized tools</th><th>Typically processed data</th><th>Frequent watch-out</th></tr>
+    <tr><td>CRM &amp; prospecting</td><td>HubSpot, Pipedrive, Salesforce</td><td>Identity, contact details, sales history</td><td>US headquarters → transfer mechanism to verify</td></tr>
+    <tr><td>Email &amp; marketing</td><td>Mailchimp, Brevo, Mailjet</td><td>Emails, open behavior, segments</td><td>Consent &amp; legal basis to document</td></tr>
+    <tr><td>Analytics</td><td>Google Analytics, Matomo, Plausible</td><td>Online identifiers, browsing</td><td>Non-EU vs self-hosted: very different regimes</td></tr>
+    <tr><td>AI</td><td>OpenAI, Anthropic, Mistral</td><td>Prompt content (sometimes customer data!)</td><td>Check the "no training on your data" option</td></tr>
+    <tr><td>Cloud &amp; hosting</td><td>AWS, Google Cloud, OVHcloud, Scaleway</td><td>Everything hosted</td><td>EU hosting region available? enabled?</td></tr>
+    <tr><td>Payroll &amp; HR</td><td>PayFit, Silae, Lucca</td><td>Employee data (sensitive: IDs, salaries)</td><td>HR card mandatory, specific legal retention</td></tr>
+    <tr><td>Customer support</td><td>Zendesk, Intercom, Crisp</td><td>Identity, conversations, metadata</td><td>Conversations = personal data, often forgotten</td></tr>
+    <tr><td>E-commerce &amp; payments</td><td>Shopify, Stripe</td><td>End customers, transactions</td><td>Controller/processor role <strong>ambiguous</strong> → to validate</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🚩 The flags</h2>
+  <div class="scroll"><table>
+    <tr><th>Flag</th><th>Trigger</th><th>Suggested action</th></tr>
+    <tr><td>🔴 Non-EU transfer</td><td>Non-EU headquarters or hosting detected</td><td>Verify adequacy decision / standard contractual clauses / DPA annexes</td></tr>
+    <tr><td>🟠 DPA to check</td><td>Processor with no known signed DPA</td><td>Find the vendor's DPA page, sign or archive it</td></tr>
+    <tr><td>🟡 Ghost tool</td><td>No debit for ≥ 6 months</td><td>Confirm it's gone → retire from the register + data deletion request</td></tr>
+    <tr><td>🟡 Masked vendor</td><td>Reseller, marketplace or app store in the label</td><td>The skill asks which product sits behind the charge — never a guess</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: processor summary, one card per activity, prioritized to-do</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Print-ready register</b></td><td><strong>HTML</strong> file/artifact: controller header, Article 30 cards, processor annex, to-do</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); automatic fallback to tables otherwise</td></tr>
+    <tr><td><b>Disclaimer banner</b></td><td>"Draft register, not legal advice — validate with a DPO or lawyer"</td><td>On <strong>every</strong> output, no exception</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem (the document nobody has) → the spending scan → classification &amp; cards → <strong>the full Article 30 register generated from a bank statement</strong> → the DPA/transfer to-do. It runs live on a real production account. The detailed shooting script is kept internal (outside the repository).</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Optional multi-MCP: scan Gmail/Drive for already-signed DPAs</td><td>Medium</td><td>Dynamic detection — activates when the MCP is present, otherwise the skill says so and continues</td></tr>
+    <tr><td>Register diff: rerun 6 months later → entrants / retirees</td><td>Low</td><td>Reuses the last-seen date</td></tr>
+    <tr><td>Ready-to-send "DPA request" and "data deletion request" templates</td><td>Low</td><td>Still zero write — text to copy</td></tr>
+    <tr><td>DPIA appendix: activities likely to need an impact assessment</td><td>Medium</td><td>Always "to validate", never a definitive qualification</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Never a definitive legal qualification</strong> (processor vs controller vs joint, legal basis, retention) — every card is tagged "to validate", undecided fields stay visible placeholders</li>
+    <li>Never invents vendor facts: unknown HQ or hosting → stated as unknown, "check the invoice / the vendor's DPA page" as the next step</li>
+    <li>A register draft ≠ GDPR compliance: one required document, not the whole program — DPO/legal validation recommended in every report</li>
+    <li>100% read, zero write · IBANs masked (last 4 digits) · pagination ≤ 50 · all examples invented</li>
+  </ul>
+</section>
+
+<footer>qonto-rgpd-register · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-rgpd-register.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
