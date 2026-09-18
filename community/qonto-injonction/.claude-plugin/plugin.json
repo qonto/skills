@@ -1,0 +1,10 @@
+{
+  "name": "qonto-injonction",
+  "version": "0.1.0",
+  "description": "Court-ready payment-order file builder for Qonto accounts (France). When reminders have failed, turns an unpaid client invoice into a ready-to-file \"injonction de payer\" dossier — CERFA 12946 form pre-filled field by field for the commercial court, late-payment interest computed (ECB refi + 10 pts…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
