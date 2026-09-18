@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-asset-registry — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic MCP Hackathon</span>
+  <h1>qonto-asset-registry</h1>
+  <p class="sub">Your account knows what you own — the asset register nobody keeps.</p>
+  <div class="badges">
+    <span>🔒 100% read-only — zero writes</span><span>🧠 Recognized from the first occurrence</span>
+    <span>📎 Receipts linked</span><span>🛡 Insurance inventory ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>Nobody keeps the fixed-asset register. And the day something gets stolen or the office floods, the insurer asks for <strong>the inventory with purchase values and receipts</strong> — which nobody has. Yet the Qonto account already knows everything the company owns. The skill reads it:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Equipment detection</h4><p>24–36 months of real purchases (transactions + supplier invoices): IT, furniture, machines, vehicles, tools, telephony — recognized from the first occurrence.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>€500 pre-tax threshold</h4><p>French tax practice: below = expense, above = fixed asset (configurable). Leasing flagged "financed", never counted.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>The asset register</h4><p>Date, supplier, description, pre-tax/incl-tax amount, linked receipt, status — with a receipt-completeness gauge.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Two golden outputs</h4><p>Indicative depreciation (straight-line, estimated net book value — for the accountant to validate) and the insurance inventory, ready to send.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><strong>Universal mechanics.</strong> €500 threshold + depreciation lives = French practice; other Qonto countries (DE, ES, IT…) → register and inventory without local tax suggestions</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>24–36 months of history</b></td><td>Below that: partial register, covered period stated</td><td>⭕</td></tr>
+    <tr><td><b>Receipts attached</b></td><td>The more there are, the stronger the inventory; missing ones listed 📎 (pointer to <code>qonto-receipt-hunter</code>)</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works, 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Cryptic transaction labels</strong> → supplier invoices (<code>list_supplier_invoices</code>), matched by amount and date, carry the clean description and the pre-tax amount</li>
+    <li><strong>Generalist merchant</strong> (marketplace, supermarket) → line "❓ to confirm" unless the label or the attached receipt makes the nature clear — never guessed</li>
+    <li><strong>Installment purchases</strong> → equal payments to the same vendor merged into <em>one</em> asset at full value</li>
+    <li><strong>Leasing / hire-purchase</strong> → recurring monthly payments to a financer: "🔁 financed, not capitalized here", excluded from totals</li>
+    <li><strong>Missing receipt</strong> → line flagged 📎 with the count disclosed, and <code>qonto-receipt-hunter</code> suggested to recover them</li>
+    <li>Card purchases dated by <code>emitted_at</code> (settlement lags 1–2 days) · untagged VAT → estimated pre-tax amount, disclosed as such · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>100% read-only — the strongest guarantee:</b> no write tool is ever called. No category changed, no document uploaded, no request created. The register writes itself; <b>the accountant keeps the pen</b> — the €500 threshold and the depreciation lives are customary indications, not accounting entries.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📅 Usual depreciation lives (French practice, indicative)</h2>
+  <div class="scroll"><table>
+    <tr><th>Category</th><th>Usual life</th><th>Examples</th></tr>
+    <tr><td>IT hardware</td><td>3 years</td><td>Computers, monitors, servers, printers</td></tr>
+    <tr><td>Telephony</td><td>3 years</td><td>Smartphones, switchboard, pro headsets</td></tr>
+    <tr><td>Tools</td><td>5 years</td><td>Workshop tools, power tools</td></tr>
+    <tr><td>Machines</td><td>5–10 years</td><td>Production machinery, heavy equipment</td></tr>
+    <tr><td>Vehicles</td><td>4–5 years</td><td>Cars, vans, two-wheelers</td></tr>
+    <tr><td>Furniture</td><td>10 years</td><td>Desks, chairs, shelving</td></tr>
+  </table></div>
+  <h3>Register statuses</h3>
+  <div class="scroll"><table>
+    <tr><th>Status</th><th>Meaning</th></tr>
+    <tr><td>✅ Fixed asset</td><td>Equipment ≥ threshold (€500 pre-tax by default), registered and depreciated</td></tr>
+    <tr><td>💰 Expensed</td><td>Below the threshold: expensed, listed for the record</td></tr>
+    <tr><td>❓ To confirm</td><td>Generalist merchant, nature undeterminable — the user decides</td></tr>
+    <tr><td>🔁 Financed</td><td>Leasing detected: flagged, never counted in the total</td></tr>
+    <tr><td>📎 Missing</td><td>No linked receipt — pointer to <code>qonto-receipt-hunter</code></td></tr>
+  </table></div>
+  <p>Disposals and write-offs are <strong>declared by the user, never assumed</strong>.</p>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: register sorted by category/value, depreciation, summary (N assets · total value · receipt gauge)</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Dashboard / export</b></td><td>Self-contained <strong>HTML</strong> file/artifact in the Qonto palette: register by category, completeness gauge, insured total, depreciation timeline</td><td>When the host renders files; automatic fallback to tables</td></tr>
+    <tr><td><b>Insurance inventory</b></td><td>Ready-to-send table: description, purchase date, value, receipt</td><td>On demand — ideally before the claim</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem (the inventory your insurer demands and nobody has) → the scan → the register with linked receipts → the "it was all already there" moment → the dashboard and the insurance inventory. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td><strong>Country modules</strong> (DE · ES · IT · AT · NL · BE · PT thresholds and lives)</td><td>Medium</td><td>The mechanics are already universal; only local practice is missing</td></tr>
+    <tr><td>Disposal detection from incoming credits (resale)</td><td>Medium</td><td>Always proposed for confirmation, never assumed</td></tr>
+    <tr><td>Reconciliation with a physical inventory (photos, asset tags)</td><td>Medium</td><td>Makes the insurance inventory defensible</td></tr>
+    <tr><td>End-of-depreciation alerts (renewal budgeting)</td><td>Low</td><td>Reuses the end-of-life dates already computed</td></tr>
+    <tr><td>CSV export for the accounting firm</td><td>Low</td><td>Alongside <code>qonto-accountant-handoff</code></td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>100% read-only</strong> — no write tool is ever called</li>
+    <li>€500 threshold and depreciation lives = <strong>customary indications, not accounting entries</strong> — the accountant makes the final call, restated in every report</li>
+    <li>Ambiguous nature → "to confirm", never invented; disposals declared by the user, never assumed</li>
+    <li>Example figures are invented and presented as such · IBANs masked · pagination ≤ 50</li>
+  </ul>
+</section>
+
+<footer>qonto-asset-registry · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-asset-registry.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

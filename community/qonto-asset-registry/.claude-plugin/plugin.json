@@ -1,0 +1,10 @@
+{
+  "name": "qonto-asset-registry",
+  "version": "0.1.0",
+  "description": "Fixed-asset register and insurance inventory built straight from a Qonto account. Scans 24–36 months of transactions and supplier invoices, recognizes equipment purchases (IT, furniture, machines, vehicles, tools, phones) from vendor names and invoice labels, applies the €500 pre-tax threshold…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
