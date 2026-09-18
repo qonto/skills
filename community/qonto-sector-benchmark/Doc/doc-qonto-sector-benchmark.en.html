@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-sector-benchmark — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic MCP Hackathon</span>
+  <h1>qonto-sector-benchmark</h1>
+  <p class="sub">"Am I normal?" — your real ratios next to your sector's official statistics.</p>
+  <div class="badges">
+    <span>📊 5 ratios from real data</span><span>🏛 INSEE via the Datagouv MCP</span>
+    <span>🔍 Source + vintage on every figure</span><span>🔒 100 % read-only</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>"Am I normal?" is the question every founder quietly asks and never gets answered. You <em>feel</em> your costs are heavy or your clients pay slowly — but heavy <strong>compared to what</strong>? The skill answers in one prompt:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Your real ratios</h4><p>Fixed-cost share, software subscriptions, observed client payment delay, revenue seasonality, cash in days of expenses — computed from the Qonto account.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>The official reference</h4><p>French public statistics (INSEE structural data, payment delays) fetched live through the Datagouv MCP, at the finest NAF level available.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Statistical honesty</h4><p>Every comparison carries source + vintage + granularity. No exact dataset → one level up, stated. A figure is never made up.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>You vs you</h4><p>A temporal self-benchmark ("you, a year ago") computed every time — also the full fallback without Datagouv or outside France.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Typical output: "your clients pay you at 38 days; the sector median is 51 — you collect <strong>faster</strong> than your peers" / "your fixed costs weigh 61 % vs ~45 %: that's where to dig." Would someone use this on a Monday morning? <strong>It's the quarterly Monday — the one where you ask how the business is <em>really</em> doing.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><strong>Sector comparison: France only</strong> (INSEE). Other Qonto countries (DE, ES, IT…): internal ratios + self-benchmark, never mapped onto French data</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Datagouv MCP</b></td><td>Detected dynamically: present → live sector references; absent → the skill says so and switches to self-benchmark mode</td><td>⭕ recommended</td></tr>
+    <tr><td><b>NAF activity code</b></td><td>Read from <code>get_organization</code> when exposed; otherwise asked or inferred from the activity <strong>and confirmed</strong></td><td>⭕</td></tr>
+    <tr><td><b>≥ 12 months of history</b></td><td>Seasonality needs a full year; self-benchmark ~24 months. Below: computes what it can, tags the rest unavailable</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>The core of the skill is a golden rule</strong>: source + vintage + granularity on every comparison ("NAF 62.02A, INSEE Ésane, 2023 data") — or no figure at all</li>
+    <li><strong>NAF class not published</strong> → comparison at division level (62 instead of 62.02A), <em>announced on the very line it affects</em>; no reference at all → internal value only, marked "no public reference found"</li>
+    <li><strong>NAF missing from account data</strong> → asked or inferred from the activity, and <strong>confirmed before use</strong> — the sector is never guessed silently</li>
+    <li>Cash-flow categories: <code>list_cash_flow_categories</code> returns <strong>403 on the claude.ai connector</strong> — classification via recurrence detection + labels instead</li>
+    <li>Client payment delay computed <strong>on Qonto-issued invoices only</strong> — disclosed when the user invoices elsewhere; SaaS subscriptions: detected list shown, correctable in one sentence</li>
+    <li>History &lt; 12 months → seasonality tagged "unavailable" rather than computed on noise; card settlement delays handled (<code>emitted_at</code> vs <code>settled_at</code>); pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Zero writes, by design:</b> the skill only reads — the Qonto account on one side, public open data on the other. Nothing to approve, nothing that can move. The only "risk" here is statistical, and it's handled by the golden rule: <b>source + vintage + granularity on every figure, or no figure at all</b>.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📐 The 5 ratios of the check-up</h2>
+  <div class="scroll"><table>
+    <tr><th>Ratio</th><th>Computation (Qonto data)</th><th>Sector reference</th></tr>
+    <tr><td><b>Fixed-cost share</b></td><td>Recurring debits (normalized counterparty, amount stable ±10 %, ≥ 3 hits) ÷ total debits, 12 months</td><td>Cost structure by NAF (INSEE Ésane)</td></tr>
+    <tr><td><b>Software subscription weight</b></td><td>Recurrences whose counterparty matches SaaS patterns ÷ total debits — detected list shown, correctable</td><td>Order of magnitude by NAF division when published; otherwise internal value only</td></tr>
+    <tr><td><b>Client payment delay</b></td><td>Median invoice issue → observed payment (<code>list_client_invoices</code> + transaction matching)</td><td>Average payment delays by sector and size, when the dataset exists</td></tr>
+    <tr><td><b>Revenue seasonality</b></td><td>Coefficient of variation of monthly receipts over 24 months + peak/trough months</td><td>Sector activity indices when available; otherwise self-benchmark</td></tr>
+    <tr><td><b>Cash in days of expenses</b></td><td>Consolidated balance ÷ average daily debits (12 months)</td><td>Mostly temporal (you vs you) — little reliable public reference, and the skill says so</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🏛 The public references used</h2>
+  <div class="scroll"><table>
+    <tr><th>Reference</th><th>What it provides</th><th>Granularity</th><th>Known pitfall</th></tr>
+    <tr><td><b>INSEE Ésane</b> (structural business statistics)</td><td>Margin rates, cost structure, sector ratios</td><td>NAF class (fine) or division (announced fallback)</td><td>Vintage lags 2–3 years — always printed</td></tr>
+    <tr><td><b>Payment-delay datasets</b> (data.gouv.fr)</td><td>Average/median payment delays by sector and size</td><td>Varies by producer — checked via <code>get_dataset_info</code></td><td>Prefer official producers over third-party uploads</td></tr>
+    <tr><td><b>Datagouv MCP access chain</b></td><td><code>search_datasets</code> → <code>get_dataset_info</code> → <code>query_resource_data</code></td><td>Filtered on the company's NAF code</td><td>Non-tabular/oversized resource → try another resource, never a number from memory</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown scorecard: ratio · your value · reference (source · vintage · granularity) · verdict · year-over-year trend, + narrative findings + sources</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Interactive scorecard</b></td><td><strong>HTML</strong> file/artifact: 5 gauges against the sector ranges, sources footnoted</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); automatic fallback to markdown</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the "am I normal?" question → real ratios computed → sourced INSEE references → <strong>the reveal</strong> ("I thought I was overpaying for software; turns out I'm below the sector median. But my clients pay me 13 days slower than average — THAT is my real problem") → the final health report. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Size-adjusted references (NAF × headcount/revenue bracket)</td><td>Medium</td><td>INSEE publishes some breakdowns by company size — an even fairer comparison</td></tr>
+    <tr><td>Country modules (Destatis DE, INE ES, ISTAT IT…)</td><td>High</td><td>Same architecture, one open-data connector per country</td></tr>
+    <tr><td>Check-up history: trajectory across 4–8 quarters</td><td>Low</td><td>Reuses the self-benchmark engine, simple run memory</td></tr>
+    <tr><td>Anonymized peer-basket benchmark</td><td>High</td><td>Beyond the current MCP — a Qonto product idea more than a skill</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>100 % read-only</strong>: no write tool is ever called — nothing to approve, nothing that can move money</li>
+    <li><strong>Never</strong> invents a sector figure: no dataset → the line says so; degraded granularity → announced; vintage always printed</li>
+    <li>Bank-data ratios ≠ accounting records: an honest approximation, restated in every report — the accountant's figures prevail</li>
+    <li>Sector confirmed, not assumed, when the NAF code isn't in the account data</li>
+    <li>A quarterly/annual check-up, not a daily-piloting tool — for day-to-day: <code>qonto-ceo-cockpit</code></li>
+    <li>IBANs masked (last 4 digits) · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<footer>qonto-sector-benchmark · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-sector-benchmark.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

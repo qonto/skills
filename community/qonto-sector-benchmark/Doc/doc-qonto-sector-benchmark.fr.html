@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-sector-benchmark — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic · Skill #20</span>
+  <h1>qonto-sector-benchmark</h1>
+  <p class="sub">« Suis-je normal ? » — tes ratios réels face aux statistiques officielles de ton secteur.</p>
+  <div class="badges">
+    <span>📊 5 ratios calculés du réel</span><span>🏛 INSEE via MCP Datagouv</span>
+    <span>🔍 Source + millésime sur chaque chiffre</span><span>🔒 100 % lecture seule</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>« Suis-je normal ? » — la question que tout dirigeant se pose sans jamais avoir la réponse. Tu <em>sens</em> que tes charges sont lourdes ou que tes clients paient lentement, mais lourdes <strong>par rapport à quoi</strong> ? Le skill répond en un prompt :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Tes ratios réels</h4><p>Charges fixes, abonnements logiciels, délai de paiement clients constaté, saisonnalité du CA, trésorerie en jours de charges — calculés depuis le compte Qonto.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>La référence officielle</h4><p>Statistiques publiques françaises (INSEE Ésane, délais de paiement) récupérées en direct via le MCP Datagouv, au niveau NAF le plus fin disponible.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Honnêteté statistique</h4><p>Chaque comparaison porte source + millésime + granularité. Pas de dataset exact → niveau supérieur, annoncé. Jamais de chiffre inventé.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Toi vs toi</h4><p>Auto-benchmark temporel systématique (« toi il y a un an ») — c'est aussi le mode dégradé complet sans Datagouv ou hors de France.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Résultat type : « tes clients te paient à 38 jours ; la médiane du secteur est 51 : tu encaisses <strong>plus vite</strong> que tes pairs » / « tes charges fixes pèsent 61 % vs ~45 % : voilà où creuser ».</p>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><strong>Comparaison sectorielle : France uniquement</strong> (INSEE). Autres pays Qonto (DE, ES, IT…) : ratios internes + auto-benchmark, jamais de mapping sur les données françaises</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>MCP Datagouv</b></td><td>Détecté dynamiquement : présent → références sectorielles en direct ; absent → le skill le dit et bascule en auto-benchmark</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Code NAF connu</b></td><td>Lu dans <code>get_organization</code> quand exposé ; sinon demandé (il est sur le KBIS) ou déduit de l'activité <strong>et confirmé</strong></td><td>⭕</td></tr>
+    <tr><td><b>Historique ≥ 12 mois</b></td><td>Saisonnalité = 1 année pleine ; auto-benchmark ~24 mois. En dessous : calcule le calculable, taggue le reste indisponible</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Le cœur du skill est une règle d'or</strong> : source + millésime + granularité sur chaque comparaison (« NAF 62.02A, INSEE Ésane, données 2023 ») — ou pas de chiffre du tout</li>
+    <li><strong>Classe NAF non publiée</strong> → comparaison au niveau division (62 au lieu de 62.02A), <em>annoncée sur la ligne concernée</em> ; aucun référentiel → valeur interne seule, marquée « pas de référence publique trouvée »</li>
+    <li><strong>NAF absent des données du compte</strong> → demandé ou déduit de l'activité, et <strong>confirmé avant usage</strong> — le secteur ne se devine pas</li>
+    <li>Catégories cash-flow : <code>list_cash_flow_categories</code> → <strong>403 sur le connecteur claude.ai</strong> — classement par détection de récurrences + labels</li>
+    <li>Délai clients calculé <strong>sur les factures émises via Qonto uniquement</strong> — annoncé si l'utilisateur facture ailleurs ; abonnements SaaS : liste détectée affichée, corrigeable en une phrase</li>
+    <li>Historique &lt; 12 mois → saisonnalité « indisponible » plutôt que calculée sur du bruit ; délais carte gérés (<code>emitted_at</code> vs <code>settled_at</code>) ; pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Zéro écriture, par conception :</b> le skill ne fait que lire — le compte Qonto d'un côté, l'open data public de l'autre. Rien à approuver, rien qui puisse bouger. Le seul « risque » est statistique, et il est traité par la règle d'or : <b>source + millésime + granularité sur chaque chiffre, ou pas de chiffre</b>.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📐 Les 5 ratios du bulletin</h2>
+  <div class="scroll"><table>
+    <tr><th>Ratio</th><th>Calcul (données Qonto)</th><th>Référence sectorielle</th></tr>
+    <tr><td><b>Part des charges fixes</b></td><td>Débits récurrents (tiers normalisé, montant stable ±10 %, ≥ 3 occurrences) ÷ total des débits, 12 mois</td><td>Structure des charges par NAF (INSEE Ésane)</td></tr>
+    <tr><td><b>Poids des abonnements logiciels</b></td><td>Récurrences dont le tiers matche des patterns SaaS ÷ total des débits — liste affichée, corrigeable</td><td>Ordre de grandeur par division NAF quand publié ; sinon valeur interne seule</td></tr>
+    <tr><td><b>Délai de paiement clients</b></td><td>Médiane émission de facture → paiement constaté (<code>list_client_invoices</code> + rapprochement transactions)</td><td>Délais de paiement moyens par secteur et taille, quand le dataset existe</td></tr>
+    <tr><td><b>Saisonnalité du CA</b></td><td>Coefficient de variation des encaissements mensuels sur 24 mois + mois pic/creux</td><td>Indices d'activité sectoriels quand disponibles ; sinon auto-benchmark</td></tr>
+    <tr><td><b>Trésorerie en jours de charges</b></td><td>Solde consolidé ÷ charge moyenne journalière (12 mois)</td><td>Surtout temporel (toi vs toi) — peu de référentiel public fiable, et le skill le dit</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🏛 Les référentiels publics utilisés</h2>
+  <div class="scroll"><table>
+    <tr><th>Référentiel</th><th>Ce qu'on y lit</th><th>Granularité</th><th>Piège connu</th></tr>
+    <tr><td><b>INSEE Ésane</b> (statistiques structurelles d'entreprises)</td><td>Taux de marge, structure des charges, ratios sectoriels</td><td>Classe NAF (fine) ou division (repli annoncé)</td><td>Millésime en retard de 2-3 ans — toujours affiché</td></tr>
+    <tr><td><b>Datasets délais de paiement</b> (data.gouv.fr)</td><td>Délais de paiement moyens/médians par secteur et taille</td><td>Variable selon le producteur — vérifiée via <code>get_dataset_info</code></td><td>Privilégier les producteurs officiels sur les dépôts tiers</td></tr>
+    <tr><td><b>Chaîne d'accès MCP Datagouv</b></td><td><code>search_datasets</code> → <code>get_dataset_info</code> → <code>query_resource_data</code></td><td>Filtrage sur le code NAF de l'entreprise</td><td>Ressource non tabulaire/volumineuse → essayer une autre ressource, jamais un chiffre de mémoire</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Scorecard markdown : ratio · ta valeur · référence (source · millésime · granularité) · verdict · tendance N-1, + constats narratifs + sources</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Scorecard interactive</b></td><td>Fichier/artifact <strong>HTML</strong> : 5 jauges face aux fourchettes secteur, sources en notes de bas de page</td><td>Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; repli automatique sur le markdown sinon</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : la question « am I normal? » → ratios réels calculés → références INSEE sourcées → <strong>la révélation</strong> (« je pensais payer trop d'outils ; en fait je suis sous la médiane. Par contre mes clients me paient 13 jours plus lentement que la moyenne — LÀ est mon vrai problème ») → le bulletin final. Tournée en live sur un compte de production réel.</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Référentiels par taille d'entreprise (NAF × tranche d'effectif/CA)</td><td>Moyen</td><td>Ésane publie certaines ventilations par taille — comparaison encore plus juste</td></tr>
+    <tr><td>Modules pays (Destatis DE, INE ES, ISTAT IT…)</td><td>Élevé</td><td>Même architecture, un connecteur open-data par pays</td></tr>
+    <tr><td>Historique des bulletins : trajectoire sur 4-8 trimestres</td><td>Faible</td><td>Réutilise l'auto-benchmark, simple mémoire des runs</td></tr>
+    <tr><td>Benchmark « panier de pairs » anonymisé</td><td>Élevé</td><td>Hors MCP actuel — piste produit Qonto plus que skill</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>100 % lecture seule</strong> : aucun outil d'écriture appelé — rien à approuver, rien qui puisse bouger</li>
+    <li><strong>Jamais</strong> de chiffre sectoriel inventé : pas de dataset → la ligne le dit ; granularité dégradée → annoncée ; millésime toujours affiché</li>
+    <li>Ratios bancaires ≠ comptabilité : approximation honnête, rappelée dans chaque rapport — les chiffres de l'expert-comptable prévalent</li>
+    <li>Secteur confirmé, pas supposé, quand le NAF n'est pas dans les données du compte</li>
+    <li>Bulletin trimestriel/annuel, pas un outil de pilotage quotidien — pour le jour-le-jour : <code>qonto-ceo-cockpit</code></li>
+    <li>IBAN masqués (4 derniers chiffres) · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<footer>qonto-sector-benchmark · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-sector-benchmark.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "qonto-sector-benchmark",
+  "version": "0.1.0",
+  "description": "Sector health check-up for Qonto accounts. Computes the company's real ratios from transactions and invoices (fixed-cost share, software subscription weight, observed client payment delay, revenue seasonality, cash in days of expenses) and compares them against official French sector statistics…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
