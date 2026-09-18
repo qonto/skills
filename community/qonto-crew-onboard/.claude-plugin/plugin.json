@@ -1,0 +1,10 @@
+{
+  "name": "qonto-crew-onboard",
+  "version": "0.1.0",
+  "description": "One-sentence financial onboarding (and offboarding) of an employee on Qonto. Reads a per-role policy defined once with the user (card caps, online-only, team), then on \"Alex starts Monday as a developer\" it invites the member, creates the team if new, and prepares a capped card request that…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-crew-onboard — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic</span>
+  <h1>qonto-crew-onboard</h1>
+  <p class="sub">L'onboarding financier d'un salarié en une phrase — invitation, carte plafonnée, pack d'accueil.</p>
+  <div class="badges">
+    <span>🗂 Policy par rôle, décidée par toi</span><span>🔒 Chaque écriture confirmée, carte sous SCA</span>
+    <span>🌍 Universel — tous pays Qonto</span><span>❄️ Offboarding = gel, jamais de suppression</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>À chaque arrivée, le dirigeant refait tout à la main : inviter la personne sur Qonto, créer sa carte avec les bons plafonds, préparer son premier jour. Le skill transforme ce rituel en <strong>une phrase</strong> :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Policy par rôle</h4><p>Définie une fois avec l'utilisateur — type de carte, plafonds, online-only, équipe par rôle. Jamais inventée : rôle inconnu = questions.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Onboarding en une phrase</h4><p>« Alex arrive lundi comme dev » : invitation envoyée, équipe créée si nouvelle, demande de carte plafonnée conforme à la policy.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Pack d'accueil multi-MCP</h4><p>Page Notion, événement J1 Google Calendar, brouillon Gmail — si ces MCP sont connectés, sinon annoncé et le cœur continue.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Offboarding miroir</h4><p>« Sam part vendredi » : cartes gelées (réversible) + checklist de récupération. Rien de supprimé — les révocations restent dans l'app.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><strong>Universel</strong> — membres, équipes et cartes fonctionnent pareil dans tous les pays Qonto (FR, DE, ES, IT, AT, NL, BE, PT)</td><td>ℹ️</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Rôle Admin/Owner</b></td><td>Inviter et demander une carte l'exigent — vérifié via <code>get_authenticated_membership</code>, annoncé honnêtement sinon</td><td>✅</td></tr>
+    <tr><td><b>Policy par rôle</b></td><td>Décidée par l'utilisateur, jamais par le skill</td><td>✅ décidée par toi</td></tr>
+    <tr><td><b>Sièges dispo sur le plan</b></td><td>Grille non lisible via MCP (<code>get_subscription</code> → 403) — le skill demande le plan et compte les membres avant d'inviter</td><td>ℹ️ vérifié en le demandant</td></tr>
+    <tr><td><b>Notion · Google Calendar · Gmail</b></td><td>Pack d'accueil optionnel, détecté dynamiquement</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Rôle du demandeur vérifié d'abord</strong> : pas Admin/Owner → avertissement honnête et aperçu en lecture seule de ce qui serait fait</li>
+    <li><strong>Email jamais deviné</strong> : absent de la phrase → demandé ; déjà invité → détecté dans <code>list_memberships</code>, invitation sautée avec la raison</li>
+    <li><strong>Équipes rapprochées avant création</strong> : « tech » vs « Tech » → pas de doublon, <code>create_team</code> seulement si l'équipe n'existe vraiment pas</li>
+    <li><strong>Limite de membres du plan</strong> : <code>get_subscription</code> renvoie 403 sur le connecteur → le skill demande le plan, compte les membres, prévient avant d'inviter</li>
+    <li>MCP Notion / Calendar / Gmail absents → une ligne honnête chacun, le cœur Qonto continue</li>
+    <li>Offboarding d'un membre sans carte → checklist seule, et le skill dit exactement ce qui reste à faire dans l'app · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Le modèle de sécurité, pas une limitation :</b> les lectures sont sans risque ; chaque écriture exige une confirmation explicite dans la conversation. La carte n'est <b>jamais</b> créée directement — <code>create_card_request</code> produit une <b>demande</b> plafonnée conforme à la policy, approuvée dans l'app Qonto par un Admin/Owner avec sa propre SCA. Et l'offboarding gèle, il ne supprime pas.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🗂 La policy par rôle (exemple illustratif — la vraie est définie par l'utilisateur)</h2>
+  <div class="scroll"><table>
+    <tr><th>Rôle</th><th>Carte</th><th>Plafond mensuel</th><th>Online-only</th><th>Équipe</th></tr>
+    <tr><td>Développeur·se</td><td>Virtuelle</td><td>200 €</td><td>Oui</td><td>Tech</td></tr>
+    <tr><td>Commercial·e</td><td>Physique</td><td>1 000 €</td><td>Non</td><td>Sales</td></tr>
+    <tr><td>Ops</td><td>Virtuelle</td><td>500 €</td><td>Oui</td><td>Operations</td></tr>
+  </table></div>
+  <p style="margin-top:.7rem">⚠️ Tableau <strong>inventé</strong> pour l'exemple. La policy est <strong>toujours</strong> décidée par l'utilisateur — un rôle sans policy déclenche des questions, jamais une supposition.</p>
+</section>
+
+<section>
+  <h2>❄️ Offboarding — la checklist miroir</h2>
+  <div class="scroll"><table>
+    <tr><th>Étape</th><th>Qui</th><th>Détail</th></tr>
+    <tr><td>Gel des cartes</td><td>Le skill (<code>change_card_status</code>, confirmé)</td><td>Réversible — c'est le point : rien d'irrémédiable</td></tr>
+    <tr><td>Carte physique récupérée</td><td>Checklist</td><td>Avec le matériel (ordinateur, badge…)</td></tr>
+    <tr><td>Accès et outils</td><td>Checklist</td><td>Apps internes, notes de frais en cours, redirection email</td></tr>
+    <tr><td>Désactivation du membre</td><td><strong>L'app Qonto</strong></td><td>Révocation définitive — jamais faite par le skill</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : récap (✅ fait / 🕐 en attente SCA / ⏭ sauté), statut de la demande de carte, checklist</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Fiche d'onboarding</b></td><td>Fichier/artifact <strong>HTML</strong> une page : qui arrive, quand, ce qui est prêt, ce qui attend</td><td>Si l'hôte affiche les fichiers ; repli automatique sur les tableaux</td></tr>
+    <tr><td><b>Page Notion · événement Calendar · brouillon Gmail</b></td><td>Pack d'accueil (le brouillon n'est jamais envoyé par le skill)</td><td>Si ces MCP sont connectés</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le rituel manuel → la policy définie une fois → « Alex arrive lundi comme dev » → <strong>l'invitation partie, la demande de carte plafonnée en attente de SCA, la page d'accueil prête</strong> → l'offboarding-gel en une commande. Prénoms fictifs, comptes de test. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Policy persistée dans un doc Notion relu à chaque arrivée</td><td>Faible</td><td>Multi-MCP optionnel — la policy vit chez l'utilisateur</td></tr>
+    <tr><td>Onboarding par lot (« 3 stagiaires arrivent le 1er »)</td><td>Faible</td><td>Même workflow, récap groupé, confirmations une à une</td></tr>
+    <tr><td>Rappel J-1 au manager (Google Calendar)</td><td>Faible</td><td>Détection dynamique du MCP</td></tr>
+    <tr><td>Suivi des demandes de carte (<code>list_requests</code>)</td><td>Faible</td><td>« Où en est la carte d'Alex ? »</td></tr>
+    <tr><td>Passerelle avec qonto-reimburse-batch</td><td>Moyen</td><td>Les premiers frais du nouvel arrivant — lecture des membres partagée</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Jamais</strong> d'écriture sans confirmation explicite : récap complet, puis chaque écriture (<code>create_membership</code>, <code>create_team</code>, <code>create_card_request</code>, <code>change_card_status</code>) confirmée une à une ; une demande en attente n'est jamais présentée comme exécutée</li>
+    <li><strong>La policy est décidée par l'utilisateur, jamais inventée</strong> — rôle inconnu = questions</li>
+    <li>Limite de membres du plan : grille non lisible (<code>get_subscription</code> 403) → plan demandé, membres comptés, avertissement avant d'inviter</li>
+    <li><strong>L'offboarding ne supprime jamais rien</strong> : gel réversible + checklist ; révocations définitives dans l'app</li>
+    <li>Rôle Admin/Owner vérifié d'abord · emails jamais devinés · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<footer>qonto-crew-onboard · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-crew-onboard.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
