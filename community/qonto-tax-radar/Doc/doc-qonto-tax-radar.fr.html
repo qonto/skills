@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-tax-radar — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic · Skill #7</span>
+  <h1>qonto-tax-radar</h1>
+  <p class="sub">Le pré-contrôle fiscal qui travaille POUR toi — les 8 axes de la DGFIP passés sur ton compte Qonto, avant que le fisc ne le fasse.</p>
+  <div class="badges">
+    <span>🔍 Les 8 axes du vrai contrôle</span><span>🔒 Lecture seule intégrale</span>
+    <span>📜 Chaque signalement sourcé</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>La peur n°1 du dirigeant français, c'est le contrôle fiscal — et personne ne sait où il est vulnérable. Le skill inverse les rôles : il passe les transactions au crible des <strong>8 axes de vérification qu'utilise réellement l'administration</strong>, et rend le rapport avant elle :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Crible des 8 axes DGFIP</h4><p>Somptuaires, dépenses perso, compte courant d'associé, TVA vs justificatifs, avantages en nature, doublons, espèces, montants ronds.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Signalements sourcés</h4><p>Chaque point = transaction précise + règle fiscale citée + niveau de risque + action corrective. Jamais d'accusation.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Chiffrage du risque</h4><p>TVA rappelable, réintégrations IS, intérêts et pénalités — en ordres de grandeur pédagogiques.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Plan de régularisation</h4><p>Les corrections à faire AVANT le fisc — puis relance le skill et regarde la note s'améliorer.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td>8 axes et règles citées : <strong>France</strong>. Autres pays Qonto (DE, ES, IT…) : axes universels seulement (justificatifs, doublons, espèces, montants ronds), annoncé clairement</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Historique ≥ 12 mois</b></td><td>En dessous : couverture partielle annoncée, jamais de finding inventé</td><td>⭕</td></tr>
+    <tr><td><b>Écriture, consentement</b></td><td><strong>Aucun</strong> — lecture seule intégrale, il n'y a littéralement rien à autoriser</td><td>—</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Pas de labels, pas de catégories ?</strong> → analyse des contreparties et enseignes brutes ; un label « perso » posé par l'utilisateur, quand il existe, est remonté avec tact</li>
+    <li><strong>Aucun justificatif attaché ?</strong> → l'axe 4 devient le premier point d'attention avec la TVA en jeu — c'est la valeur du skill, pas une erreur</li>
+    <li><strong>Détection dans les champs natifs</strong> : <code>attachment_ids</code>, <code>attachment_required</code>, <code>vat_amount</code> font l'essentiel ; <code>list_transaction_attachments</code> ne vérifie que les transactions sur le point d'être signalées</li>
+    <li>Motifs carte lus sur <code>emitted_at</code> (le <code>settled_at</code> décale d'1-2 jours — un achat du dimanche peut apparaître le mardi)</li>
+    <li><code>403 missing oauth scope</code> sur <code>list_cash_flow_categories</code> → attendu sur le connecteur claude.ai, repli sur les labels</li>
+    <li>Compte vide ou jeune, société étrangère : le skill dit ce qu'il peut et ne peut pas vérifier — et quels axes il a sautés</li>
+    <li><strong>Les faux positifs sont assumés</strong> : une dépense « restaurant » peut être 100 % légitime — le rapport le dit en toutes lettres</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Lecture seule intégrale — le point clé :</b> il n'y a que des traits pleins (lecture). Aucun outil d'écriture n'est jamais appelé : impossible de modifier une transaction, de poser un label ou de déplacer un centime. C'est le contrôleur qui regarde le dossier <b>de ton côté du bureau</b>.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📊 Les 8 axes de vérification (grille de référence)</h2>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Axe</th><th>Ce que le skill détecte</th><th>Règle citée</th></tr>
+    <tr><td>1</td><td><b>Charges somptuaires</b></td><td>Restaurants haut de gamme (montant/couvert), voyages, cadeaux au-delà des seuils (TVA cadeaux ≤ 73 € TTC/an/bénéficiaire ; relevé 2067 si cadeaux &gt; 3 000 €/an ou réceptions &gt; 6 100 €/an)</td><td>art. 39-4 CGI ; art. 28-00 A ann. IV CGI</td></tr>
+    <tr><td>2</td><td><b>Dépenses perso en pro</b></td><td>Achats week-end/dimanche, enseignes hors objet social (jeux, habillement, loisirs), abonnements grand public</td><td>art. 39-1 CGI ; acte anormal de gestion</td></tr>
+    <tr><td>3</td><td><b>Compte courant d'associé</b></td><td>Virements vers bénéficiaires « perso », allers-retours avec le dirigeant, motifs de CCA débiteur</td><td>art. L223-21 C. com. ; art. 111-a CGI</td></tr>
+    <tr><td>4</td><td><b>TVA déduite vs justificatifs</b></td><td><code>vat_amount</code> &gt; 0 <strong>et</strong> aucun justificatif attaché → TVA déduite sans facture à présenter</td><td>art. 271 II CGI — pas de facture, pas de déduction</td></tr>
+    <tr><td>5</td><td><b>Avantages en nature</b></td><td>Véhicule, téléphone, logement, abonnements à usage mixte payés par la société sans trace de déclaration</td><td>art. 82 CGI ; BOSS</td></tr>
+    <tr><td>6</td><td><b>Doublons de charges</b></td><td><code>has_duplicates</code> sur factures fournisseurs ; même contrepartie + même montant à ± 72 h</td><td>art. 54 CGI ; art. 1729 (contexte seulement)</td></tr>
+    <tr><td>7</td><td><b>Espèces</b></td><td>Retraits ronds récurrents ; paiements pro en espèces &gt; 1 000 €</td><td>art. L112-6 + D112-3 CMF</td></tr>
+    <tr><td>8</td><td><b>Transactions rondes récurrentes</b></td><td>Montants ronds réguliers vers un même bénéficiaire sans facture en face</td><td>art. 54 CGI — charge de la preuve</td></tr>
+  </table></div>
+  <p>Niveau 🟢🟡🔴 par axe, piloté par le nombre <em>et</em> les montants des signalements. <strong>Note globale = pire axe</strong> : un vrai contrôle suit le point faible. Vocabulaire imposé : « point d'attention », « à documenter » — jamais « fraude ».</p>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Bandeau global + tableau 8 axes + détail des signalements + plan de régularisation (markdown)</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>« Avis de pré-contrôle » interactif</b></td><td>Fichier/artifact <strong>HTML</strong> : note globale, jauges par axe, tableau des signalements, checklist</td><td>Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; repli automatique sur le markdown sinon</td></tr>
+    <tr><td><b>Re-run comparatif</b></td><td>Même rapport, avec l'évolution de la note</td><td>À chaque relance — la boucle de rétention</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : la peur du contrôle → lancement du pré-contrôle → les signalements axe par axe (article cité à l'écran) → <strong>le rapport qui tombe</strong> (« 2 points rouges : 1 430 € de TVA déduite sans justificatif, et 3 dépenses à requalifier — corrige ça ce mois-ci et ton dossier est propre ») → garde-fous. Tournée en live sur un compte de production réel.</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Mode « remédiation assistée » : <code>request_attachment_upload</code> + labels « à documenter », sous consentement explicite</td><td>Faible</td><td>Les writes existent dans le MCP — v1 volontairement lecture seule, c'est le positionnement</td></tr>
+    <tr><td><strong>Grilles de vérification par pays</strong> (DE · ES · IT…)</td><td>Moyen</td><td>Qonto est paneuropéen ; v1 = France + axes universels</td></tr>
+    <tr><td>Multi-MCP optionnel : croiser l'axe 4 avec les factures retrouvées dans Gmail/Drive</td><td>Moyen</td><td>Détection dynamique — s'active si le MCP est présent, sinon le skill le dit et continue</td></tr>
+    <tr><td>Suivi de la note dans le temps (historique des re-runs)</td><td>Faible</td><td>La boucle de rétention, chiffrée</td></tr>
+    <tr><td>9e axe : cohérence CA (factures encaissées vs entrées)</td><td>Moyen</td><td>Déjà dans l'ADN de la proposition d'origine</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Lecture seule intégrale</strong> : aucun outil d'écriture appelé, jamais — un engagement du skill, pas un réglage</li>
+    <li><strong>Jamais d'accusation</strong> : « point d'attention », pas « fraude » ; une dépense signalée peut être parfaitement légitime — le skill peut sous- ou sur-estimer faute de contexte, et le dit</li>
+    <li><strong>Ce n'est pas un avis fiscal</strong> ni une position de l'administration : simulation pédagogique, validation expert-comptable rappelée dans chaque rapport</li>
+    <li>Société non française → axes universels seulement, articles français jamais cités hors de leur champ</li>
+    <li>IBAN masqués, noms sensibles masqués dans tout export · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<footer>qonto-tax-radar · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-tax-radar.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

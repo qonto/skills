@@ -1,0 +1,10 @@
+{
+  "name": "qonto-tax-radar",
+  "version": "0.1.0",
+  "description": "French tax pre-audit (\"pré-contrôle fiscal\") for Qonto accounts, 100% read-only. Screens transactions against the 8 verification axes real DGFIP auditors use — lavish expenses, personal spending booked as business, director's current account, VAT deducted vs receipts on file, benefits in kind…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
