@@ -1,0 +1,10 @@
+{
+  "name": "qonto-counterparty-watch",
+  "version": "0.1.0",
+  "description": "Legal-health radar for the clients and suppliers of a Qonto account. Ranks every counterparty by real exposure (unpaid client invoices, supplier commitments, recurring spend), measures actual payment delays against due dates, and — when a Datagouv MCP is available — cross-checks French public…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
