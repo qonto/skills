@@ -1,0 +1,10 @@
+{
+  "name": "qonto-tax-pilot",
+  "version": "0.1.0",
+  "description": "French tax radar and cash pilot for Qonto accounts. Builds a dated, amount-estimated tax schedule (VAT, corporate tax instalments, CFE, dividend flat tax), projects the next 90 days of cash, computes the month's tax provision, and — with explicit user consent — creates a transfer request to a…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
