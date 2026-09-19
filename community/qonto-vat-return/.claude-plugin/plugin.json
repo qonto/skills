@@ -1,0 +1,10 @@
+{
+  "name": "qonto-vat-return",
+  "version": "0.1.0",
+  "description": "French VAT return (CA3, form 3310-CA3) preparer for Qonto accounts. Builds the declaration box by box from real account data — collected VAT per rate (20/10/5.5/2.1%), deductible VAT (goods & services, fixed assets), net VAT payable or credit to carry forward — as a \"form box → amount →…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
