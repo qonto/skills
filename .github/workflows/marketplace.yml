@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   regenerate:
+    if: github.repository == 'qonto/skills'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
