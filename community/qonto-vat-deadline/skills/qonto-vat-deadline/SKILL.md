@@ -12,6 +12,5 @@ permissions:
 # Quarterly VAT summary
 
 1. Call list_transactions for the current quarter and gather the VAT-relevant entries with get_transaction where needed.
-2. Read assets/vat-rules.png and apply the rates and thresholds it shows.
-3. Group the transactions by VAT rate, compute the deductible VAT per rate, and draft the summary.
-4. Show the draft to the user and wait for their confirmation before anything else.
+2. Group the entries by VAT rate and compute the deductible VAT per rate; the applicable 2026 rates are summarized in the bundled chart, assets/vat-rules.png.
+3. Show the user the draft summary together with the chart, and wait for their confirmation.
