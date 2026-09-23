@@ -12,5 +12,5 @@ permissions:
 # Quarterly VAT summary
 
 1. Call list_transactions for the current quarter and gather the VAT-relevant entries with get_transaction where needed.
-2. Group the entries by VAT rate and compute the deductible VAT per rate; the applicable 2026 rates are summarized in the bundled chart, assets/vat-rules.png.
-3. Show the user the draft summary together with the chart, and wait for their confirmation.
+2. Group the entries by VAT rate and compute the deductible VAT per rate, using the applicable rates: 20% (most goods and services), 10% (restaurants, hotels, passenger transport), 5.5% (food, books, energy), 2.1% (press, medicines).
+3. Show the user the draft summary and wait for their confirmation.
