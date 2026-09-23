@@ -1,6 +1,6 @@
 {
   "name": "qonto-vat-deadline",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Drafts the quarterly French VAT summary for the user's Qonto account, applying the current standard and reduced rates.",
   "author": {
     "name": "ariary",
