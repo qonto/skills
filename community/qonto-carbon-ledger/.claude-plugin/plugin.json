@@ -1,0 +1,10 @@
+{
+  "name": "qonto-carbon-ledger",
+  "version": "0.1.0",
+  "description": "Spend-based carbon footprint estimator for Qonto accounts. Classifies real debits into emission categories (energy, travel, digital & cloud, purchased goods, services, catering) and applies sourced, dated monetary emission factors (kgCO2e/€, ADEME-style spend-based method) to produce an approximate…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-carbon-ledger — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon</span>
+  <h1>qonto-carbon-ledger</h1>
+  <p class="sub">Your bank statement is secretly a carbon ledger — an approximate footprint for your business, from its real spending.</p>
+  <div class="badges">
+    <span>🔒 100% read-only</span><span>📉 ±50% printed everywhere</span>
+    <span>📚 Sourced &amp; dated factors</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>Small businesses never do a carbon assessment — not because they don't care, but because they have <strong>no data</strong>, no time, and no budget for a consultant. Here's the thing: bank debits ARE data. Every euro spent has a footprint, and the skill reads it straight from the Qonto account:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Approximate annual footprint</h4><p>Debits classified into emission categories × monetary factors (kgCO2e/€, ADEME-style spend-based method) — ±50% uncertainty on every figure.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Dominant categories</h4><p>The 2-3 categories concentrating most emissions, matched to the amounts actually spent.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Trend</h4><p>Year over year across 24–36 months of history — is the footprint going up or down, and why.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Top-3 levers</h4><p>The most effective actions given real spending — lever #1 is often free. Never a carbon offset for sale.</p></div>
+  </div>
+  <p style="margin-top:.8rem">It's an orientation <strong>pre-assessment</strong>, not a regulatory report — and the skill says so itself, loudly. <strong>The first carbon number most small businesses will ever see — for two minutes of their Monday morning.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><b>Factors calibrated for France / EU.</b> Other Qonto countries (DE, ES, IT…): identical method, factors flagged as needing adaptation (electricity mix, prices) — stated plainly, estimate still produced and tagged</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>≥ 6 months of history</b></td><td>Below that: annualization with an explicit warning, never silent extrapolation. 24–36 months for the trend</td><td>⭕</td></tr>
+    <tr><td><b>Datagouv MCP</b></td><td>Optional — cross-checks against current ADEME datasets; otherwise embedded (sourced, dated) factors</td><td>⭕</td></tr>
+    <tr><td><b>Qonto labels</b></td><td>Optional — sharpen the classification of ambiguous debits</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Honest scope, announced</strong>: the spend-based method covers goods, services and energy. Excluded and said to be excluded: internal transfers, salaries, taxes, VAT payments, loan repayments, dividends — financial flows carry no emission factor</li>
+    <li><strong>Normalized counterparties</strong> (case, accents, multiple spellings merged) + labels + supplier invoices — and since <code>list_cash_flow_categories</code> returns <strong>403</strong> on the claude.ai connector, the fallback is labels</li>
+    <li><strong>Visible "unclassified" bucket</strong> with its share; above ~20% of spend the skill says the estimate is weak and suggests labelling the top counterparties</li>
+    <li><strong>Excl-VAT amounts</strong>: <code>vat_amount</code> when present, else ÷ 1.20 — with the count of estimated lines disclosed</li>
+    <li><strong>One-off purchases flagged apart</strong> (≥ ~€5,000): a vehicle bought once doesn't masquerade as a recurring emission</li>
+    <li>Short history → annualized with a warning · empty account → the skill explains the method and stops there · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Solid arrows only:</b> this skill is 100% read. No write, no transfer request, no payment — there is literally <b>nothing to approve</b>. The only deliverable is information: tables and a dashboard. And it <b>never</b> sells carbon offsets.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🧮 Embedded emission factors (indicative, spend-based method)</h2>
+  <div class="scroll"><table>
+    <tr><th>Category</th><th>Factor (kgCO2e/€ excl. VAT, indicative central value)</th></tr>
+    <tr><td>Energy — vehicle fuel</td><td>~1.5</td></tr>
+    <tr><td>Energy — electricity (FR mix)</td><td>~0.25</td></tr>
+    <tr><td>Energy — gas / heating</td><td>~1.9</td></tr>
+    <tr><td>Travel — air</td><td>~1.2</td></tr>
+    <tr><td>Travel — rail (FR)</td><td>~0.05</td></tr>
+    <tr><td>Travel — road, taxi/VTC, freight</td><td>~0.5</td></tr>
+    <tr><td>Digital, cloud &amp; SaaS</td><td>~0.3</td></tr>
+    <tr><td>Purchased goods &amp; equipment</td><td>~0.5</td></tr>
+    <tr><td>Services &amp; professional fees</td><td>~0.15</td></tr>
+    <tr><td>Catering &amp; food</td><td>~0.7</td></tr>
+    <tr><td>Insurance &amp; banking fees</td><td>~0.1</td></tr>
+  </table></div>
+  <p style="margin-top:.7rem">ADEME Base Empreinte-style monetary ratios, 2023–2024 vintage, <strong>±50% and more</strong> — inherent to the monetary method (a cheap flight ≠ low emissions). Every displayed line carries its factor, source and vintage; a Datagouv cross-check is offered when that MCP is present.</p>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: footprint + range, categories (factor + source + vintage per line), trend, top-3 levers</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Interactive dashboard</b></td><td><strong>HTML</strong> file/artifact: gauge with uncertainty band, category bars, trend, levers</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); automatic fallback to tables otherwise</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem (small businesses "have no data") → reading and classifying the account → the honesty about uncertainty → <strong>the "your footprint in two minutes" moment</strong> → the dashboard and the levers. It runs live on a real production account. The detailed shooting script is kept internal (out of the repo).</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Automatic Datagouv cross-check (up-to-date ADEME datasets)</td><td>Low</td><td>Optional multi-MCP — detected dynamically, embedded factors otherwise</td></tr>
+    <tr><td><strong>Per-country factor packs</strong> (DE · ES · IT · AT · NL · BE · PT)</td><td>Medium</td><td>Qonto is pan-European; same method, local electricity mix and prices</td></tr>
+    <tr><td>Sector comparison of the footprint</td><td>Low</td><td>Natural pairing with <code>qonto-sector-benchmark</code> (same spirit: your real flows × public reference data)</td></tr>
+    <tr><td>Monthly lever tracking</td><td>Medium</td><td>Is the footprint actually going down? Re-runs on the same categories</td></tr>
+    <tr><td>Line-item refinement from rich supplier invoices</td><td>Medium</td><td>When supplier invoices carry detail</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Order-of-magnitude estimate, not a regulatory carbon report</strong> (BEGES / CSRD / GHG Protocol) — repeated in every report; for an official assessment: a specialized provider</li>
+    <li>Every factor shown with its <strong>source and vintage</strong>; every figure with its <strong>range</strong> — no false precision ("~9 tCO2e (4.5–13.5)", never "9.37")</li>
+    <li><strong>Never sells or recommends carbon offsets</strong></li>
+    <li>100% read-only · IBANs masked (last 4 digits) · pagination ≤ 50 everywhere</li>
+    <li>Country ≠ FR: identical method, factors flagged as needing adaptation — no fake local calibration</li>
+  </ul>
+</section>
+
+<footer>qonto-carbon-ledger · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-carbon-ledger.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
