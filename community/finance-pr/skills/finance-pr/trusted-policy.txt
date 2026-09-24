@@ -1,0 +1,41 @@
+# Trusted finance policy — operator-authored, EXPLICITLY TRUSTED source.
+#
+# Drop your own copy of this file in the skill folder (e.g. trusted-policy.txt)
+# and point `prepare --policy` at it. This file is trusted CONFIG; it is NEVER
+# read from an invoice, PDF, email, or tool output. Amounts are decimal strings.
+#
+# Format: `key = value`, one per line. Blank lines and `#` comments are ignored.
+# The engine parses ONLY these typed keys and throws on anything else:
+#   currency          the ISO 4217 currency the limits below are denominated in
+#   hard_block        an amount strictly above this HARD-BLOCKS the PR
+#   role.<name>       the approval limit for an initiator with that Qonto role;
+#                     an amount above it raises a "policy breach" review signal
+#   block_supplier    hard-block a supplier by name (repeatable); matched on the
+#                     STRUCTURED Qonto supplier_name (accent/case-insensitive)
+#   block_supplier_id hard-block a supplier by Qonto supplier_id (repeatable)
+#   fx.<FROM>.<TO>    an operator-FROZEN conversion rate (1 FROM = rate TO), used
+#                     to compare a foreign-currency invoice against the limits.
+#                     This is a static operator constant bound into the PR hash —
+#                     it is NEVER a live/fetched market rate.
+#
+# Natural language? Write it, but the SKILL compiles it to the typed keys above
+# and shows you the result to ratify BEFORE the engine sees it. The engine never
+# interprets prose. For example you might write:
+#     block, if supplier is Solutions Industrielles
+# and the skill compiles it (you confirm) to:
+#     block_supplier = Solutions Industrielles
+
+currency   = EUR
+hard_block = 9000
+
+role.owner      = 10000
+role.admin      = 10000
+role.manager    = 5000
+role.employee   = 1000
+
+# Hard-block a specific supplier (compiled from "block Solutions Industrielles"):
+block_supplier = Solutions Industrielles
+block_supplier = Acme Corp Software
+
+# Operator-frozen FX so USD invoices are gated against the EUR limits above:
+fx.USD.EUR = 0.92

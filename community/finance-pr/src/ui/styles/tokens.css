@@ -1,0 +1,79 @@
+/* Design tokens — one motion & color system, reduced-motion aware.
+   Clean-room: inspired by FlowTwin's discipline of centralizing motion, but no
+   FlowTwin values/assets are used. */
+
+:root {
+  /* Canvas — cool "operations room" dark, not pure black */
+  --bg-0: #0a0e17;
+  --bg-1: #0f1420;
+  --bg-2: #151b2b;
+  --bg-3: #1c2438;
+  --line: #263149;
+  --line-strong: #35425f;
+
+  --ink-0: #eef2fb;
+  --ink-1: #c2cbe0;
+  --ink-2: #8b96b3;
+  --ink-3: #5c6684;
+
+  /* Before-Qonto zone accent (teal) vs Inside-Qonto vault (indigo/violet) */
+  --before: #16324a;
+  --before-glow: #2bd4c4;
+  --qonto: #3a2c66;
+  --qonto-glow: #b18bff;
+
+  /* State palette — reserved strictly for state */
+  --ok: #2bd4c4;
+  --ok-soft: rgba(43, 212, 196, 0.14);
+  --review: #f2b53c;
+  --review-soft: rgba(242, 181, 60, 0.14);
+  --block: #ff5d73;
+  --block-soft: rgba(255, 93, 115, 0.14);
+  --accent: #6ea8fe;
+  --accent-soft: rgba(110, 168, 254, 0.16);
+
+  /* Type */
+  --font: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Radius / shadow */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --shadow-1: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 12px 40px rgba(0, 0, 0, 0.5);
+
+  /* Motion */
+  --dur-fast: 160ms;
+  --dur-med: 300ms;
+  --dur-token: 620ms; /* token travel between stations */
+  --dur-slow: 900ms;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur-med: 0.01ms;
+    --dur-token: 0.01ms;
+    --dur-slow: 0.01ms;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+body {
+  background: radial-gradient(1200px 700px at 30% -10%, #131a2b 0%, var(--bg-0) 55%);
+  color: var(--ink-0);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
