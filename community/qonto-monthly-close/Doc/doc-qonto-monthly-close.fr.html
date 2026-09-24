@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-monthly-close — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic · Skill #6</span>
+  <h1>qonto-monthly-close</h1>
+  <p class="sub">Clôture Zen — le CFO de fin de mois en 3 minutes. Un prompt, la revue complète du mois, la to-do priorisée.</p>
+  <div class="badges">
+    <span>🔒 100 % lecture seule</span><span>🧭 Chef d'orchestre mensuel</span>
+    <span>🇫🇷 TVA sur encaissements gérée</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Chaque fin de mois, le dirigeant de TPE passe 2 à 4 heures à compiler relevés, justificatifs, TVA et impayés pour son comptable. Un seul prompt — « <strong>clôture mon mois</strong> » — déclenche la revue complète :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Justificatifs priorisés</h4><p>Les pièces manquantes classées par enjeu — montant et TVA récupérable en jeu — avec le score de complétude du mois.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>TVA du mois</h4><p>Collectée (sur les encaissements si <code>on_receipts</code> détecté) − déductible (plancher annoncé) = net à provisionner.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Anomalies</h4><p>Dépense inhabituelle, doublon de prélèvement, nouveau bénéficiaire — signalées avec preuves, jamais accusées.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Rapport &amp; to-do</h4><p>Sans-label, impayés, comparaison vs mois précédent → rapport de clôture + to-do classée P1/P2/P3.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td>Justificatifs, anomalies, impayés, comparaisons : tous les pays Qonto. Module TVA : logique France ; autres pays (DE, ES, IT…) → estimation générique, annoncée comme telle</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Historique ≥ 3 mois</b></td><td>Les détecteurs d'anomalies et la comparaison ont besoin d'une base ; en dessous, dégradation honnête</td><td>⭕</td></tr>
+    <tr><td><b>MCP Gmail</b></td><td>Optionnel, détecté dynamiquement : chasse aux reçus manquants dans la boîte mail ; sinon le skill le dit et continue</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Baselines avant jugements</strong> : 3-6 mois d'historique lus en plus du mois — les détecteurs d'anomalies comparent à l'habitude du compte, pas à une règle magique, et montrent toujours la preuve (dates, montants, baseline)</li>
+    <li><strong>TVA sur encaissements gérée</strong> : <code>vat_payment_condition: "on_receipts"</code> détecté sur les factures → la collectée suit les <em>paiements reçus</em>, pas les factures émises</li>
+    <li><strong>TVA déductible = plancher</strong> : somme des <code>vat_amount</code>, avec le nombre de débits non renseignés annoncé — et le coût des justificatifs manquants chiffré (pas de facture = TVA non déductible)</li>
+    <li><code>list_cash_flow_categories</code> renvoie <strong>403</strong> sur le connecteur claude.ai → fallback <code>list_labels</code>, géré silencieusement</li>
+    <li>Opérations carte rapprochées par <code>emitted_at</code> (1-2 j d'écart avec <code>settled_at</code>) — pas de fausse « transaction manquante » en fin de mois</li>
+    <li>Mois vide, factures absentes, société non française : le skill dit ce qu'il a pu et n'a pas pu calculer, n'invente jamais · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Lecture seule intégrale :</b> ce skill n'appelle aucun outil d'écriture — rien n'est créé, modifié, envoyé ni déplacé. Le rapport <b>propose</b> ; l'utilisateur dispose, dans l'app Qonto ou via les skills dédiés. On peut le lancer sur n'importe quel compte, n'importe quand, sans le moindre effet de bord.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🕵️ Les trois détecteurs d'anomalies</h2>
+  <div class="scroll"><table>
+    <tr><th>Détecteur</th><th>Signature</th><th>Preuves fournies</th></tr>
+    <tr><td><b>Dépense inhabituelle</b></td><td>Tiers connu dont le total du mois s'écarte fortement de sa baseline (&gt; 2× la médiane), ou débit isolé hors gabarit du compte</td><td>Montant vs médiane historique du tiers, période de référence</td></tr>
+    <tr><td><b>Doublon de prélèvement</b></td><td>Même tiers, même montant (±1 %), deux fois ou plus dans le mois, en prélèvement — la signature classique de la double facturation</td><td>Les deux dates, les deux montants, l'identité du tiers</td></tr>
+    <tr><td><b>Nouveau bénéficiaire</b></td><td>Tiers jamais vu sur les mois précédents recevant un montant sortant significatif</td><td>Première apparition datée, montant, absence dans l'historique</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🧭 Positionnement dans la gamme</h2>
+  <p><code>qonto-monthly-close</code> est le <strong>chef d'orchestre mensuel</strong> : il détecte et priorise, en lecture seule. Chaque chantier a ensuite son spécialiste :</p>
+  <div class="scroll"><table>
+    <tr><th>Il détecte…</th><th>Le spécialiste qui agit</th></tr>
+    <tr><td>Justificatifs manquants</td><td><code>qonto-receipt-hunter</code> — chasse + upload</td></tr>
+    <tr><td>Impayés clients</td><td><code>qonto-invoice-chaser</code> — relances rédigées</td></tr>
+    <tr><td>TVA à provisionner</td><td><code>qonto-tax-pilot</code> — échéancier + provision sous SCA</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : scorecard, justificatifs, TVA, anomalies, comparaison, impayés, to-do</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Dashboard de clôture</b></td><td>Fichier/artifact <strong>HTML</strong> : scorecard du mois, jauge de complétude, tuile TVA, cartes anomalies, checklist to-do</td><td>Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; repli automatique sur les tableaux sinon</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : la corvée de fin de mois → un seul prompt → la revue en direct → <strong>le rapport complet qui tombe en une passe</strong> (« 96 transactions passées en revue, 3 justificatifs manquants, 1 doublon détecté, TVA du mois : 717 € — voilà ta to-do de 10 minutes ») → le dashboard. Tournée en live sur un compte de production réel.</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Rapport « prêt pour l'expert-comptable » (export PDF structuré)</td><td>Faible</td><td>Le contenu existe déjà, il manque la mise en forme cabinet</td></tr>
+    <tr><td>Mémoire de clôture : scorecards comparés mois après mois</td><td>Moyen</td><td>La complétude qui monte = la boîte qui se tient</td></tr>
+    <tr><td>Détecteur d'abonnements zombies (prélèvement récurrent jamais labellisé, jamais justifié)</td><td>Faible</td><td>Réutilise les baselines des anomalies</td></tr>
+    <tr><td>Multi-MCP : reçus depuis Google Drive en plus de Gmail</td><td>Faible</td><td>Détection dynamique, même modèle que Gmail</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Lecture seule intégrale</strong> : aucun outil d'écriture appelé, jamais — le rapport propose, l'utilisateur dispose</li>
+    <li>Anomalies = <strong>signalements avec preuves, pas des accusations</strong> : la baseline qui a déclenché le flag est toujours montrée</li>
+    <li>TVA = estimation, pas déclaration — validation expert-comptable recommandée dans chaque rapport</li>
+    <li>Dégradation honnête (mois vide, historique court, pays ≠ FR) · IBAN masqués · pagination ≤ 50</li>
+  </ul>
+</section>
+
+<footer>qonto-monthly-close · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-monthly-close.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
