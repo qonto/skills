@@ -1,0 +1,10 @@
+{
+  "name": "qonto-fraud-sentinel",
+  "version": "0.1.0",
+  "description": "Morning bodyguard for Qonto accounts. Screens the latest transactions against a numbered baseline built from 3–6 months of history and flags what's unusual — never-seen beneficiary, amount 3×+ the counterparty's average, duplicate direct debit, odd hour or channel, bursts of small card debits…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
