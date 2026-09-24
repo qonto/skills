@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-board-pack — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon · Skill #18</span>
+  <h1>qonto-board-pack</h1>
+  <p class="sub">The monthly investor update, ready before your coffee gets cold — numbers, highlights, narrative, deck and email.</p>
+  <div class="badges">
+    <span>🔒 Read-only on Qonto</span><span>✍️ Review before anything ships</span>
+    <span>👥 3 audiences, 3 packs</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>The monthly investor/banker update is the task every founder postpones to the last evening — then rushes, half from memory. <strong>One prompt → the complete pack</strong>, while you watch:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>The month's numbers</h4><p>Cash in, spend by category, end-of-month cash (official statement), net burn and runway — from the real Qonto account.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Comparisons</h4><p>M-1 and rolling year: deltas in amount and %, seasonality flagged, receivables as a forward signal.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Detected highlights</h4><p>Big contract collected, new significant expense, missing recurring client — every fact cites its transactions.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Narrative + pack</h4><p>3 factual paragraphs you review BEFORE formatting, then a 5-6 slide HTML deck (or Canva) + the send email (Gmail draft).</p></div>
+  </div>
+  <p style="margin-top:.8rem">And confidentiality is a <strong>feature</strong>: your banker, your investors and your team don't get the same pack — you pick the audience and the detail level.</p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><b>Every Qonto country</b> (FR, DE, ES, IT, AT, NL, BE, PT) — financial facts are universal; only currency formatting and wording adapt</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>≥ 2 months of history</b></td><td>Below that: the month's numbers only, comparisons skipped and said so (≥ 12 months for the rolling year)</td><td>⭕</td></tr>
+    <tr><td><b>Canva MCP</b></td><td>Deck exported to Canva — detected dynamically, self-contained HTML deck otherwise</td><td>⭕ optional</td></tr>
+    <tr><td><b>Gmail MCP</b></td><td>Email draft in the mailbox — detected dynamically, paste-ready text otherwise</td><td>⭕ optional</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Internal transfers excluded</strong> from revenue and burn (paired debit/credit on the organization's own IBANs) — the classic way to accidentally double your "revenue"</li>
+    <li><strong>Month boundaries handled</strong>: card payments settle 1–2 days late — window on <code>settled_at</code>, cross-checked with <code>emitted_at</code></li>
+    <li><strong>Spend grouped by labels</strong> (<code>list_cash_flow_categories</code> returns 403 on the claude.ai connector); untagged spend lands in "Other", share disclosed</li>
+    <li><strong>End-of-month balance</strong>: official statement (<code>list_statements</code>) when it exists, computed otherwise — the method is always stated</li>
+    <li>Empty month or brand-new account: numbers only, comparisons skipped and said — never invented trends; runway only when burn &gt; 0</li>
+    <li>Canva or Gmail absent: stated once, then fallback to HTML deck + email text — the core runs on Qonto alone</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Nothing ever ships itself:</b> the skill is <b>read-only on Qonto</b> — no write, ever. The only outputs are a local file (the HTML deck) and a <b>draft</b> (Gmail). The narrative always goes through your review before formatting, and you do the sending. <b>That's the product, not friction.</b></p>
+  </div>
+</section>
+
+<section>
+  <h2>👥 Three audiences (confidentiality as a feature)</h2>
+  <div class="scroll"><table>
+    <tr><th>Audience</th><th>What they want</th><th>Pack content</th><th>Detail level</th></tr>
+    <tr><td><b>Banker</b></td><td>Stability: the account is healthy, obligations are covered</td><td>Cash, inflows, expense coverage, regularity</td><td>Exact figures</td></tr>
+    <tr><td><b>Investor</b></td><td>Trajectory: growth, controlled burn, runway</td><td>Highlights, M-1/YoY growth, burn &amp; runway, outlook</td><td>Exact <b>or</b> trends — your call</td></tr>
+    <tr><td><b>Internal</b></td><td>Everything</td><td>The full pack, unfiltered, detailed spend included</td><td>Everything</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📊 Deck structure (5–6 slides, sober theme)</h2>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Slide</th><th>Content</th></tr>
+    <tr><td>1</td><td>Cover</td><td>Organization · month · audience</td></tr>
+    <tr><td>2</td><td>Highlights</td><td>2–4 detected facts, tied to transactions</td></tr>
+    <tr><td>3</td><td>Key figures</td><td>Cash in · spend · EoM cash · burn/runway, with M-1 deltas</td></tr>
+    <tr><td>4</td><td>Spend by category</td><td>Label breakdown, "untagged" share disclosed</td></tr>
+    <tr><td>5</td><td>Cash &amp; runway</td><td>Rolling 12-month curve, runway when burn &gt; 0</td></tr>
+    <tr><td>6</td><td>Outlook</td><td>The user-approved "outlook" paragraph</td></tr>
+  </table></div>
+  <p style="margin-top:.6rem"><strong>Self-contained</strong> deck: pure CSS, light/dark theme, zero external dependencies — it opens anywhere, forever.</p>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables (figures + deltas, spend, highlights) + the 3-paragraph narrative</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Self-contained HTML deck</b></td><td>5–6 slides, pure CSS, light/dark, zero dependencies</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); fallback to tables</td></tr>
+    <tr><td><b>Canva export</b></td><td>Design generated through the Canva MCP</td><td>When the Canva MCP is present</td></tr>
+    <tr><td><b>Send email</b></td><td>Gmail <b>draft</b> (never sent) or paste-ready text</td><td>Gmail present → draft; otherwise text</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the update postponed for three days → one prompt → numbers, highlights, narrative → <strong>one adjective fixed live</strong> → deck and email draft ready before the coffee is finished. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Pack history: deltas against last month's pack ("what we told them last time")</td><td>Medium</td><td>Session memory or local folder</td></tr>
+    <tr><td>User-declared business KPIs (MRR, active customers)</td><td>Low</td><td>Merged into the key-figures slide</td></tr>
+    <tr><td>Calendar reminder "your monthly pack is ready to generate"</td><td>Low</td><td>Calendar MCP detected dynamically</td></tr>
+    <tr><td>Bilingual packs (FR deck for the banker, EN for investors)</td><td>Low</td><td>Same data, two narratives</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Read-only on Qonto</strong> — no Qonto write tool is ever used</li>
+    <li><strong>Nothing is sent, ever</strong>: emails are drafts, decks are files — the user sends</li>
+    <li>The narrative review is a <strong>hard stop</strong> before any formatting</li>
+    <li>Audience confidentiality: exact figures never appear in a trends-level pack; the investor pack is never recycled for the banker without asking again</li>
+    <li>Every number traceable to transactions · untagged shares disclosed · honest degradation on short history (&lt; 2 months: no comparisons; &lt; 12: no rolling year)</li>
+    <li>IBANs masked (last 4 digits) · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<footer>qonto-board-pack · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-board-pack.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
