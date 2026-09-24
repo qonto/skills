@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-injonction — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic</span>
+  <h1>qonto-injonction</h1>
+  <p class="sub">Quand la relance ne suffit plus — le dossier d'injonction de payer prêt à signer, depuis le compte Qonto.</p>
+  <div class="badges">
+    <span>⚖️ CERFA 12946 pré-rempli</span><span>🔒 Zéro écriture, par conception</span>
+    <span>🏛 BODACC vérifié avant tout</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Les relances ont échoué (voir <code>qonto-invoice-chaser</code>), la mise en demeure est restée sans réponse. L'injonction de payer coûte ~35 € et se fait sans avocat — mais presque personne n'ose : formulaire intimidant, intérêts à calculer, tribunal à trouver. Le skill fait tout ça depuis le compte Qonto :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Vérification BODACC d'abord</h4><p>API publique sans clé : débiteur en procédure collective → PAS d'injonction, le skill réoriente vers la déclaration de créance (délai 2 mois) et la rédige.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Créance chiffrée au jour près</h4><p>Principal (acomptes déduits), intérêts BCE + 10 pts (plancher 3× le taux légal — art. L441-10), indemnité de 40 € — formule affichée.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Dossier complet</h4><p>CERFA 12946 pré-rempli champ par champ, bordereau de pièces numéroté (justificatifs Qonto), tribunal compétent identifié depuis le siège du débiteur.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Mode d'emploi Infogreffe</h4><p>Dépôt dématérialisé ~35 €, pièces PDF &lt; 2 Mo, et la suite : ordonnance → signification → opposition 1 mois. Le dépôt, c'est toi.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><b>Procédure CERFA : France.</b> Autres pays Qonto (DE, ES, IT…) : dossier factuel complet mais sans formulaire — jamais de forme ni de taux étranger inventé</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Accès web (APIs publiques)</b></td><td>BODACC + recherche-entreprises.api.gouv.fr — sans clé, sans compte. Sinon le skill demande les 2 infos manquantes</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Relance amiable déjà faite</b></td><td>Mise en demeure envoyée (LRAR) — sinon le skill renvoie d'abord vers <code>qonto-invoice-chaser</code></td><td>⭕ conseillé</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>La facture est peut-être déjà payée</strong> : scan des crédits depuis l'émission — un virement jamais rapproché est détecté, le skill s'arrête et propose le rapprochement plutôt que le tribunal</li>
+    <li><strong>Paiements partiels</strong> : détectés, listés comme pièces et <em>déduits du principal</em> — on ne réclame que le solde</li>
+    <li><strong>SIREN absent de la fiche client</strong> : recherche par nom + ville sur l'API registre, match <em>confirmé par l'utilisateur</em> (homonymes) — jamais supposé</li>
+    <li><strong>Débiteur en liquidation</strong> : bascule automatique en déclaration de créance, délai de 2 mois affiché (art. L622-24)</li>
+    <li><strong>Justificatif absent de Qonto</strong> : listé « 📋 à fournir » dans le bordereau — jamais inventé</li>
+    <li><strong>Créance contestée ou proche de la prescription</strong> (5 ans, art. L110-4) : signalé, jamais tu — voir <code>qonto-prescription-guard</code></li>
+    <li>Pas d'accès web, débiteur étranger, compte vide : le skill dit exactement ce qu'il peut et ne peut pas construire · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Zéro écriture, par conception :</b> le skill lit Qonto et deux APIs publiques sans clé, calcule, assemble — et s'arrête au dossier <b>prêt à signer</b>. Rien n'est déposé, rien n'est signifié, rien n'est signé. Le dépôt sur Infogreffe, c'est l'utilisateur, avec sa signature. <b>Aucun acte juridique n'est jamais exécuté par une IA.</b></p>
+  </div>
+</section>
+
+<section>
+  <h2>⚖️ Les deux routes (le skill choisit la bonne)</h2>
+  <div class="scroll"><table>
+    <tr><th>Situation du débiteur</th><th>Route</th><th>Ce que le skill produit</th><th>Délai clé</th></tr>
+    <tr><td><b>In bonis</b> (rien au BODACC)</td><td>Injonction de payer (art. 1405 s. CPC)</td><td>CERFA 12946 pré-rempli + bordereau + calcul + guide Infogreffe (~35 €)</td><td>Prescription 5 ans (art. L110-4)</td></tr>
+    <tr><td><b>Procédure collective</b> (sauvegarde, RJ, LJ)</td><td>Déclaration de créance (art. L622-24)</td><td>Relevé de créance rédigé : principal, intérêts arrêtés au jugement, pièces, adresse du mandataire si publiée</td><td><b>2 mois</b> après publication BODACC</td></tr>
+    <tr><td>Société radiée / introuvable</td><td>Ni l'une ni l'autre</td><td>Constat + conseil de consulter un professionnel</td><td>—</td></tr>
+  </table></div>
+  <h3>Le calcul des intérêts (indicatif, à faire valider)</h3>
+  <div class="scroll"><table>
+    <tr><th>Poste</th><th>Règle</th><th>Exemple (inventé) : INV-2026-017, 4 800 € TTC, 92 j de retard</th></tr>
+    <tr><td>Principal</td><td>Total TTC − acomptes prouvés</td><td>4 800,00 €</td></tr>
+    <tr><td>Intérêts de retard</td><td>Taux contractuel, sinon <b>BCE + 10 pts</b> (plancher 3× taux légal), du lendemain de l'échéance au dépôt, /365</td><td>4 800 × 12,15 % × 92/365 ≈ <b>147,00 €</b> (taux illustratif)</td></tr>
+    <tr><td>Indemnité forfaitaire</td><td><b>40 €</b> par facture (art. D441-5)</td><td>40,00 €</td></tr>
+    <tr><td><b>Total réclamé</b></td><td>Chaque ligne séparée sur le formulaire</td><td><b>≈ 4 987,00 €</b></td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : créance chiffrée, pré-remplissage CERFA champ→valeur, bordereau ✅/📋, bandeau de route</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Dossier imprimable</b></td><td>Fichier/artifact <strong>HTML</strong> : page de garde, calcul, CERFA pré-rempli, bordereau — à enregistrer en PDF</td><td>Si l'hôte affiche les fichiers ; repli automatique sur les tableaux sinon</td></tr>
+    <tr><td><b>Pièces du bordereau</b></td><td>Justificatifs Qonto récupérés (<code>get_attachment</code>) + liste « à fournir »</td><td>À chaque dossier</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : problème → preuve du non-paiement + vérification BODACC → calcul des intérêts + tribunal → <strong>le dossier complet prêt à signer</strong> → dépôt Infogreffe. Tous les chiffres montrés sont des exemples inventés. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Injonction de payer européenne (formulaire A, règlement 1896/2006)</td><td>Moyen</td><td>Pour les débiteurs dans un autre État membre — même moteur de calcul</td></tr>
+    <tr><td>Suivi post-dépôt : signification (6 mois) et opposition (1 mois)</td><td>Faible</td><td>Réutilise l'horloge de <code>qonto-prescription-guard</code></td></tr>
+    <tr><td>Multi-factures : une requête par débiteur regroupant N factures</td><td>Faible</td><td>Le bordereau et le calcul savent déjà empiler</td></tr>
+    <tr><td>Brouillon d'email au greffe / au commissaire de justice (MCP email détecté dynamiquement)</td><td>Faible</td><td>Multi-MCP optionnel, dans l'esprit du kickoff</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Pas un avis juridique</strong> — rappelé sur chaque dossier ; intérêts = calcul indicatif à faire valider (avocat, commissaire de justice, greffe)</li>
+    <li><strong>Zéro écriture</strong> : jamais présenté comme déposé, signifié ou obtenu — le skill s'arrête au dossier prêt à signer</li>
+    <li>Débiteur en procédure collective → jamais d'injonction proposée ; réorientation systématique vers la déclaration de créance</li>
+    <li>Créance contestée ou risque de prescription → signalé, jamais tu</li>
+    <li>Procédure France uniquement ; ailleurs, dossier factuel sans formulaire</li>
+    <li>IBAN masqués (4 derniers chiffres) · pagination ≤ 50 · exemples inventés (INV-YYYY-NNN)</li>
+  </ul>
+</section>
+
+<footer>qonto-injonction · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-injonction.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
