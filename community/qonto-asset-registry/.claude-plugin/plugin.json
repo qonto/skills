@@ -1,0 +1,10 @@
+{
+  "name": "qonto-asset-registry",
+  "version": "0.1.0",
+  "description": "Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices.",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
