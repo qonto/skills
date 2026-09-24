@@ -1,0 +1,33 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<title>Reçu — Brasserie Georges</title>
+<style>
+  body { font-family: 'Courier New', monospace; background:#eee; margin:0; padding:24px; }
+  .receipt { width:320px; margin:0 auto; background:#fff; padding:22px 20px;
+    box-shadow:0 2px 12px rgba(0,0,0,.15); color:#111; }
+  h1 { font-size:17px; text-align:center; margin:0 0 2px; letter-spacing:.5px; }
+  .addr { text-align:center; font-size:11px; color:#333; margin:0 0 14px; line-height:1.4; }
+  .meta { font-size:11px; color:#333; border-top:1px dashed #999; border-bottom:1px dashed #999;
+    padding:6px 0; margin-bottom:10px; display:flex; justify-content:space-between; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  td { padding:3px 0; }
+  .r { text-align:right; }
+  .tot { border-top:1px dashed #999; margin-top:8px; padding-top:8px; font-size:12px; }
+  .tot .g { font-weight:bold; font-size:14px; }
+  .foot { text-align:center; font-size:10px; color:#666; margin-top:14px; }
+  .note { width:320px; margin:12px auto 0; font-size:10px; color:#888; text-align:center; font-family:sans-serif; }
+</style></head><body>
+  <div class="receipt">
+    <h1>BRASSERIE GEORGES</h1>
+    <p class="addr">30 Cours de Verdun Perrache<br>69002 Lyon<br>Tél. 03 26 00 00 00</p>
+    <div class="meta"><span>04/06/2026</span><span>Table 12 · CB</span></div>
+    <table><tr><td>Choucroute Georges</td><td class='r'>24.50 €</td></tr><tr><td>Menu déjeuner</td><td class='r'>32.00 €</td></tr><tr><td>Boissons</td><td class='r'>38.50 €</td></tr></table>
+    <div class="tot">
+      <table>
+        <tr><td>Total HT</td><td class="r">86.36 €</td></tr>
+        <tr><td>TVA 10%</td><td class="r">8.64 €</td></tr>
+        <tr class="g"><td>TOTAL TTC</td><td class="r">95.00 €</td></tr>
+      </table>
+    </div>
+    <p class="foot">Merci de votre visite — TVA FR00 000 000 000</p>
+  </div>
+</body></html>
