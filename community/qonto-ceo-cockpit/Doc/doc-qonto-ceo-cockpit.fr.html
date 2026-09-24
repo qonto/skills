@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-ceo-cockpit — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic · Skill #16</span>
+  <h1>qonto-ceo-cockpit</h1>
+  <p class="sub">« My Société » — le cockpit du dirigeant, généré à la volée depuis le compte Qonto.</p>
+  <div class="badges">
+    <span>📖 100 % lecture seule</span><span>🎛 Recalcul live sans MCP</span>
+    <span>👁 Mode présentation</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Ta banque te montre une liste de lignes. Pour <em>voir</em> ta boîte — d'où vient l'argent, où il va, où tu seras dans 3 mois — il faut un tableur… ou 3 semaines d'expert-comptable. Le skill fait ça en un prompt : « <strong>montre-moi ma boîte</strong> » → un dashboard HTML interactif et autoportant :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Vue des flux</h4><p>Sources de revenus → société → postes de dépenses (type Sankey), rubans ∝ montants, bascule mois/année, tooltips.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Cartes &amp; prévisionnel 3 mois</h4><p>Mois / année / prévisionnel par poste + KPI : solde consolidé, résultat du mois, coffre fiscal, 3 mois — 🟢 réel / 🟡 estimé.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Hypothèses TJM live</h4><p>TJM détecté sur les factures × jours facturables : sliders, recalcul instantané dans la page — zéro rappel du MCP.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Masquage 👁</h4><p>Un clic masque un poste sensible et recalcule les totaux — pour présenter sans tout montrer (rendez-vous banquier).</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><b>Cœur universel</b> : flux, cartes et prévisionnel marchent dans tous les pays Qonto ; seuls les libellés fiscaux sont affinés pour la France, libellé neutre ailleurs</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Labels Qonto</b></td><td>Clé de regroupement des postes (les catégories cash-flow renvoient 403 sur le connecteur) ; sans labels : contreparties normalisées</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Historique ≥ 6 mois</b></td><td>En dessous : prévisionnel dégradé honnêtement (tags 🟡 + avertissement)</td><td>⭕</td></tr>
+    <tr><td><b>Facturation à la journée</b></td><td>Nécessaire au panneau TJM ; sinon panneau omis, raison affichée</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Pas de labels ?</strong> Regroupement par contrepartie normalisée, annoncé clairement — et bucket « à catégoriser » explicite avec son nombre de transactions, jamais dilué en douce</li>
+    <li><strong>Virements internes neutralisés</strong> : les mouvements entre comptes de l'organisation ne sont ni des revenus ni des dépenses ; celui vers le sous-compte impôts alimente la jauge du coffre</li>
+    <li><strong>Pas de facturation à la journée ?</strong> Le panneau TJM est omis, avec la raison — le reste du cockpit est complet</li>
+    <li><strong>Pas de sous-compte impôts ?</strong> Jauge masquée, tout le reste fonctionne</li>
+    <li><strong>Compte vide ou récent ?</strong> Cockpit en état honnête : tags 🟡, avertissement, jamais de chiffre inventé</li>
+    <li>Pagination ≤ 50 partout, fenêtres de 3 mois · société non française → libellés fiscaux neutres, zéro règle locale inventée</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>100 % lecture seule :</b> aucune écriture, aucun virement, rien à approuver. Le livrable est un fichier HTML <b>local et autoportant</b> — les données ne quittent pas la machine, aucun code externe ne se charge. Le masquage 👁 est une commodité de <b>présentation</b> (les données restent dans la source du fichier) ; pour partager, le skill régénère un export où les postes masqués sont <b>réellement exclus</b>.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🧭 Les zones du cockpit</h2>
+  <div class="scroll"><table>
+    <tr><th>Zone</th><th>Contenu</th><th>Source</th><th>Interactif</th></tr>
+    <tr><td><b>Vue des flux</b></td><td>Sources → société → postes, rubans ∝ montants</td><td>Transactions 12 mois, labels</td><td>Bascule mois/année, survol, clic → carte détail</td></tr>
+    <tr><td><b>KPI</b></td><td>Solde consolidé · résultat du mois · coffre fiscal · prévisionnel 3 mois</td><td>Soldes + flux + sous-compte impôts</td><td>Recalculés selon les postes masqués</td></tr>
+    <tr><td><b>Cartes par poste</b></td><td>Mois / année / prévisionnel, badges de cadence, tags 🟢🟡</td><td>Flux + récurrences + factures</td><td>Œil 👁 de masquage par carte</td></tr>
+    <tr><td><b>Panneau hypothèses</b></td><td>TJM × jours facturables (3 mois + reste de l'année)</td><td>TJM détecté sur les factures</td><td><b>Sliders, recalcul live sans MCP</b></td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Dashboard interactif</b></td><td>Un seul fichier <strong>HTML autoportant</strong> : CSS/JS inline, zéro dépendance externe (CSP-safe), barres/rubans en CSS+SVG pur, thème clair/sombre, charte violet/noir/blanc</td><td><strong>Le livrable</strong> — si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code)</td></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : KPI, flux mois + année, prévisionnel 3 mois, scénarios TJM chiffrés</td><td>Repli automatique sinon</td></tr>
+    <tr><td><b>Export « présentation »</b></td><td>Le même HTML régénéré sans les postes sensibles dans les données</td><td>À la demande, pour partager</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le problème (une banque = une liste de lignes) → « show me my company » → le dashboard qui se construit → <strong>le slider TJM : +50 € et la projection annuelle bouge en live, sans appel API</strong> → l'œil qui masque un poste pour le banquier → wrap-up gamme. Tournée en live sur un compte de production réel.</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Slots gamme : tax-pilot → jauge coffre + échéances, subscription-guardian → carte abonnements</td><td>Faible</td><td>Déjà prévu dans le SKILL.md — détecté dans la conversation, jamais requis</td></tr>
+    <tr><td>Comparaison N vs N-1 par poste (flèches de tendance)</td><td>Faible</td><td>L'historique 12 mois est déjà lu</td></tr>
+    <tr><td>Multi-devises consolidées</td><td>Moyen</td><td><code>get_organization</code> expose les devises des comptes</td></tr>
+    <tr><td>Mode « conseil d'administration » : PDF imprimable</td><td>Faible</td><td><code>window.print()</code> + CSS print, toujours zéro dépendance</td></tr>
+    <tr><td>Sliders embauche / salaire / gros achat</td><td>Moyen</td><td>Le moteur de recalcul JS est déjà en place (idée v3 de la maquette)</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Skill 100 % lecture</strong> : aucun outil d'écriture, aucun virement, rien à approuver — dit clairement si on lui demande</li>
+    <li>Masquage 👁 = présentation, pas sécurité : jamais présenté comme un document expurgé ; export réellement exclu proposé pour le partage</li>
+    <li>Prévisionnel et hypothèses = estimations 🟡, pas de la comptabilité — validation expert-comptable recommandée</li>
+    <li>IBAN masqués (4 derniers chiffres) · pagination ≤ 50 partout · jamais de catégorie, règle fiscale ou chiffre inventés</li>
+  </ul>
+</section>
+
+<footer>qonto-ceo-cockpit · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-ceo-cockpit.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
