@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-reimburse-batch — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic</span>
+  <h1>qonto-reimburse-batch</h1>
+  <p class="sub">N remboursements de frais, trois contrôles chacun, une seule approbation SCA — fini le tableur.</p>
+  <div class="badges">
+    <span>🧾 3 contrôles par demande</span><span>🔒 1 seule écriture, sous SCA</span>
+    <span>🇪🇺 Universel (SEPA)</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Les salariés avancent les frais — resto client, taxi, petit matériel — et le remboursement traîne des semaines dans un tableur. Personne n'aime relancer, personne n'aime vérifier. Le skill fait les deux <em>(tous les exemples de cette doc sont inventés)</em> :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Collecte des demandes</h4><p>Canal Slack ou base Notion si le MCP est présent — sinon collées dans la conversation. Le cœur reste 100 % Qonto.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Trois contrôles</h4><p>Justificatif cohérent (montant/date) · pas un doublon d'une dépense carte (transaction citée) · politique de frais respectée.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>UNE demande groupée</h4><p>Les N demandes validées → une seule <code>create_multi_transfer_request</code> : N virements en attente, IBAN jamais inventés.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Approbation d'un geste</h4><p>Push Qonto → le dirigeant approuve tout le lot avec sa 2FA dans l'app. L'argent ne bouge que là.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><b>Universel (SEPA)</b> : virements SEPA en EUR — tous les pays Qonto (FR, DE, ES, IT, AT, NL, BE, PT). IBAN hors SEPA ou devise ≠ EUR → demande en attente, annoncé clairement</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>IBAN des salariés</b></td><td>Fournis par les demandes ou une fiche salariés — le skill n'invente <b>jamais</b> un IBAN ; sans IBAN la demande reste en attente</td><td>✅</td></tr>
+    <tr><td><b>Politique de frais</b></td><td>Plafonds par catégorie (repas, taxi, matériel…) définis une fois par l'utilisateur ; sans politique, annoncé — les autres contrôles tournent quand même</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Slack ou Notion (MCP)</b></td><td>Source des demandes, détectée dynamiquement ; sinon mode dégradé : demandes collées dans la conversation</td><td>⭕ optionnel</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Messages Slack en texte libre, lignes Notion à moitié remplies</strong> : tout est normalisé d'abord (salarié, montant, date, catégorie, motif, IBAN, justificatif) — le skill ne demande que ce qui manque vraiment</li>
+    <li><strong>Pas de MCP Slack/Notion ?</strong> Le skill le dit une fois et continue : demandes collées dans la conversation, contrôles et lot identiques</li>
+    <li><strong>Délais carte gérés</strong> : les cartes se règlent avec 1-2 j de décalage → le rapprochement doublon se fait sur <code>emitted_at</code> ±5 j, pas <code>settled_at</code></li>
+    <li>Doublon = <strong>présomption documentée</strong> (transaction citée : date · montant · tiers), jamais un rejet silencieux — l'utilisateur tranche</li>
+    <li>Justificatif manquant, montant incohérent, IBAN absent → ⚠️ en attente avec le motif exact ; le reste du lot part quand même</li>
+    <li>Demandeur absent de <code>list_memberships</code> → signalé, pas bloqué (les prestataires existent) · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Le modèle de sécurité, pas une limitation :</b> la lecture est sans risque ; l'écriture exige le consentement explicite dans la conversation et ne produit qu'une <b>demande</b>. Seule la SCA (2FA) du titulaire, dans l'app Qonto, déplace l'argent — les N virements d'un geste, ou refus en un tap. Ni Claude ni le MCP ne le peuvent.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🔍 Les trois contrôles (le cœur du skill)</h2>
+  <div class="scroll"><table>
+    <tr><th>Contrôle</th><th>Source</th><th>Issue possible</th></tr>
+    <tr><td><b>Justificatif</b></td><td>Pièce/référence jointe à la demande — montant et date confrontés à la demande</td><td>✅ cohérent · ⚠️ manquant ou incohérent → en attente, motif précis</td></tr>
+    <tr><td><b>Doublon</b></td><td><code>list_transactions</code> : dépenses carte (<code>emitted_at</code> ±5 j, même montant, tiers proche) + virements de remboursement récents (références « NDF »)</td><td>❌ présomption <b>documentée</b> (transaction citée) → hors du lot, l'utilisateur tranche</td></tr>
+    <tr><td><b>Politique de frais</b></td><td>Plafonds par catégorie définis par l'utilisateur</td><td>⚠️ dépassement signalé avec l'écart → plafonner / accepter / rejeter</td></tr>
+  </table></div>
+  <h3>Exemple de tableau de verdicts (données inventées)</h3>
+  <div class="scroll"><table>
+    <tr><th>Demande</th><th>Montant</th><th>Contrôles</th><th>Verdict</th></tr>
+    <tr><td>Repas client</td><td>84,00 €</td><td>justificatif ✓ · pas de doublon · sous plafond</td><td>✅ dans le lot</td></tr>
+    <tr><td>Taxi aéroport</td><td>32,50 €</td><td>justificatif ✓ · pas de doublon · sous plafond</td><td>✅ dans le lot</td></tr>
+    <tr><td>Écran portable</td><td>129,00 €</td><td><b>déjà réglé par carte entreprise le 03/06</b> (transaction citée)</td><td>❌ rejeté — preuve fournie</td></tr>
+  </table></div>
+  <p>Résultat : <strong>une</strong> demande groupée de 2 virements dans l'app Qonto, prête à approuver d'un seul geste.</p>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : verdicts (demande · contrôles · verdict), contenu du lot, mises en attente</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Demande groupée Qonto</b></td><td>N virements en attente (section Demandes), résumé du lot dans la note, visible à l'approbation SCA</td><td>À chaque lot validé</td></tr>
+    <tr><td><b>Rapport de remboursement</b></td><td>Récap markdown (qui · combien · pourquoi rejeté, preuve) — ou artifact HTML si l'hôte affiche les fichiers</td><td>Après approbation (statut via <code>list_requests</code>)</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : problème → collecte &amp; contrôles → verdicts (1 doublon rejeté, transaction citée à l'écran) → <strong>approbation groupée SCA filmée sur téléphone</strong> → rapport final. Toutes les demandes de la démo sont inventées. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Verdict posté dans le thread Slack de chaque demande</td><td>Faible</td><td>Multi-MCP optionnel — s'active si le MCP Slack est présent</td></tr>
+    <tr><td>Rapprochement post-exécution (pointage des virements passés)</td><td>Faible</td><td>Réutilise <code>list_transactions</code> + les références « NDF »</td></tr>
+    <tr><td>OCR des justificatifs joints (montant/date extraits)</td><td>Moyen</td><td>Renforce le contrôle n°1 sur données sales</td></tr>
+    <tr><td>Plafonds par équipe via <code>list_teams</code></td><td>Faible</td><td>Politiques différenciées commercial / tech / direction</td></tr>
+    <tr><td>Export comptable mensuel des remboursements</td><td>Moyen</td><td>Se combine avec <code>qonto-accountant-handoff</code></td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Jamais</strong> de demande de virement sans confirmation explicite de la liste finale dans la conversation en cours ; jamais présentée comme exécutée (en attente de SCA)</li>
+    <li>Un doublon est une <strong>présomption documentée</strong> (transaction citée), jamais un rejet silencieux — l'utilisateur tranche</li>
+    <li>Aucune demande recalée n'entre dans le lot sans override explicite (consigné dans la note)</li>
+    <li>IBAN jamais inventés ; masqués (4 derniers chiffres) · pagination ≤ 50 partout</li>
+    <li>Répétitions : <code>decline_request</code> après chaque test (<code>request_type: "multi_transfers"</code>, pluriel)</li>
+  </ul>
+</section>
+
+<footer>qonto-reimburse-batch · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-reimburse-batch.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
