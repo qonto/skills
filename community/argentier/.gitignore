@@ -1,0 +1,41 @@
+# ============================================================
+#  Argentier — .gitignore racine (blindé avant push public)
+# ============================================================
+
+# --- SECRETS : jamais sur Git, sous aucune forme ---
+.env
+.env.*
+*.env
+**/.env
+**/.env.local
+**/.env*.local
+# (on garde les templates : ils ne contiennent que des placeholders)
+!.env.example
+!**/.env.example
+
+# --- Données bancaires réelles / PII : jamais sur Git ---
+data/
+**/data/qonto-snapshot.json
+**/flows-*.json
+# drafts/ contient des livrables avec des données réelles embarquées
+drafts/
+
+# --- Config locale Claude Code ---
+.claude/settings.local.json
+
+# --- Dépendances & build (Node / Next.js) ---
+**/node_modules/
+**/.next/
+**/out/
+**/build/
+*.tsbuildinfo
+**/next-env.d.ts
+
+# --- Python ---
+__pycache__/
+*.pyc
+
+# --- OS / éditeur ---
+.DS_Store
+**/.DS_Store
+*.log

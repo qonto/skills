@@ -1,0 +1,28 @@
+{
+  "name": "argentier",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Argentier — agent d'optimisation bancaire et fiscale pour TPE/EI, branché sur Qonto.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.68.0",
+    "next": "15.5.20",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "1.13.16",
+    "@opennextjs/cloudflare": "1.20.1",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3",
+    "wrangler": "4.110.0"
+  }
+}

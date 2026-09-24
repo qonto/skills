@@ -1,0 +1,14 @@
+{
+	"name": "argentier-mcp",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-07-12",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true
+	},
+	"durable_objects": {
+		"bindings": [{ "name": "ArgentierMCP", "class_name": "ArgentierMCP" }]
+	},
+	"migrations": [{ "tag": "v1", "new_sqlite_classes": ["ArgentierMCP"] }],
+	"kv_namespaces": [{ "binding": "WAITLIST", "id": "2654f9c6be0d425a921a5d732b8ce518" }]
+}
