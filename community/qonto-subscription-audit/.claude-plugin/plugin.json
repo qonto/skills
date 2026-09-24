@@ -1,0 +1,10 @@
+{
+  "name": "qonto-subscription-audit",
+  "version": "0.1.0",
+  "description": "Complete recurring-spend audit for Qonto accounts. Inventories every recurring charge (cards AND direct debits) over 24–36 months, computes the TOTAL annualized subscription cost, classifies each line (✅ active · 👥 duplicate · 🧟 zombie, always user-confirmed · 🎣 trial gone paid), catches nascent…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
