@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-receipt-hunter — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic · Skill #5</span>
+  <h1>qonto-receipt-hunter</h1>
+  <p class="sub">Justificatif Zéro — le chasseur qui retrouve tes reçus dans Gmail &amp; Drive et les rattache à tes transactions Qonto.</p>
+  <div class="badges">
+    <span>🧲 Fouille Gmail &amp; Drive</span><span>🔒 Rattachement confirmé, jamais en masse</span>
+    <span>🧾 Originaux uniquement — jamais fabriqués</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>La corvée universelle : ~20 % des transactions n'ont pas de justificatif. Chaque reçu perdu = <strong>TVA non récupérable</strong>, charge réintégrable, comptable furieux. Le skill transforme la corvée en chasse :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Inventaire priorisé</h4><p>Les transactions sans pièce, classées par urgence : TVA récupérable en jeu, montant, ancienneté — tags 🔴🟠🟢.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Chasse multi-sources</h4><p>Gmail (marchand + montant + dates autour de l'achat) et Google Drive — détectés dynamiquement.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Rattachement confirmé</h4><p>Match affiché (transaction ↔ document original), confirmation par pièce, upload vérifié — jamais en masse.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Rapport de chasse</h4><p>Rattachées ✅, à joindre 📎, introuvables ❌ avec une piste chacune + score de complétude avant/après.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td>Fonctionne pour tous les pays Qonto. Estimation « TVA en jeu » par plafond 20/120 : France uniquement ; ailleurs, seul le <code>vat_amount</code> renseigné est utilisé — jamais de taux deviné</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>MCP Gmail</b></td><td>Alimente la chasse e-mails. Absent : le skill le dit et livre l'inventaire priorisé + où chercher</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>MCP Google Drive</b></td><td>Alimente la chasse fichiers</td><td>⭕ optionnel</td></tr>
+    <tr><td><b>Périmètre</b></td><td>90 derniers jours par défaut — extensible (trimestre, exercice) sur demande</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Rapprochement par date d'achat, pas de règlement</strong> : la fenêtre de recherche est ancrée sur <code>emitted_at</code> — les paiements carte se règlent 1-2 jours plus tard (<code>settled_at</code>), et c'est là que les autres outils ratent le reçu</li>
+    <li><strong>Tolérance de montant annoncée</strong> : pourboires, conversions de devises, captures partielles — si le montant exact rate, nouvelle passe marchand + fenêtre de dates seule</li>
+    <li><strong>Libellés sales gérés</strong> (« SUMUP *COFFEE PARIS ») : variantes de nom depuis <code>clean_counterparty_name</code> et le libellé brut</li>
+    <li><strong>Connecteur limité ?</strong> Si le binaire d'une pièce jointe d'e-mail n'est pas récupérable, le skill donne le lien direct vers l'e-mail (rattachement manuel en un glisser-déposer) — annoncé honnêtement</li>
+    <li><strong>Sans Gmail/Drive</strong> : le cœur Qonto pur livre quand même l'inventaire priorisé + la TVA en jeu + où chercher</li>
+    <li><code>attachment_required: false</code>, encaissements clients et <code>attachment_lost</code> exclus du score · plusieurs candidats plausibles → le skill demande · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Intégrité des pièces, le garde-fou majeur :</b> la seule écriture ajoute un document à une transaction — elle ne touche jamais à l'argent — et exige une confirmation explicite <b>par pièce</b>. Surtout : <b>originaux uniquement</b> (PDF du marchand, pièce jointe d'e-mail). Un justificatif fabriqué n'a aucune valeur probante et t'expose en contrôle fiscal — le skill n'en produira jamais.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🧮 Classement par urgence</h2>
+  <div class="scroll"><table>
+    <tr><th>Critère</th><th>Signal</th><th>Effet</th></tr>
+    <tr><td><b>TVA récupérable en jeu</b></td><td><code>vat_amount</code> renseigné ; sinon (France) plafond montant × 20/120, annoncé comme estimation</td><td>Poids principal</td></tr>
+    <tr><td><b>Montant</b></td><td>Les gros débits d'abord — c'est là que la réintégration fait mal</td><td>Fort</td></tr>
+    <tr><td><b>Ancienneté</b></td><td>Plus c'est vieux, plus la clôture approche et plus le duplicata est dur à obtenir</td><td>Fort</td></tr>
+    <tr><td><b>Exclusions</b></td><td><code>attachment_required: false</code> · encaissements clients (<code>side: credit</code>) · <code>attachment_lost</code></td><td>Hors score</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🔎 Sources de chasse</h2>
+  <div class="scroll"><table>
+    <tr><th>Source</th><th>Méthode</th><th>Condition</th></tr>
+    <tr><td><b>Gmail</b></td><td>Marchand (variantes du nom) + montant + fenêtre autour de <code>emitted_at</code>, tolérance de montant ; cible : le PDF original du marchand</td><td>MCP Gmail connecté</td></tr>
+    <tr><td><b>Google Drive</b></td><td>Recherche par marchand/date/montant dans noms et contenus, téléchargement + contrôle de cohérence avant proposition</td><td>MCP Drive connecté</td></tr>
+    <tr><td><b>Introuvable ?</b></td><td>Piste concrète par trou : portail marchand (section factures), boîte pro secondaire ou perso, collecte auto de reçus Qonto, duplicata fournisseur</td><td>Toujours</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown (inventaire priorisé, TVA en jeu, rapport de chasse)</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Rattachements Qonto</b></td><td>Pièces jointes réelles sur les transactions, visibles immédiatement dans l'app</td><td>À chaque confirmation</td></tr>
+    <tr><td><b>Rapport de complétude</b></td><td>Score avant/après + pistes restantes ; version <strong>HTML</strong> si l'hôte affiche les fichiers, tableaux sinon</td><td>Fin de session</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : problème → inventaire priorisé (7 pièces manquantes, TVA en jeu chiffrée) → chasse Gmail en live → <strong>5 reçus retrouvés et rattachés, un clic chacun</strong> → rapport final avec pistes pour les 2 restants. Tournée en live sur un compte de production réel.</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Brouillons Gmail de demande de duplicata au fournisseur</td><td>Faible</td><td>Brouillons seulement — l'utilisateur envoie ; héritage direct de P5</td></tr>
+    <tr><td>Rituel mensuel : score de complétude suivi mois par mois (streak)</td><td>Faible</td><td>Réutilise le rapport existant</td></tr>
+    <tr><td>Autres boîtes mail (Outlook/M365) détectées dynamiquement</td><td>Moyen</td><td>Même logique de chasse, autre MCP</td></tr>
+    <tr><td>Détection de doublons de pièces (<code>remove_transaction_attachment</code> sous confirmation)</td><td>Moyen</td><td>Nettoyage inverse, mêmes garde-fous</td></tr>
+    <tr><td>Contrôle fin montant/TVA par lecture du PDF (multi-lignes, devises)</td><td>Moyen</td><td>Renforce le contrôle de cohérence</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>JAMAIS de justificatif fabriqué</strong> : ni PDF généré, ni facture reconstituée, ni capture maquillée — sans original, la transaction reste en ❌ avec une piste</li>
+    <li><strong>Jamais</strong> de rattachement sans confirmation explicite du match affiché ; plusieurs candidats plausibles → le skill demande ; jamais de lot silencieux</li>
+    <li>Rapprochement par <code>emitted_at</code> + tolérance de montant, annoncée dans chaque proposition</li>
+    <li>MCP Gmail/Drive absents → annoncé clairement, inventaire Qonto pur livré quand même</li>
+    <li>IBAN et numéros de carte masqués · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<footer>qonto-receipt-hunter · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-receipt-hunter.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
