@@ -1,0 +1,10 @@
+{
+  "name": "vat-tickets",
+  "version": "0.1.0",
+  "description": "Qualifies recoverable input VAT on business expenses and produces sourced verdicts (deductible / excluded / reverse charge / time-barred) with a legal deadline per line. Use this skill whenever it involves input VAT, VAT recovery, VAT scratch tickets, line 21 of the CA3 return, expense…",
+  "author": {
+    "name": "louisdarques-YV",
+    "url": "https://github.com/louisdarques-YV"
+  },
+  "license": "MIT"
+}
