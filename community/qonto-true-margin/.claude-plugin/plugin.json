@@ -1,0 +1,10 @@
+{
+  "name": "qonto-true-margin",
+  "version": "0.1.0",
+  "description": "Real-cost pricing for e-commerce on Qonto. Rebuilds the true contribution margin per product from what actually left the bank account — PSP fees really debited, EUR/USD FX costs, real carrier invoices, supplier COGS — allocates them pro-rata (announced as a heuristic), flags products sold at a…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
