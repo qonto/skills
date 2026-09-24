@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-invoice-chaser — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic MCP Hackathon</span>
+  <h1>qonto-invoice-chaser</h1>
+  <p class="sub">Chase late invoices without burning the relationship — the chaser that checks the bank before it writes.</p>
+  <div class="badges">
+    <span>🔍 Never chases an already-paid invoice</span><span>✍️ Drafts only, never silent sends</span>
+    <span>🇫🇷 Legal kit built in (€40 + interest)</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>B2B invoices in France get paid <strong>11+ days late on average</strong> — and chasing them is the chore everyone postpones. The skill turns a Qonto account into a collections assistant that never damages a client relationship:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Overdue detection</h4><p>Late client invoices by <code>due_date</code>, days overdue, total outstanding, aging buckets 0-30 / 31-60 / 60+.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Cash cross-check</h4><p>An "unpaid" invoice may already be paid: amount / counterparty / reference matching → marking <em>proposed</em>, never silent.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Payer profile &amp; graduated ladder</h4><p>Reliable-but-late ≠ chronic late payer. Courteous D+7 → firm D+21 → formal notice D+45 (interest + €40).</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Gmail draft</h4><p>Gmail MCP present → the reminder lands as a draft: you review, you send. Otherwise copy-ready text. Nothing leaves on its own.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>Chasing receivables is the Monday-morning chore</strong> — this makes it a two-minute review.</p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td>Full legal kit (interest + €40 indemnity, art. L441-10): <strong>France</strong>. Other Qonto countries: identical graduated reminders, generic reference to EU Directive 2011/7/EU — never invented rates</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Client invoices in Qonto</b></td><td>The skill reads <code>list_client_invoices</code>; with no Qonto invoicing there is nothing to chase — and it says so</td><td>✅</td></tr>
+    <tr><td><b>Gmail MCP</b></td><td>Optional, detected dynamically: present → reminder drafts; absent → copy-ready text</td><td>⭕ recommended</td></tr>
+    <tr><td><b>Invoicing history</b></td><td>Feeds the payer profile; without it: standard tone + a warning</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>The paid-but-never-marked invoice</strong>: a transfer received outside a payment link → the <code>list_transactions</code> cross-check catches it (exact amount ±0.01, counterparty ≈ client name, reference containing the invoice number) and proposes <code>mark_client_invoice_as_paid</code> with the transaction as evidence — <em>the most expensive email in B2B is the reminder sent to a client who already paid</em></li>
+    <li><strong>Partial payment or grouped transfer</strong> (one payment covering several invoices): candidates presented with amounts, never auto-marked, never chased blindly</li>
+    <li><strong>No payer history for a client</strong>: standard tone, stated honestly</li>
+    <li><strong>Email missing from the client record</strong>: flagged via <code>get_client</code>, with a suggestion to complete the record — never a guessed address</li>
+    <li><strong>Non-French organization</strong>: same graduated reminders, no invented legal rates</li>
+    <li>Empty account or no client invoices: the skill says so and stops, instead of pretending · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>The skill writes; the user decides:</b> reads (solid arrows) are risk-free; the two writes (dashed) are <b>proposed</b> actions — marking an invoice paid requires explicit confirmation in the conversation, and the reminder only ever exists as a <b>draft</b> that the user alone reviews and sends. No email leaves without you.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📨 The reminder ladder (France, B2B)</h2>
+  <div class="scroll"><table>
+    <tr><th>Step</th><th>When</th><th>Register</th><th>Must contain</th></tr>
+    <tr><td><b>Courteous nudge</b></td><td>~D+7</td><td>Warm, assumes oversight</td><td>Invoice number, amount incl. VAT, due date, payment means as stated on the invoice</td></tr>
+    <tr><td><b>Firm reminder</b></td><td>~D+21</td><td>Firm, factual</td><td>Same + days overdue, reference to the first reminder, announced next step</td></tr>
+    <tr><td><b>Formal notice</b></td><td>~D+45</td><td>Formal, legal</td><td>Same + late-payment interest (contract rate, else ECB refi + 10 pts, floor 3× the French legal rate) computed to the day + <strong>€40 recovery indemnity</strong> per invoice (art. L441-10 &amp; D441-5 French Commercial Code) + payment deadline + registered mail advised</td></tr>
+  </table></div>
+  <h3>The tone adapts to the payer profile</h3>
+  <div class="scroll"><table>
+    <tr><th>Profile</th><th>Detected from</th><th>Effect on the reminder</th></tr>
+    <tr><td>🟢 <b>Reliable, exceptionally late</b></td><td>Invoices always paid, low average delay</td><td>Warmest register, benefit of the doubt ("24 invoices, always paid, avg 5 days late → warm tone")</td></tr>
+    <tr><td>🟡 <b>Occasionally late</b></td><td>Sporadic delays in history</td><td>Standard ladder</td></tr>
+    <tr><td>🔴 <b>Chronically late</b></td><td>High average delay, repeated reminders</td><td>Never the warmest register — but always correct and factual</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables (outstanding, aging, per-invoice action table)</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Gmail draft</b></td><td>Complete email: recipient, subject with the invoice number, personalized body</td><td>When the Gmail MCP is connected; automatic fallback to copy-ready text</td></tr>
+    <tr><td><b>Copy-ready text</b></td><td>Subject + body, paste into any email client</td><td>Without the Gmail MCP</td></tr>
+    <tr><td><b>Interactive dashboard</b></td><td><strong>HTML</strong> file/artifact: aging bars, top late clients, reminder pipeline</td><td>When the host renders files; fallback to tables otherwise</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem → the scan + cross-check (<strong>an already-paid invoice caught before any reminder</strong>) → the payer profile → <strong>the draft appearing in Gmail with the exact numbers</strong> → the receivables report. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Payment link inside the reminder (<code>create_payment_link</code>)</td><td>Low</td><td>The client pays in one click from the email — payment links work despite the MCP doc</td></tr>
+    <tr><td><strong>Per-country legal kits</strong> (DE · ES · IT · AT · NL · BE · PT)</td><td>Medium</td><td>Each country's transposition of EU Directive 2011/7/EU</td></tr>
+    <tr><td>Scheduled Monday-morning run</td><td>Low</td><td>The ritual becomes an appointment</td></tr>
+    <tr><td>Full order-to-cash cycle upstream (quote → invoice → payment matching)</td><td>Medium</td><td>Feeds the chaser</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Never</strong> marks an invoice paid without showing the matching transaction and getting explicit confirmation in the conversation</li>
+    <li><strong>Never</strong> sends an email on its own: drafts by default, direct send only on explicit request — never presented as sent when it isn't</li>
+    <li>Below full matching confidence: a question, not an action</li>
+    <li>Legal computations are France-only and informative — professional review recommended before a formal notice goes out</li>
+    <li>Rehearsals: fictional client + draft invoices + <code>delete_client_invoice</code>; test drafts cleaned up · masked IBANs · pagination ≤ 50</li>
+  </ul>
+</section>
+
+<footer>qonto-invoice-chaser · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-invoice-chaser.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

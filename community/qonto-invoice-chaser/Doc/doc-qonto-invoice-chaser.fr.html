@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-invoice-chaser — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic · Skill #4</span>
+  <h1>qonto-invoice-chaser</h1>
+  <p class="sub">Relancer juste, encaisser plus vite — la relance d'impayés qui vérifie la banque avant d'écrire.</p>
+  <div class="badges">
+    <span>🔍 Ne relance jamais une facture déjà payée</span><span>✍️ Brouillons, jamais d'envoi silencieux</span>
+    <span>🇫🇷 Art. L441-10 intégré (40 € + intérêts)</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Une facture B2B française est payée en moyenne avec <strong>plus de 11 jours de retard</strong> — et la relance est la corvée que tout le monde repousse. Le skill transforme le compte Qonto en chargé de recouvrement qui ne froisse personne :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Détection des impayés</h4><p>Factures clients en retard (<code>due_date</code>), ancienneté calculée, encours total, aging 0-30 / 31-60 / 60+ jours.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Croisement encaissements</h4><p>Une facture « unpaid » peut être déjà payée : matching montant / contrepartie / référence → marquage <em>proposé</em>, jamais silencieux.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Profil payeur &amp; relance graduée</h4><p>Bon payeur en retard exceptionnel ≠ retardataire chronique. Courtois J+7 → ferme J+21 → mise en demeure J+45 (intérêts + 40 €).</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Brouillon Gmail</h4><p>MCP Gmail présent → la relance atterrit en brouillon : tu relis, tu envoies. Sinon texte prêt à copier. Rien ne part tout seul.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td>Kit juridique complet (intérêts + 40 €, art. L441-10) : <strong>France</strong>. Autres pays Qonto : relances graduées identiques, référence générique à la directive UE 2011/7 — jamais de taux inventé</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Factures clients dans Qonto</b></td><td>Le skill lit <code>list_client_invoices</code> ; sans facturation Qonto, rien à relancer — et il le dit</td><td>✅</td></tr>
+    <tr><td><b>MCP Gmail</b></td><td>Optionnel, détecté dynamiquement : présent → brouillons ; absent → texte prêt à copier</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Historique de facturation</b></td><td>Nourrit le profil payeur ; sans historique : ton standard + avertissement</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>La facture payée jamais marquée</strong> : virement reçu hors lien de paiement → le croisement <code>list_transactions</code> la détecte (montant exact ±0,01, contrepartie ≈ client, référence contenant le n° de facture) et propose <code>mark_client_invoice_as_paid</code> avec la transaction en preuve — <em>l'email le plus cher du B2B, c'est la relance envoyée à un client qui a payé</em></li>
+    <li><strong>Paiement partiel ou virement groupé</strong> (un règlement pour plusieurs factures) : candidats présentés avec les montants, jamais de marquage automatique, jamais de relance à l'aveugle</li>
+    <li><strong>Profil payeur sans historique</strong> : ton standard, annoncé honnêtement</li>
+    <li><strong>Email absent de la fiche client</strong> : signalé via <code>get_client</code>, suggestion de compléter la fiche — jamais d'adresse devinée</li>
+    <li><strong>Organisation hors France</strong> : relances graduées identiques, aucun taux juridique inventé</li>
+    <li>Compte vide ou sans factures clients : le skill le dit et s'arrête, au lieu de faire semblant · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Le skill rédige ; toi, tu décides :</b> la lecture (trait plein) est sans risque ; les deux écritures (pointillé) sont des actions <b>proposées</b> — le marquage « payée » exige la confirmation explicite dans la conversation, et la relance n'existe qu'en <b>brouillon</b> que toi seul relis et envoies. Aucun email ne part sans toi.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📨 L'échelle de relance (France, B2B)</h2>
+  <div class="scroll"><table>
+    <tr><th>Étape</th><th>Quand</th><th>Registre</th><th>Contenu obligatoire</th></tr>
+    <tr><td><b>Rappel courtois</b></td><td>~J+7</td><td>Chaleureux, présume l'oubli</td><td>N° de facture, montant TTC, date d'échéance, moyen de paiement indiqué sur la facture</td></tr>
+    <tr><td><b>Relance ferme</b></td><td>~J+21</td><td>Ferme, factuel</td><td>Idem + jours de retard, rappel de la 1ère relance, annonce de l'étape suivante</td></tr>
+    <tr><td><b>Mise en demeure</b></td><td>~J+45</td><td>Formel, juridique</td><td>Idem + intérêts de retard (taux contractuel, sinon BCE + 10 pts, plancher 3× taux légal) calculés au jour près + <strong>indemnité forfaitaire de 40 €</strong> par facture (art. L441-10 &amp; D441-5 C. com) + délai de règlement + envoi LRAR conseillé</td></tr>
+  </table></div>
+  <h3>Le ton s'adapte au profil payeur</h3>
+  <div class="scroll"><table>
+    <tr><th>Profil</th><th>Détecté par</th><th>Effet sur la relance</th></tr>
+    <tr><td>🟢 <b>Fiable, retard exceptionnel</b></td><td>Factures toujours réglées, retard moyen faible</td><td>Registre le plus chaleureux, bénéfice du doute (« 24 factures, toujours réglées, retard moyen 5 j → ton chaleureux »)</td></tr>
+    <tr><td>🟡 <b>Retardataire occasionnel</b></td><td>Retards ponctuels dans l'historique</td><td>Échelle standard</td></tr>
+    <tr><td>🔴 <b>Retardataire chronique</b></td><td>Retard moyen élevé, relances répétées</td><td>Jamais le registre le plus chaleureux — mais toujours correct et factuel</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown (encours, aging, table d'action par facture)</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Brouillon Gmail</b></td><td>Email complet : destinataire, objet avec n° de facture, corps personnalisé</td><td>Si le MCP Gmail est connecté ; repli automatique sur texte à copier</td></tr>
+    <tr><td><b>Texte prêt à copier</b></td><td>Objet + corps, à coller dans n'importe quel client mail</td><td>Sans MCP Gmail</td></tr>
+    <tr><td><b>Dashboard interactif</b></td><td>Fichier/artifact <strong>HTML</strong> : barres d'aging, top retardataires, pipeline de relances</td><td>Si l'hôte affiche les fichiers ; repli sur les tableaux sinon</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : problème → scan + croisement (<strong>la facture déjà payée détectée avant toute relance</strong>) → profil payeur → <strong>le brouillon qui apparaît dans Gmail avec les chiffres exacts</strong> → rapport d'encours. Tournée en live sur un compte de production réel.</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Lien de paiement dans la relance (<code>create_payment_link</code>)</td><td>Faible</td><td>Le client paie en un clic depuis l'email — les payment links marchent malgré la doc MCP</td></tr>
+    <tr><td><strong>Kits juridiques par pays</strong> (DE · ES · IT · AT · NL · BE · PT)</td><td>Moyen</td><td>Transposition de la directive 2011/7/UE propre à chaque pays</td></tr>
+    <tr><td>Rythme automatique (relance du lundi matin planifiée)</td><td>Faible</td><td>Le rituel devient un rendez-vous</td></tr>
+    <tr><td>Cycle complet order-to-cash (devis → facture → encaissement)</td><td>Moyen</td><td>Réutilise l'héritage P4 en amont du chasseur</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Jamais</strong> de marquage « payée » sans montrer la transaction et obtenir la confirmation explicite dans la conversation</li>
+    <li><strong>Jamais</strong> d'envoi d'email de sa propre initiative : brouillons par défaut, envoi direct uniquement sur demande explicite — jamais présenté comme envoyé s'il ne l'est pas</li>
+    <li>Sous le seuil de confiance du matching : question plutôt qu'action</li>
+    <li>Calculs juridiques France uniquement, informatifs — relecture pro recommandée avant mise en demeure</li>
+    <li>Répétitions : client fictif + factures draft + <code>delete_client_invoice</code> ; brouillons de test nettoyés · IBAN masqués · pagination ≤ 50</li>
+  </ul>
+</section>
+
+<footer>qonto-invoice-chaser · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-invoice-chaser.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
