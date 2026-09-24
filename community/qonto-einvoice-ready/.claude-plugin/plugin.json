@@ -1,0 +1,10 @@
+{
+  "name": "qonto-einvoice-ready",
+  "version": "0.1.0",
+  "description": "French e-invoicing readiness audit for Qonto accounts. From 2026-09-01 every French VAT-registered company must be able to RECEIVE electronic invoices (issuing becomes mandatory 2026-09-01 for large companies and mid-caps, 2027-09-01 for SMEs). The skill scores the account's readiness — client…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
