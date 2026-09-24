@@ -1,0 +1,10 @@
+{
+  "name": "qonto-rgpd-register",
+  "version": "0.1.0",
+  "description": "GDPR Article 30 register drafted from a Qonto account's spending. Detects the SaaS tools that process personal data (CRM, email marketing, analytics, AI, cloud, payroll, support) in the debits, classifies them by processing activity (purpose, typical data categories, EU / non-EU vendor location)…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
