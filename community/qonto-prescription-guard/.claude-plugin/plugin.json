@@ -1,0 +1,10 @@
+{
+  "name": "qonto-prescription-guard",
+  "version": "0.1.0",
+  "description": "Legal expiry radar for unpaid client invoices on Qonto accounts (France). Every unpaid invoice has a legal death date — 5 years between businesses (art. L110-4 French Commercial Code), 2 years against a consumer (art. L218-2 French Consumer Code). The skill scans the full invoice history, qualifies…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
