@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-approval-brief — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic</span>
+  <h1>qonto-approval-brief</h1>
+  <p class="sub">Instruire chaque demande d'équipe comme un DAF — toi seul approuves, dans l'app, sous SCA.</p>
+  <div class="badges">
+    <span>🔍 Chaque brief cite ses preuves</span><span>🚫 Zéro approbation via MCP</span>
+    <span>🌍 Universel — tous pays Qonto</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Les demandes de virement et de carte de l'équipe s'empilent dans Qonto — et le dirigeant approuve <strong>à l'aveugle, ou avec trois jours de retard</strong>. Chaque demande mériterait cinq minutes de fouille ; personne ne les a. Le skill fait le travail d'instruction d'un DAF sur chaque demande en attente :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Historique du bénéficiaire</h4><p>Déjà payé N fois ? Montants habituels ? Cadence ? Un 3e paiement identique ne se juge pas comme un premier virement.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Signal IBAN</h4><p>IBAN déjà vu dans l'historique (rassurant, daté) ou jamais vu — un signal de vigilance, pas une accusation.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Cohérence &amp; contexte</h4><p>Montant vs habitude (×4 → alerte forte), budget/label, devis retrouvé dans Gmail si le MCP est connecté.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Brief de décision</h4><p>✅ recommandé / 🔶 à vérifier, chaque affirmation sourcée — refus motivé via MCP (confirmé), approbations dans l'app avec ta 2FA.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Exemples de lignes de brief (inventés) : « ✅ recommandé : 3e paiement identique à ce prestataire » · « 🔶 vérifier : IBAN jamais vu, montant ×4 l'habitude ».</p>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><strong>Universel</strong> — l'instruction repose sur l'historique du compte, pas sur des règles nationales ; tous les pays Qonto (FR, DE, ES, IT…)</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Rôle avec revue des demandes</b></td><td>Owner/Admin/Manager : les demandes doivent être visibles — sinon <code>list_requests</code> revient vide et le skill dit pourquoi</td><td>✅</td></tr>
+    <tr><td><b>Des demandes en attente</b></td><td>Sinon rien à instruire — le skill le dit et s'arrête proprement</td><td>⭕</td></tr>
+    <tr><td><b>Historique ≥ quelques mois</b></td><td>En dessous, tout bénéficiaire paraît « nouveau » — dégradation annoncée</td><td>⭕</td></tr>
+    <tr><td><b>Slack · Gmail (MCP optionnels)</b></td><td>Digest et contexte email — détectés dynamiquement, jamais requis</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Aucune demande en attente</strong> → le skill le dit et s'arrête proprement, rien d'inventé</li>
+    <li><strong><code>list_requests</code> vide à cause du rôle</strong> → annoncé comme un problème de visibilité, jamais « tout va bien »</li>
+    <li><strong>Historique court</strong> → tout bénéficiaire paraît « nouveau » : dégradation annoncée au lieu de crier au loup</li>
+    <li>Même fournisseur sous trois graphies (majuscules, accents, abréviations) → normalisé et fusionné en un seul tiers</li>
+    <li>Demandes de carte sans IBAN → instruction adaptée : plafonds demandés vs dépenses carte habituelles de l'équipe</li>
+    <li>MCP Gmail ou Slack absent → annoncé une fois, le cœur continue en Qonto pur · pagination ≤ 50 partout · IBAN masqués</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Le modèle de sécurité, pas une limitation :</b> la lecture est sans risque ; la seule écriture est un <b>refus motivé</b>, confirmé dans la conversation. L'approbation n'existe pas dans ce skill — <b>approve_request n'est jamais appelé</b>. Approuver = l'app Qonto + ta SCA (2FA). Rien de ce que fait ce skill ne peut déplacer un euro.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🔍 Les signaux du brief</h2>
+  <div class="scroll"><table>
+    <tr><th>Signal</th><th>Vérifié comment</th><th>Lecture</th></tr>
+    <tr><td><b>Bénéficiaire connu</b></td><td><code>list_transactions</code> 12-24 mois, graphies normalisées : N paiements, montants, cadence</td><td>✅ rassurant si stable et daté</td></tr>
+    <tr><td><b>IBAN jamais vu</b></td><td>Comparé aux IBAN des virements sortants passés</td><td>🔶 vigilance, pas accusation — un nouveau fournisseur est normal, une fois</td></tr>
+    <tr><td><b>Montant inhabituel</b></td><td>Ratio vs médiane historique du même bénéficiaire</td><td>🔶 ×2 signalé, ×4 alerte forte, les deux chiffres affichés</td></tr>
+    <tr><td><b>Doublon possible</b></td><td>Même bénéficiaire + même montant payé dans les ~10 derniers jours</td><td>🔶 transaction citée (date, montant)</td></tr>
+    <tr><td><b>Cohérence budget/label</b></td><td><code>list_labels</code> + équipe du demandeur</td><td>ℹ️ signal doux, jamais décisif seul</td></tr>
+    <tr><td><b>Contexte email</b></td><td>Devis/échange retrouvé dans Gmail (si MCP connecté)</td><td>ℹ️ cité dans le brief (objet, date)</td></tr>
+    <tr><td><b>Demande de carte</b></td><td>Pas d'IBAN : plafonds demandés vs dépenses carte habituelles</td><td>ℹ️ instruction adaptée</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableau des briefs + brief détaillé par demande 🔶 + prochaine étape explicite</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Tableau de bord des briefs</b></td><td>Fichier/artifact <strong>HTML</strong> : une carte par demande, verdict et preuves</td><td>Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; repli automatique sur les tableaux sinon</td></tr>
+    <tr><td><b>Motif de refus</b></td><td>Texte joint au refus via <code>decline_request</code>, visible par le demandeur dans Qonto</td><td>À chaque refus (confirmé)</td></tr>
+    <tr><td><b>Digest Slack</b></td><td>Résumé des briefs posté sur le canal choisi</td><td>Si le MCP Slack est connecté (optionnel)</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : la pile de demandes → les briefs sourcés → la demande douteuse (IBAN jamais vu, montant ×4) refusée en un mot → <strong>les approbations dans l'app Qonto, sous SCA, filmées sur téléphone</strong> → wrap-up. Toutes les demandes de la démo sont inventées. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Politique d'approbation apprise (seuils par catégorie/label)</td><td>Moyen</td><td>Les briefs deviennent « conforme / hors politique »</td></tr>
+    <tr><td>Rapprochement facture fournisseur (<code>list_supplier_invoices</code>)</td><td>Faible</td><td>La demande adossée à sa facture = preuve de plus dans le brief</td></tr>
+    <tr><td>Digest quotidien planifié sur Slack</td><td>Faible</td><td>Multi-MCP optionnel, détecté dynamiquement</td></tr>
+    <tr><td>Mémoire des vérifications passées</td><td>Moyen</td><td>Un IBAN vérifié une fois avec le demandeur devient « connu »</td></tr>
+  </table></div>
+  <p style="margin-top:.8rem"><strong>Skills compagnons</strong> : <code>qonto-fraud-sentinel</code> (surveille les transactions <em>passées</em> ; ce skill instruit les demandes <em>futures</em>) · <code>qonto-reimburse-batch</code> (<em>crée</em> des demandes groupées — ce skill les <em>instruit</em> ensuite).</p>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Recommandation ≠ décision</strong> : chaque brief cite ses preuves ; le skill ne dit jamais « approuvé » ni « sûr », il dit « recommandé, parce que… »</li>
+    <li><strong>Jamais</strong> de refus sans confirmation explicite dans la conversation en cours ; le motif accompagne toujours le refus (le demandeur le voit)</li>
+    <li>« IBAN jamais vu » = <strong>signal, pas accusation</strong> — formulé ainsi dans chaque brief</li>
+    <li>Le skill <strong>n'approuve jamais</strong> : <code>approve_request</code> n'est pas utilisé — approuver = app Qonto + ta SCA</li>
+    <li>IBAN masqués (4 derniers) · pagination ≤ 50 · <code>decline_request</code> exige <code>request_type: "multi_transfers"</code> (pluriel) · exemples inventés et signalés</li>
+  </ul>
+</section>
+
+<footer>qonto-approval-brief · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-approval-brief.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
