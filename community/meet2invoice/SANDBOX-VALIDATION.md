@@ -36,8 +36,8 @@ quote → PDF hash → draft invoice with real hash proof → deleted everything
   downloaded, SHA-256 `09bcdfb8…c4ca` computed locally.
 - Draft invoice accepted a 224-char proof string with the real hash; drafts
   are auto-numbered `F-2026-00X-PROFORMA` until finalized.
-- Cleanup verified: `delete_client_invoice` (draft), `delete_quote`,
-  `delete_client` all return 204.
+- Cleanup verified: draft invoice deletion, quote deletion, and client
+  deletion all return 204 (test-only calls, not part of the skill's flow).
 
 Timing: full flow ran in ~2 minutes of tool calls — fits the 3-minute video.
 
