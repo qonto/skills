@@ -86,6 +86,8 @@ the hash injected → sent.
 
 <img src="demo/sample-output/proof-footer.png" width="820" alt="Invoice footer showing: Signed proof: local SHA-256 hash | SHA-256: d01d8a77... | Anchor: Qonto Quote D-2026-005 | Verify: scripts/verify-proof.sh quote.pdf invoice.pdf">
 
+<sub>Screenshot from an earlier sandbox run, where the line was still labelled "Signed proof". The skill now writes "Hash proof": it is tamper-evidence, not a signature.</sub>
+
 ```console
 $ scripts/verify-proof.sh quote-D-2026-005.pdf invoice-F-2026-005.pdf
 SHA-256 (local)   d01d8a77fb828e6b581b17e72df601c70fd09196bf45f433a946a3a1580e7d11
@@ -151,7 +153,6 @@ mandatory legal mention, offline-verified proof, and a localized client email.
 | `references/invoicing-law.md` | Per-country VAT / e-invoicing rules used at extraction time |
 | `demo/` | Multi-language demo transcripts + the video scripts |
 | `demo/sample-output/` | Screenshots from a real sandbox run (this README's images) |
-| `sign-ring/` | Optional zero-dependency signature MCP (hash-only multi-party sign-off) |
 | `SANDBOX-VALIDATION.md` | Full validation log against the official Qonto sandbox MCP |
 
 Validated end-to-end against the official Qonto sandbox MCP:

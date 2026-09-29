@@ -62,4 +62,4 @@ Open the invoice PDF, zoom the footer.
 ### The one honest line if asked "is the hash really secure?"
 > "It's tamper-evidence between two parties who each hold the quote — not a
 > digital signature. It secures the link where invoice fraud actually happens,
-> and never exposes the document. The sign-ring extension adds identity signing."
+> and never exposes the document."
