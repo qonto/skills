@@ -1,0 +1,10 @@
+{
+  "name": "meet2invoice",
+  "version": "0.1.0",
+  "description": "Turn a sales meeting artifact (transcript, notes, calendar event) into money movement in Qonto: extract the deal, preview it, create the quote, hash the authoritative PDF locally (SHA-256), and on acceptance create + finalize the invoice with an offline-verifiable proof injected into its terms —…",
+  "author": {
+    "name": "Martin Kaiser",
+    "url": "https://github.com/kaiser-data"
+  },
+  "license": "MIT"
+}
