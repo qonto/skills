@@ -4,9 +4,9 @@ description: "French e-invoicing readiness audit for Qonto accounts. From 2026-0
 permissions:
   mcp:
     qonto: [get_client, get_organization, list_client_invoices, list_clients, list_transactions, update_client]
-  network: []
+  network: [recherche-entreprises.api.gouv.fr]
   env: []
-  tools: [Read]
+  tools: [Read, WebFetch]
 ---
 
 # Qonto E-invoice Ready
