@@ -1,0 +1,12 @@
+{
+  "name": "well",
+  "version": "0.1.0",
+  "description": "Board-ready finance numbers for Qonto customers: cash, burn, runway, recurring revenue, and what is owed on each side, computed by Well across Qonto and every other connected bank and tool.",
+  "author": {
+    "name": "Well",
+    "url": "https://wellapp.ai"
+  },
+  "homepage": "https://wellapp.ai/skills",
+  "license": "MIT",
+  "keywords": ["fpa", "board", "runway", "burn", "mrr", "well"]
+}
