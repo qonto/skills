@@ -4,7 +4,7 @@ description: Assemble the board numbers for a Qonto customer in one pass. Cash, 
 permissions:
   mcp:
     qonto: [get_organization, list_bank_accounts]
-    well: [well_get_skill, well_list_workspaces, well_show_workspace_picker, well_switch_workspace, well_wait_for_selection, well_list_connectors, well_get_connector_coverage, well_get_worklist_status, well_get_schema, well_query_records, well_get_entity, well_show_records, well_list_account_balances, well_list_accounts_needing_company, well_assign_account, well_set_own_company, well_update_company, well_delete_company, well_list_cash_scope, well_list_uncategorized_window, well_set_transaction_category, well_list_burn_exemptions, well_list_recurring_contexts, well_sum_transactions, well_sum_invoices, well_render_cash_position, well_render_burn, well_render_runway, well_render_mrr, well_get_session_digest, well_propose_next_steps]
+    well: [well_get_skill, well_search_skill, well_list_workspaces, well_show_workspace_picker, well_switch_workspace, well_wait_for_selection, well_list_connectors, well_get_connector_coverage, well_get_worklist_status, well_get_schema, well_query_records, well_get_entity, well_show_records, well_list_account_balances, well_list_accounts_needing_company, well_assign_account, well_set_own_company, well_update_company, well_delete_company, well_list_cash_scope, well_list_uncategorized_window, well_set_transaction_category, well_list_burn_exemptions, well_list_recurring_contexts, well_sum_transactions, well_sum_invoices, well_render_cash_position, well_render_burn, well_render_runway, well_render_mrr, well_get_session_digest, well_propose_next_steps]
   network: [api.wellapp.ai]
   env: []
   tools: []
