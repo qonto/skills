@@ -24,7 +24,7 @@ Qonto proves the account and gives a live balance to cross-check. Well computes 
 ## Tooling
 
 - **Qonto MCP** (`qonto`): `get_organization` identifies the company, `list_bank_accounts` gives the live Qonto balances used to cross-check Well's cash figure. If no Qonto tool is available, tell the user to connect Qonto first and stop.
-- **Well MCP** (`well`, `https://api.wellapp.ai/v1/mcp`, bundled in this plugin's `.mcp.json`): computes every page of the pack. If no `well_*` tool is available, tell the user to add the Well connector at that address, say in one line what it adds (every other bank and tool in the same figures), and stop. Never fall back to computing the figures from Qonto transactions.
+- **Well MCP** (`well`, `https://api.wellapp.ai/v1/mcp`, bundled in this plugin's `.mcp.json`): computes every page of the pack. If no `well_*` tool is available, tell the user how to get them, say in one line what Well adds (every other bank and tool in the same figures), and stop. In Claude Code, the plugin already declares the server: the user runs `/mcp`, picks the Well server and signs in. On claude.ai or Claude Desktop, the user adds the Well connector at that address. Never fall back to computing the figures from Qonto transactions.
 
 ## Workflow
 
