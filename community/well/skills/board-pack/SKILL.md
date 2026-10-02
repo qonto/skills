@@ -1,6 +1,6 @@
 ---
 name: board-pack
-description: Assemble the board numbers for a Qonto customer in one pass. Cash, burn, runway, recurring revenue, and what is owed on each side, computed by Well from the balances, transactions and invoices of Qonto and every other connected account, each figure with the window and scope it was measured under. Use when the user asks "put my board pack together", "what numbers do I put in front of the board", "board numbers for this quarter", "what do I report to my investors", "prépare mon board pack", or "mes chiffres pour le board". Requires the Qonto connector and a Well workspace. It writes nothing to Qonto.
+description: Run Well's board-pack skill for a Qonto customer. It assembles the board numbers in one pass. Cash, burn, runway, recurring revenue, and what is owed on each side, computed by Well from the balances, transactions and invoices of Qonto and every other connected account, each figure with the window and scope it was measured under. Use when the user asks "run Well's board-pack skill for me", "put my board pack together", "what numbers do I put in front of the board", "board numbers for this quarter", "what do I report to my investors", "prépare mon board pack", or "mes chiffres pour le board". Requires the Qonto connector and a Well workspace. It writes nothing to Qonto.
 permissions:
   mcp:
     qonto: [get_organization, list_bank_accounts]
@@ -14,6 +14,8 @@ metadata:
 ---
 
 # Board pack
+
+This skill runs **Well's `board-pack` skill**. It does not build a board pack of its own: Well's skill, loaded from the Well MCP server, does all the work.
 
 ## Purpose
 
@@ -30,7 +32,7 @@ Qonto proves the account and gives a live balance to cross-check. Well computes 
 
 1. **Identify the Qonto company.** Call `get_organization`. Keep the company name and the list of Qonto accounts.
 2. **Check Well is there.** If no `well_*` tool is in the toolset, stop as described in Tooling.
-3. **Load the board pack instructions.** Call `well_get_skill({ skill: "board-pack" })` and follow the returned document exactly. It is the authoritative instruction set, kept current by Well. Do not substitute your own plan for it. When it tells you to run another Well skill, load that one the same way, at the moment it says to. If the call returns `success: false` or an error, tell the user the board pack is temporarily unavailable and stop. Do not improvise from memory.
+3. **Run Well's board-pack skill.** Call `well_get_skill({ skill: "board-pack" })`: the skill id is exactly `board-pack`, never another skill and never a search for one. Follow the returned document exactly, step by step, from its first step. It is the authoritative instruction set, kept current by Well. Do not call any Well render or sum tool before the document tells you to, do not assemble the pages yourself, and do not substitute your own plan for it. When it tells you to run another Well skill, load that one the same way, at the moment it says to. If the call returns `success: false` or an error, tell the user the board pack is temporarily unavailable and stop. Do not improvise from memory.
 4. **Make sure Qonto is inside the Well figures.** When the loaded document reaches its connection check (`well_list_connectors`), confirm that Qonto is among the connected banks of the Well workspace. If it is not, tell the user that Well's figures do not yet include their Qonto accounts, and let the document's connection step connect it before any page is measured.
 5. **Cross-check the cash page.** After the cash page is measured, call `list_bank_accounts` and compare each Qonto account's balance with the balance Well used for the same account. If they differ, say so in one line with Well's last sync time. Never silently prefer either figure.
 6. **Answer** with the pages the loaded document produced, in its format.
