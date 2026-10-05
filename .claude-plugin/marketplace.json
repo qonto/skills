@@ -82,6 +82,21 @@
       "license": "MIT"
     },
     {
+      "name": "qonto-sector-benchmark",
+      "source": "./community/qonto-sector-benchmark",
+      "description": "Sector health check-up for Qonto accounts. Computes the company's real ratios from transactions and invoices (fixed-cost share, software subscription weight, observed client payment delay, revenue seasonality, cash in days of expenses) and compares them against official French sector statistics\u2026",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "qonto-tax-pilot",
       "source": "./community/qonto-tax-pilot",
       "description": "French tax radar and cash pilot for Qonto accounts. Builds a dated, amount-estimated tax schedule (VAT, corporate tax instalments, CFE, dividend flat tax), projects the next 90 days of cash, computes the month's tax provision, and \u2014 with explicit user consent \u2014 creates a transfer request to a\u2026",

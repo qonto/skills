@@ -80,6 +80,21 @@
       ]
     },
     {
+      "name": "qonto-sector-benchmark",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-sector-benchmark"
+      },
+      "description": "Sector health check-up for Qonto accounts. Computes the company's real ratios from transactions and invoices (fixed-cost share, software subscription weight, observed client payment delay, revenue seasonality, cash in days of expenses) and compares them against official French sector statistics\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
       "name": "qonto-tax-pilot",
       "source": {
         "source": "local",
