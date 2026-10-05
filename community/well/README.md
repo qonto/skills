@@ -14,14 +14,14 @@ Board-ready finance numbers for Qonto customers, computed by [Well](https://well
 
 | Skill | Ask | What you get |
 |---|---|---|
-| `board-pack` | "Run Well's board-pack skill for me" · "Put my board pack together" · "Prépare mon board pack" | Cash, burn, runway, recurring revenue, receivables and payables, each with its window and scope |
+| `board-pack` | "Put my board pack together" · "Prépare mon board pack" | Cash, burn, runway, recurring revenue, receivables and payables, each with its window and scope |
 
 ![Board pack in Claude: cash, burn, runway and MRR computed by Well (example figures)](assets/board-pack.functional.en.png)
 
 ## How it works
 
-Each skill reads the Qonto organization and balances through the Qonto MCP, then loads its current instructions from Well (`well_get_skill`) and lets Well compute every figure. Well's instructions are versioned and served by Well, so the skill stays current without a new release here.
+Each skill reads the Qonto organization and balances through the Qonto MCP, and Well's MCP server computes every figure. The instructions the skill follows are all in this plugin (`skills/<skill>/SKILL.md` and its `references/`): nothing is loaded from Well at run time, and no other skill is run. A change to the steps ships as a new version of this plugin, reviewed here.
 
 ## Scope
 
-Reads Qonto and writes nothing to Qonto. Any change happens inside the Well workspace, after you confirm it. Not financial or tax advice.
+Reads Qonto and writes nothing to Qonto. Inside the Well workspace, two changes are possible, each made by the user on a card: attaching a bank account to a company, and setting a transaction's category. The skill never makes either change itself. Not financial or tax advice.
