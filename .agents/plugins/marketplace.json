@@ -5,6 +5,21 @@
   },
   "plugins": [
     {
+      "name": "qonto-asset-registry",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-asset-registry"
+      },
+      "description": "Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices.",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
       "name": "qonto-counterparty-watch",
       "source": {
         "source": "local",
@@ -26,6 +41,36 @@
         "path": "./community/qonto-crew-onboard"
       },
       "description": "One-sentence financial onboarding (and offboarding) of an employee on Qonto. Reads a per-role policy defined once with the user (card caps, online-only, team), then on \"Alex starts Monday as a developer\" it invites the member, creates the team if new, and prepares a capped card request that\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
+      "name": "qonto-grant-scout",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-grant-scout"
+      },
+      "description": "Public-funding scout for Qonto accounts. Builds the company's real profile from the account \u2014 sector, location, size, actual spending structure (training, equipment, digital, hiring, export, energy) \u2014 then cross-references it with French public aid referentials on data.gouv.fr (via the Datagouv MCP\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
+      "name": "qonto-prescription-guard",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-prescription-guard"
+      },
+      "description": "Legal expiry radar for unpaid client invoices on Qonto accounts (France). Every unpaid invoice has a legal death date \u2014 5 years between businesses (art. L110-4 French Commercial Code), 2 years against a consumer (art. L218-2 French Consumer Code). The skill scans the full invoice history, qualifies\u2026",
       "policy": {
         "installation": "AVAILABLE"
       },

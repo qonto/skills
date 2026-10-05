@@ -95,8 +95,11 @@ project. Needs Node.js 22.20 or later.
 <!-- skills:start -->
 | Plugin | What it does | Author | Tier |
 |---|---|---|---|
+| [`qonto-asset-registry`](./community/qonto-asset-registry) | Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-counterparty-watch`](./community/qonto-counterparty-watch) | Legal-health radar for the clients and suppliers of a Qonto account. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-crew-onboard`](./community/qonto-crew-onboard) | One-sentence financial onboarding (and offboarding) of an employee on Qonto. | [seb](https://github.com/SebDeNoocode) | community |
+| [`qonto-grant-scout`](./community/qonto-grant-scout) | Public-funding scout for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
+| [`qonto-prescription-guard`](./community/qonto-prescription-guard) | Legal expiry radar for unpaid client invoices on Qonto accounts (France). | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-tax-pilot`](./community/qonto-tax-pilot) | French tax radar and cash pilot for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-tax-radar`](./community/qonto-tax-radar) | French tax pre-audit ("pré-contrôle fiscal") for Qonto accounts, 100% read-only. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-vat-return`](./community/qonto-vat-return) | French VAT return (CA3, form 3310-CA3) preparer for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
