@@ -47,7 +47,7 @@ For each kind, `bank` (required), `invoicing` and `accounting`, keep only rows w
 Read each row's state, first match wins:
 
 1. `to_configure` or `disabled`, or no connection at all (`connection_status: null` with `is_connected: false`) → **missing**.
-2. `need_reconnect` or `error` → **error**. Offer `install_url` as a reconnect.
+2. `need_reconnect` or `error` → **error**. Send the user to `https://app.wellapp.ai` to reconnect there; do not pass through `install_url` from the connector response.
 3. `enabled` with `last_successful_sync_at` set → **connected** ("data may be partial" if `sync_in_progress: true`).
 4. Otherwise → **connecting**.
 

@@ -80,9 +80,44 @@ Then call `well_render_mrr` with the average, the currency, the window, both mon
 
 ## 21. Page five, what is owed on each side
 
-Skip this page when step 3 found no invoicing source. Read `well_get_schema({ root: "invoices" })` once, and take the date field and the outstanding-amount field from it. Never guess a field name.
+Skip this page when step 3 found no invoicing source.
 
-- Two `well_show_records` calls on `invoices`, one with `partyScope: "sales"` and one with `partyScope: "purchase"`, each over the window on the schema's date field, oldest first.
-- One `well_query_records` on `invoices` with `partyScope: "unattributed"` over the same window. Read `totalCount` only, and report it beside the two sides.
-- Take each side's total from `well_sum_invoices` over the same window (`party_scope: "sales"`, then `party_scope: "purchase"`), never by paging rows. A non-null `nextCursor` is not work left to do.
+**This page reads as of now, like the cash page.** What is owed is a balance, so it has no window and no divisor. An invoice issued and paid inside the window is owed by nobody, and an unpaid one issued before the window is still owed.
+
+**Never take an owed figure from `well_sum_invoices`.** It sums what was billed over a window, paid or not, so paid invoices would count as owed. It serves step 20 alone.
+
+### Owed to you
+
+One `well_sum_receivables({ workspace_id })`, with no `customer_ids`. Well applies one fixed rule on the server and echoes it in `rule`:
+
+- the workspace is the issuer and the customer the receiver;
+- the document is a billing document (never a proforma, a quote, an order or a credit note);
+- it is not a draft and not canceled;
+- its payment status is `unpaid` or `partial`;
+- its `balance_due` is above zero.
+
+The amount is `balance_due`, never the invoiced total: a paid invoice is not in the figure, and a part-paid invoice counts for what is left.
+
+- **Report each currency row as returned**: `outstanding_count`, `outstanding_total`, and the `overdue_count` and `overdue_total` part past its due date. Convert each currency's total at today's rate under the rules above, then add. The aging bands are not part of this page.
+- **Give `as_of` beside the figure.**
+- **State what the figure left out, each on its own line, even at zero**: `marked_paid_count` and `marked_paid_total` (a connector says settled, no bank payment matched yet), `draft_count` and `draft_total`, `unsettled_credit_note_count` and `unsettled_credit_note_total`. None of them is in the total, and none is subtracted from it.
+- **State the counts beside the total**: `unknown_payment_status_count`, `unattributed_count`, `no_currency_count`, `no_balance_count`. A `null` count means unmeasured, never zero.
+- `partial: true` → every figure is a floor; say so. `success: false` → the page is not measured; the empty `currencies` is not a zero.
+- Never add up rows to reach or adjust this total.
+
+Then put the rows behind it on screen: read `well_get_schema({ root: "invoices" })` once and take the payment-status, lifecycle-status and due-date fields from it, never a guessed name. One `well_show_records` on `invoices` with `partyScope: "sales"`, payment status `unpaid` or `partial`, lifecycle status neither `draft` nor `canceled`, oldest due date first.
+
+### Owed by you
+
+**Well has no server-side sum of the outstanding balance on the purchase side.** So this side is a count and the rows, and it states no total.
+
+- One `well_show_records` on `invoices` with `partyScope: "purchase"`, payment status `unpaid` or `partial`, lifecycle status neither `draft` nor `canceled`, oldest due date first, using the same schema fields.
+- Report its `totalCount` as the number of supplier invoices still unpaid or partly paid. `totalCount` counts every match, not the page on screen. A non-null `nextCursor` is not work left to do.
+- Say in one line that the total owed by you is not measured, and why: no outstanding sum exists for supplier invoices.
+- Never build that total: not by adding `balance_due` across rows, not by paging, and not from `well_sum_invoices`.
+- A failed read → this side is not measured. Say so; never report a zero.
+
+### Both sides
+
+- `unattributed_count` from `well_sum_receivables` is the number of outstanding-looking invoices Well could place on neither side. Report it once, beside the two sides: those invoices may be owed either way and are in no figure.
 - Never filter a counterparty by name to build a figure.

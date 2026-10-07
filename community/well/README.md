@@ -14,7 +14,7 @@ Board-ready finance numbers for Qonto customers, computed by [Well](https://well
 
 | Skill | Ask | What you get |
 |---|---|---|
-| `board-pack` | "Put my board pack together" · "Prépare mon board pack" | Cash, burn, runway, recurring revenue, receivables and payables, each with its window and scope |
+| `board-pack` | "Put my board pack together" · "Prépare mon board pack" | Cash, burn, runway, recurring revenue, what customers still owe you and how many supplier invoices are still unpaid, each with its window and scope |
 
 ![Board pack in Claude: cash, burn, runway and MRR computed by Well (example figures)](assets/board-pack.functional.en.png)
 
