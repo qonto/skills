@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-meeting-invoice — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon · Skill #12</span>
+  <h1>qonto-meeting-invoice</h1>
+  <p class="sub">From call to quote, before the meeting ends — careful extraction, draft first, send after confirmation.</p>
+  <div class="badges">
+    <span>📝 Nothing invented, everything quoted</span><span>🔒 Draft first, confirmed send</span>
+    <span>🧾 Legal mentions = Qonto settings</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>A great sales call, everyone's excited… and the quote goes out <strong>three days later</strong>. By then the momentum is gone. Call-to-invoice is a known dream — this skill's bet is making it trustworthy: what wasn't said on the call never enters the document.</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Transcript in</h4><p>A file, a Notion/Drive note (when that MCP is connected), or pasted text — no third-party MCP required.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Careful extraction</h4><p>Deliverables, quantities, prices, discounts, terms — only what was said, every term quoted. The rest: a question, never a guess.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Matched against Qonto</h4><p>Product catalog (prices, VAT), client records (confirmed creation for new prospects), duplicate check on existing quotes.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Draft, then send</h4><p>Quote (or invoice) as a draft, line-by-line recap, sent only after an explicit "yes, send it".</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>Every call that ends with "I'll send you a quote" is this skill's Monday morning.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td>All Qonto countries; legal mentions come from the country's invoicing settings, VAT rates never assumed (catalog or confirmation)</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Qonto invoicing configured</b></td><td>Numbering, legal mentions, payment details — set once in the app; the skill builds on them, never reinvents them</td><td>✅</td></tr>
+    <tr><td><b>A call transcript</b></td><td>File, Notion/Google Drive note, or text pasted into the conversation</td><td>✅</td></tr>
+    <tr><td><b>Product catalog</b></td><td>Services with prices and VAT (<code>list_products</code>) — without it, the skill asks for each missing price</td><td>⭕ recommended</td></tr>
+    <tr><td><b>Notion / Google Drive MCP</b></td><td>Transcript source, detected dynamically — when absent, the skill says so and asks for a paste</td><td>⭕ optional</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Quoted extraction, never guessed</strong>: every extracted term is backed by its transcript line — filler words, several speakers and mixed languages are the normal case</li>
+    <li><strong>"The usual rate"</strong> → matched against the catalog (<code>list_products</code>) and confirmed; call/catalog divergences flagged ("the call says €850/day, your catalog says €900"), never settled silently</li>
+    <li><strong>No catalog?</strong> → lines built from the call, missing prices asked one by one</li>
+    <li><strong>New prospect with half an address</strong> → <code>create_client</code> proposed with known fields read back, missing ones asked; <code>list_clients</code> first (duplicate check)</li>
+    <li><strong>Payment term not stated</strong> → asked, or the organization's Qonto default offered — explicitly, never silently</li>
+    <li>Non-French organization → same workflow; VAT and legal mentions follow that country's Qonto settings, nothing French is assumed · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Documents created via MCP are real:</b> reads (catalog, clients, quotes) are risk-free; the write only produces a <b>draft</b>. Sending to the prospect requires explicit confirmation in the conversation, after the line-by-line recap. Nothing leaves without the user's go.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📞 From call to document — what the skill extracts</h2>
+  <div class="scroll"><table>
+    <tr><th>Heard on the call</th><th>Becomes</th><th>Checked against</th></tr>
+    <tr><td>"Three workshop days in September"</td><td>Line item: Workshop · qty 3 · start date</td><td>Catalog: canonical title, unit price, VAT</td></tr>
+    <tr><td>"We'll take 10% off the audit"</td><td>Discount on the Audit line</td><td>Catalog price before discount</td></tr>
+    <tr><td>"The usual rate"</td><td>⚠️ Listed ambiguity → confirmation requested</td><td>Catalog + the user's answer</td></tr>
+    <tr><td>"It's Acme, contact marie@…"</td><td>The quote's client</td><td><code>list_clients</code> — match or confirmed creation</td></tr>
+    <tr><td>Payment term never mentioned</td><td>⚠️ Listed ambiguity → question or Qonto default offered</td><td>The organization's invoicing settings</td></tr>
+    <tr><td>VAT never discussed</td><td>Rate from the product record, else confirmation</td><td>Catalog — never an invented default</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: quoted extraction, ambiguity list, line-by-line recap</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Draft in Qonto</b></td><td>Quote or invoice on the organization's own invoicing template (native numbering &amp; legal mentions)</td><td>After ambiguities are settled</td></tr>
+    <tr><td><b>Email to the prospect</b></td><td>Native Qonto sending (<code>send_quote</code> / <code>send_client_invoice</code>)</td><td><strong>Only</strong> after explicit confirmation</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem (the quote that ships three days late) → pasted transcript &amp; quoted extraction → catalog/client matching &amp; the ambiguity list → <strong>the complete quote in Qonto ~90 seconds after the meeting ends, then the send</strong> → the guardrails. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Automatic deposit ("30% upfront") via <code>create_payment_link</code></td><td>Low</td><td>Official MCP tool, same confirmation logic</td></tr>
+    <tr><td>Follow-up on unsigned quotes after N days (<code>list_quotes</code>)</td><td>Low</td><td>Pairs with an invoice-chasing skill</td></tr>
+    <tr><td>Direct audio transcription (file → text) when the host supports it</td><td>Medium</td><td>The skill stays text-transcript-first</td></tr>
+    <tr><td>A/B quotes (with/without an option) from the same call</td><td>Medium</td><td>Two drafts compared side by side</td></tr>
+    <tr><td>Quote in the prospect's language</td><td>Low</td><td>Qonto handles the templates; the skill adapts the wording</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li>Documents created via MCP are <strong>real</strong>: draft first, always; <strong>never</strong> sent without explicit confirmation; never presented as sent while it is a draft</li>
+    <li>Nothing invented: a price, VAT rate, quantity or due date missing from the call → a question — no default VAT</li>
+    <li><code>create_client</code> only after details are read back; <code>list_clients</code> first (duplicate check)</li>
+    <li>Rehearsals: fictitious client + <code>delete_quote</code> / <code>delete_client_invoice</code> (drafts only — a finalized invoice cannot be deleted)</li>
+    <li>Pagination ≤ 50 · personal data masked · no legal or tax advice — Qonto settings and the accountant remain the reference</li>
+  </ul>
+</section>
+
+<footer>qonto-meeting-invoice · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-meeting-invoice.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
