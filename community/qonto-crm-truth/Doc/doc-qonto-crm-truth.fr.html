@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-crm-truth — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic MCP</span>
+  <h1>qonto-crm-truth</h1>
+  <p class="sub">Le CRM qui ne ment plus — la banque comme source de vérité, écrite dans HubSpot ou Airtable.</p>
+  <div class="badges">
+    <span>🏦 Vérité bancaire vs fiction CRM</span><span>🤝 Matching toujours confirmé</span>
+    <span>✍️ Écrit dans HubSpot ou Airtable</span><span>🔒 Zéro écriture Qonto</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Dans le CRM, un deal « Closed Won » ressemble à du chiffre d'affaires. Tant que l'argent n'est pas sur le compte, <strong>c'est une fiction</strong>. Le skill réconcilie les fiches CRM (HubSpot <strong>ou</strong> Airtable) avec la vérité bancaire Qonto :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Deals « won » jamais encaissés</h4><p>Chaque deal gagné sans un euro correspondant sur le compte — listé avec montant, ancienneté et fiche CRM.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>CA réel, LTV &amp; délais</h4><p>Le chiffre encaissé (pas déclaré), la LTV cash, le délai moyen constaté « paie à J+X », le dernier encaissement.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Score payeur A/B/C</h4><p>Calculé depuis la banque, formule affichée — jamais de score deviné (&lt; 2 factures payées → non noté).</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Écrit dans le CRM</h4><p>Propriétés custom HubSpot / colonnes Airtable — après matching confirmé et aperçu approuvé, jamais silencieux.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><strong>Universel</strong> — aucune règle fiscale locale : identique pour tous les pays Qonto (FR, DE, ES, IT, AT, NL, BE, PT)</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>MCP HubSpot ou Airtable</b></td><td>Le CRM — requis pour l'écriture. Sans lui : mode dégradé, rapport « clients Qonto scorés » dans la conversation</td><td>⭕ requis pour écrire</td></tr>
+    <tr><td><b>Factures clients dans Qonto</b></td><td>Ancrent délais et matching ; sans elles, analyse par contrepartie des crédits, annoncée comme telle</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Historique ≥ 6 mois</b></td><td>En dessous : dégradation honnête (scores « non noté » + avertissement)</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Graphies multiples fusionnées</strong> : « ACME STUDIO », « Acme Studio SARL », « acme studio »… normalisées (casse, accents, suffixes juridiques SARL/SAS/GmbH) et présentées comme UN client dans le tableau de correspondance</li>
+    <li><strong>Fiche CRM sans client Qonto</strong> (ou l'inverse) → listée « non matchée », exclue des écritures, jamais forcée</li>
+    <li><strong>Deals sans montant</strong> → signalés non chiffrés plutôt que devinés ; paiements partiels et acomptes cumulés par facture ; avoirs déduits du CA réel</li>
+    <li><strong>Moins de 2 factures payées</strong> → score « non noté » avec la raison — jamais de note inventée</li>
+    <li><strong>Pas de CRM connecté</strong> → annoncé clairement, rapport « clients Qonto scorés » livré en conversation (déjà utile)</li>
+    <li>Compte vide : rien d'inventé — le skill dit ce qu'il ne peut pas calculer · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Zéro écriture bancaire :</b> côté Qonto, le skill est en lecture pure — il ne peut pas toucher à l'argent. Les seules écritures visent le <b>CRM</b>, derrière deux verrous : le rapprochement fiche CRM ↔ client Qonto <b>toujours montré et confirmé</b> (jamais silencieux), puis l'aperçu exact de chaque valeur, approuvé explicitement dans la conversation.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🅰️ Le score payeur (formule affichée, jamais boîte noire)</h2>
+  <div class="scroll"><table>
+    <tr><th>Score</th><th>Définition</th></tr>
+    <tr><td><b>A</b></td><td>Règlement médian dans les 5 jours après l'échéance, aucun impayé en cours</td></tr>
+    <tr><td><b>B</b></td><td>Paie toujours, mais en retard — retard médian ≤ 30 jours après échéance</td></tr>
+    <tr><td><b>C</b></td><td>Retard médian &gt; 30 jours, ou facture impayée &gt; 60 jours, ou deal « won » jamais encaissé</td></tr>
+    <tr><td><b>—</b></td><td>Moins de 2 factures payées → <strong>non noté</strong> (jamais de score deviné)</td></tr>
+  </table></div>
+  <p style="margin-top:.8rem">⚠️ Le score décrit le <strong>comportement de paiement observé sur ce compte</strong> — pas une solvabilité générale ; rappelé dans chaque rapport.</p>
+</section>
+
+<section>
+  <h2>✍️ Ce que le skill écrit dans le CRM (champs dédiés, exemples inventés)</h2>
+  <div class="scroll"><table>
+    <tr><th>Champ</th><th>Contenu</th><th>Exemple (inventé)</th></tr>
+    <tr><td>CA réel (banque)</td><td>Cash encaissé sur la période</td><td>24 300 €</td></tr>
+    <tr><td>LTV (banque)</td><td>Cash encaissé depuis toujours</td><td>61 750 €</td></tr>
+    <tr><td>Délai moyen constaté</td><td>Médiane de J+X (émission → encaissement)</td><td>J+38</td></tr>
+    <tr><td>Score payeur</td><td>A / B / C / non noté</td><td>C</td></tr>
+    <tr><td>Dernier encaissement</td><td>Date du dernier crédit rattaché</td><td>12/05/2026</td></tr>
+    <tr><td>Deals won non encaissés</td><td>Drapeau + montant cumulé</td><td>⚠️ 2 deals · 9 800 €</td></tr>
+  </table></div>
+  <p style="margin-top:.8rem">Côté Airtable : <code>create_field</code> pour les colonnes manquantes puis <code>update_records_for_table</code> par lots. Côté HubSpot : propriétés custom équivalentes. <strong>Jamais d'écrasement des champs natifs du CRM.</strong></p>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : clients scorés, deals non encaissés, correspondances, bilan d'écriture</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Écriture CRM</b></td><td>Propriétés custom HubSpot / colonnes Airtable (champs dédiés)</td><td>Après matching confirmé + go explicite</td></tr>
+    <tr><td><b>One-pager HTML</b></td><td>Classement CRM vs classement banque côte à côte, distribution des scores</td><td>Si l'hôte affiche les fichiers ; repli automatique sur les tableaux sinon</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le mensonge du CRM → vérité bancaire &amp; matching confirmé → scores et écarts → <strong>l'écriture dans le CRM après confirmation</strong> → mode dégradé sans CRM. Toutes les données de démo sont inventées. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Relance automatique des deals non encaissés via <code>qonto-invoice-chaser</code></td><td>Faible</td><td>Cross-skill naturel — l'un découvre, l'autre agit</td></tr>
+    <tr><td>Score payeur au moment du devis (<code>list_quotes</code>)</td><td>Moyen</td><td>Alerter avant de signer un payeur C — la vérité quand elle sert le plus</td></tr>
+    <tr><td>Historique du score (colonne datée)</td><td>Faible</td><td>Voir les clients qui glissent de A vers C ; même garde-fou d'écriture</td></tr>
+    <tr><td>Autres CRM (Notion, Salesforce…) par détection dynamique</td><td>Moyen</td><td>Même logique : lire, matcher, confirmer, écrire</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Zéro écriture Qonto</strong> — lecture pure côté banque ; les seules écritures visent le CRM</li>
+    <li><strong>Jamais</strong> d'écriture CRM sans (a) tableau de correspondance confirmé et (b) go explicite sur un aperçu exact ; jamais présentée comme faite si elle a échoué ou été partielle</li>
+    <li>Rapprochement assisté, <strong>jamais silencieux</strong> — les paires ambiguës deviennent des questions</li>
+    <li>Dégradation honnête : &lt; 2 factures payées → non noté · sans factures → analyse par contrepartie · sans CRM → rapport en conversation</li>
+    <li>IBAN masqués (4 derniers chiffres) · pagination ≤ 50 · répétitions sur base Airtable dupliquée ou champs de test (les écritures CRM sont réelles)</li>
+  </ul>
+</section>
+
+<footer>qonto-crm-truth · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-crm-truth.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
