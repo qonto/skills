@@ -1,0 +1,10 @@
+{
+  "name": "qonto-brand-shield",
+  "version": "0.1.0",
+  "description": "Brand protection radar for Qonto accounts. Detects brand-building spend in real transactions (designers & logo work, domain names, advertising, packaging, print), totals it per brand (\"you invested €X in brand [Name]\"), then cross-checks intellectual property — is the brand registered at INPI, by…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
