@@ -1,0 +1,19 @@
+{
+  "name": "argentier-cash-forecast",
+  "displayName": "Forecast my cash for 13 weeks",
+  "version": "0.1.0",
+  "description": "13-week cash forecast built client by client: real payment delays, recurring flows learned from history, base, stress and upside scenarios, lowest week, actions to take, and a 12-month outlook. Read-only.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "cash",
+    "forecast",
+    "treasury",
+    "tresorerie",
+    "argentier",
+    "qonto"
+  ]
+}
