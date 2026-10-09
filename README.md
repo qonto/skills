@@ -108,6 +108,7 @@ project. Needs Node.js 22.20 or later.
 | [`qonto-tax-radar`](./community/qonto-tax-radar) | Tax radar | French tax pre-audit ("pré-contrôle fiscal") for Qonto accounts, 100% read-only. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-vat-return`](./community/qonto-vat-return) | French VAT return | French VAT return (CA3, form 3310-CA3) preparer for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`veto`](./community/veto) | Invoice compliance check | Manages guarded accounts receivable in Qonto for French businesses. | [Abdel-Karim](https://github.com/UnknOownU) | community |
+| [`well`](./community/well) |  | Board-ready finance numbers for Qonto customers: cash, burn, runway, recurring revenue, and what is owed on each side, computed by Well across Qonto and every other connected bank and tool. | [Well](https://wellapp.ai) | community |
 <!-- skills:end -->
 
 ## Contribute
