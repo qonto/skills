@@ -1,0 +1,10 @@
+{
+  "name": "qonto-chargeback-defender",
+  "version": "0.1.0",
+  "description": "End-to-end payment dispute handling for Qonto accounts. Detects open chargebacks (via a Stripe/PayPal MCP when connected, otherwise by spotting clawback debits in Qonto transactions), finds the matching debit, assembles a sourced defense file (Shopify order, proof of delivery, Gmail customer…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
