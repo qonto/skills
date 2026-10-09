@@ -1,0 +1,10 @@
+{
+  "name": "qonto-invoice-chaser",
+  "version": "0.1.0",
+  "description": "Intelligent late-invoice chaser for Qonto accounts. Detects overdue client invoices, cross-checks them against real incoming transactions (an \"unpaid\" invoice may already be paid — proposes marking it), profiles each client's payment behavior, then drafts the right graduated reminder — courteous…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
