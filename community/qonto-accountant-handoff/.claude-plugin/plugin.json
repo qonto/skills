@@ -1,0 +1,10 @@
+{
+  "name": "qonto-accountant-handoff",
+  "version": "0.1.0",
+  "description": "Monthly (or quarterly) accountant handoff pack built from a Qonto account. Gathers the period's bank statements, a receipt completeness report with the precise list of what's missing, factually annotated transactions (labels, VAT, anomaly notes), client and supplier invoices, and a drafted handoff…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
