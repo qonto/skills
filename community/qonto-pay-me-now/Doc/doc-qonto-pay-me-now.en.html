@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-pay-me-now — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic MCP Hackathon</span>
+  <h1>qonto-pay-me-now</h1>
+  <p class="sub">From quote to cash, no friction — an accepted quote becomes an invoice, a payment link, and money in the account.</p>
+  <div class="badges">
+    <span>✅ Payment links verified via MCP</span><span>💳 Card &amp; transfer payments</span>
+    <span>🔗 Trackable short link + QR</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>The freelance black hole: the client says yes to your quote… and then nothing happens. The invoice waits, the payment waits even longer — <strong>every day between the handshake and the money is cash you've earned but can't touch</strong>. The skill runs the whole cycle in one conversation:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Accepted quote detected</h4><p>Quotes cross-checked against existing invoices — only the accepted, never-invoiced ones surface, with client, amount and date.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Invoice from the quote</h4><p>Draft first, REAL document: reviewed line by line, sent only after your explicit confirmation.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Payment link + QR</h4><p>The client pays by card or bank transfer in one click. Trackable Short.io short link + a QR code for printed invoices.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Follow-up &amp; gentle nudge</h4><p>Clicked but unpaid after 48 h → a soft reminder is proposed, drafted — never sent on its own.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>It's what you run the second a client says yes.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td>The quote → invoice → payment link cycle is <strong>identical for every Qonto country</strong> (FR, DE, ES, IT, AT, NL, BE, PT). Reminder wording: France fully covered; elsewhere the skill adapts and never invents local legal mentions</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Payment links activated</b></td><td>One-time activation in the Qonto app. If <code>create_payment_link</code> is refused, the skill says so and continues invoice-only</td><td>⭕ recommended</td></tr>
+    <tr><td><b>Quotes created in Qonto</b></td><td>The skill starts from <code>list_quotes</code>; without quotes it can also start from any existing unpaid invoice</td><td>⭕</td></tr>
+    <tr><td><b>Short.io / Gmail MCP</b></td><td>Optional enrichments, detected dynamically: short link + click stats / sending. Absent → raw Qonto link + copy-ready text</td><td>⭕ optional</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>The differentiator</strong>: the official MCP docs list payment links as unsupported — <strong>they work</strong> (verified against the live API on a production account). The skill calls <code>create_payment_link</code> directly instead of trusting the doc</li>
+    <li><strong>No accepted quotes?</strong> The skill says so and offers to start from any existing unpaid invoice — the rest of the cycle is identical</li>
+    <li><strong>Payment links not activated?</strong> One-time activation explained (Qonto app), the cycle continues invoice-only</li>
+    <li>Short.io or Gmail absent → raw Qonto link + copy-ready text, stated plainly — no tracking silently faked</li>
+    <li>Client paid by plain transfer outside the link → matched in <code>list_transactions</code> (amount ± 0.01, counterparty, reference) and <code>mark_client_invoice_as_paid</code> proposed with evidence</li>
+    <li>Cash-basis VAT (<code>vat_payment_condition: "on_receipts"</code>): a faster payment literally accelerates the VAT cycle too — the skill points it out</li>
+    <li>Pagination ≤ 50 everywhere · invoice numbering left to the organization's settings · amounts always from the quote, never invented</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>This skill cannot move money out:</b> a payment link is a way to <b>receive</b> a payment from your client — it has nothing to do with outbound transfers (which the MCP cannot execute anyway: any transfer request requires your own SCA in the Qonto app). The only three writes: an invoice (<b>draft first</b>, sent after your explicit go), a payment link you can deactivate anytime in the app, and a paid-marking — always proposed, never automatic.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📊 The follow-up matrix (D+2)</h2>
+  <div class="scroll"><table>
+    <tr><th>Link clicked?</th><th>Payment received?</th><th>Proposed action</th></tr>
+    <tr><td>❌ No</td><td>❌ No</td><td>Check delivery; offer to resend through another channel</td></tr>
+    <tr><td>✅ Yes</td><td>❌ No (&gt; 48 h)</td><td><strong>Gentle nudge</strong> — "the link is still active" — drafted, never auto-sent</td></tr>
+    <tr><td>✅ Yes</td><td>✅ Yes</td><td>Loop closed ✅ — confirmed in the report</td></tr>
+    <tr><td>❌ No</td><td>✅ Yes</td><td>Paid by plain transfer → reconciliation + <code>mark_client_invoice_as_paid</code> proposed</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: quote → invoice → link pipeline, follow-up matrix</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>The payment link (+ short link)</b></td><td>Qonto URL + Short.io short URL, ready to share</td><td>Every cycle</td></tr>
+    <tr><td><b>QR code</b></td><td>Image file/artifact encoding the link, for printed invoices</td><td>When the host renders files; otherwise the links are enough</td></tr>
+    <tr><td><b>Follow-up report</b></td><td>Clicks vs cash + proposed nudges</td><td>On demand / at D+2</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the black hole → detection &amp; invoice → payment link + short link → <strong>the QR code scanned on a phone, the Qonto payment page appearing</strong> → follow-up &amp; nudge. It runs live on a real production account. <em>The invoice is out, the payment link is live — before the handshake ends.</em></p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Deposit at signature: a partial payment link (e.g. 30%) the moment the quote is accepted</td><td>Medium</td><td>The same cycle, even earlier</td></tr>
+    <tr><td>D+2 follow-up reminder in the calendar (calendar MCP detected dynamically)</td><td>Low</td><td>Optional multi-MCP enrichment, in the spirit of the kickoff</td></tr>
+    <tr><td>Multilingual client messages (client's language detected)</td><td>Low</td><td>Qonto is pan-European</td></tr>
+    <tr><td>Collection dashboard: click-to-payment rate per client</td><td>Medium</td><td>Reuses <code>link-statistics</code> + <code>list_transactions</code></td></tr>
+    <tr><td>Local legal mentions per country (DE · ES · IT…)</td><td>Medium</td><td>v1 = identical cycle everywhere, v2 = local wording</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li>Invoices via MCP are <strong>REAL</strong>: draft first, sent only after explicit confirmation; rehearsals on a fictional client + <code>delete_client_invoice</code> afterwards</li>
+    <li><strong>No outbound payments</strong>: the payment link receives, it never debits — unrelated to outbound transfers (always behind the user's own SCA in the app, outside the MCP)</li>
+    <li>Nothing is sent (invoice, email, nudge) without confirmation in the current conversation; never presented as sent/paid while pending</li>
+    <li>Amounts from the quote or invoice, never invented · masked IBANs · pagination ≤ 50</li>
+    <li>Honest degradation: no quotes, no payment-link feature, no Short.io, non-French account → the skill says what works and keeps going with that</li>
+  </ul>
+</section>
+
+<footer>qonto-pay-me-now · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-pay-me-now.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
