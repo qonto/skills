@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-subscription-guardian — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic MCP Hackathon</span>
+  <h1>qonto-subscription-guardian</h1>
+  <p class="sub">One capped virtual card per subscription — light detection, your pick, creation behind SCA. An action utility, nothing more.</p>
+  <div class="badges">
+    <span>🎯 One card per subscription</span><span>🔒 Single write, behind SCA</span>
+    <span>📏 Respects your plan limits</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>Every subscription charges whatever it wants on YOUR main card. This skill does one thing, well: <strong>generate capped virtual cards, one per subscription — nothing more</strong>.</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Light detection</h4><p>Recurring charges across 24–36 months — wide enough to catch yearly ones: normalized counterparty, M/Q/Y cadence, amount stable ±15 %. A candidate list, no verdicts.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>You pick</h4><p>The skill counts your cards (<code>list_cards</code>), recalls your plan's grid and proposes a number of cards that fits — never a bulk run.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>One capped card per subscription</h4><p>Virtual <code>create_card</code>, monthly cap = price + a small margin (yearly: per-transaction cap) — one at a time, consent + SCA every time.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>SUB- idempotence</h4><p>Nickname <code>SUB-&lt;Vendor&gt;</code> via <code>update_card</code>; existing SUB- cards are recognized, never proposed twice.</p></div>
+  </div>
+  <p style="margin-top:.8rem"><strong>The honest pitch</strong>: dedicated-card protection is a feature Qonto will probably ship natively one day — this skill gives it to you today. For the full recurring-spend audit (annual cost, duplicates, increases…): the <code>qonto-subscription-audit</code> skill.</p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Owner/Admin/Manager role</b></td><td>To create cards directly; other roles fall back to <code>create_card_request</code> (approved by an admin)</td><td>⭕ for the action — detection works for everyone</td></tr>
+    <tr><td><b>Plan virtual-card allowance</b></td><td><b>Basic: 2 included (€2/month beyond) · Smart/Premium: 50 included (€1/card beyond) · Essential/Business/Enterprise: unlimited.</b> The exact plan isn't readable via MCP (<code>get_subscription</code> → 403): the skill counts existing cards, states this public grid and asks for your plan</td><td>ℹ️ checked before any proposal</td></tr>
+    <tr><td><b>≥ 24 months of history recommended</b></td><td>To catch <b>yearly</b> subscriptions; below that, yearly ones can slip under the radar — stated honestly</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Noisy merchant names</strong> (<code>ADOBE *CC PARIS</code>, <code>GOOGLE*CLOUD IE</code>): normalized before matching — one vendor = one line</li>
+    <li><strong>Wobbling amounts</strong> (VAT rounding, FX, seat changes): ±15 % stability band</li>
+    <li><strong>Card settlement delays</strong>: cadence matched on <code>emitted_at</code> — <code>settled_at</code> lags 1–2 days and breaks the math</li>
+    <li><strong>Short history</strong>: below 24 months, the skill warns that yearly subscriptions can slip under the radar</li>
+    <li><strong>Plan card quotas</strong> (Basic 2 · Smart/Premium 50 · Essential/Business/Enterprise unlimited — not readable via MCP): cards counted via <code>list_cards</code>, the proposal sized to the announced plan</li>
+    <li>Empty account or restricted role: graceful one-line degradation — detection works for everyone</li>
+    <li>Pagination ≤ 50 everywhere · 3-month windows · IBANs and card numbers masked</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>The security model, not a limitation:</b> reads are risk-free; the write requires explicit consent in the conversation AND the user's SCA — <b>the <code>create_card</code> call blocks until the push notification is confirmed</b> on the paired Qonto device, for EACH card. Depending on the role, it falls back to <code>create_card_request</code>. Neither Claude nor the MCP can spend a euro.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🔁 A SUB- card's lifecycle</h2>
+  <div class="scroll"><table>
+    <tr><th>Step</th><th>Tool</th><th>Note</th></tr>
+    <tr><td>Capped creation</td><td><code>create_card</code> (virtual, cap = price + margin)</td><td>Explicit consent + SCA, one card at a time</td></tr>
+    <tr><td>Naming</td><td><code>update_card</code> → <code>SUB-&lt;Vendor&gt;</code></td><td><code>create_card</code> has no nickname field</td></tr>
+    <tr><td>Switch at the vendor</td><td><code>get_card_iframe_url</code> (PAN/CVV)</td><td>Manual step — short-lived URL, for your eyes only</td></tr>
+    <tr><td>Reversible pause</td><td><code>change_card_status</code> → <code>lock</code></td><td>Warns first: a declined charge can suspend the service</td></tr>
+    <tr><td>Permanent removal</td><td><code>change_card_status</code> → <code>discard</code></td><td>The contract survives — capping ≠ cancelling</td></tr>
+    <tr><td>Adjusting a cap</td><td>Qonto app only</td><td>Card limits are <b>not editable via MCP</b> — stated plainly</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Candidate list</b></td><td>Markdown table: vendor · price · cadence M/Q/Y · paying card · already guarded</td><td>After light detection</td></tr>
+    <tr><td><b>Created-cards recap</b></td><td>Markdown table: card · cap · vendor · still to switch</td><td>End of session</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem → the candidate list (M/Q/Y cadences) + the plan grid → the user's pick → <strong>THE capped card created live, SCA confirmation filmed on a phone, the card visible in the app with its cap</strong> → "every subscription now has its own box" + wrap-up. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Auto-categorize protected subscriptions in Qonto (<code>modify_transaction_cash_flow_category</code>)</td><td>Low</td><td>SUB- lines read in the app too</td></tr>
+    <tr><td>Public price benchmark per tool (web search)</td><td>Medium</td><td>To size the cap at the fair price</td></tr>
+    <tr><td>Multi-currency subscriptions (USD/GBP)</td><td>Medium</td><td>Amount normalization before the stability check</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Never</strong> creates a card (or card request) without explicit confirmation for THAT card in the current conversation; never presented as done while SCA confirmation is pending</li>
+    <li>Plan check first, always: <code>list_cards</code> count + the 2/50/unlimited grid before any proposal — a number of cards that fits, never a bulk run</li>
+    <li><strong>Capping ≠ cancelling</strong>: the contract survives the card — a declined charge can trigger vendor dunning or service suspension, stated BEFORE acting</li>
+    <li>Rehearsals: at most one demo card, <code>discard</code> at the end of the session; never show a full PAN (<code>get_card_iframe_url</code> is for the user's eyes only)</li>
+    <li>IBANs and card numbers masked (last 4 digits) · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<footer>qonto-subscription-guardian · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-subscription-guardian.fr.html</code> · Full audit: <code>qonto-subscription-audit</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "qonto-subscription-guardian",
+  "version": "0.1.0",
+  "description": "Capped virtual card generation for Qonto subscriptions — an action utility, nothing more. Lightly detects recurring charges (cards AND direct debits, monthly, quarterly AND yearly) over 24–36 months just to list subscription candidates, lets the user pick which ones to protect, then — one at a…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
