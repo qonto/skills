@@ -1,0 +1,10 @@
+{
+  "name": "finance-pr",
+  "version": "0.1.0",
+  "description": "Review an AI-proposed Qonto financial action BEFORE it reaches Qonto approval. Use whenever a user asks to pay, approve, settle, or \"prepare\" a supplier invoice, or asks whether they should pay one. Turns the request into an immutable, evidence-bound, fingerprinted Finance PR through Observe →…",
+  "author": {
+    "name": "BakytHack",
+    "url": "https://github.com/bakyt92"
+  },
+  "license": "MIT"
+}
