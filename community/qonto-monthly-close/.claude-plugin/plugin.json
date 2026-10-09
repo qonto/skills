@@ -1,0 +1,10 @@
+{
+  "name": "qonto-monthly-close",
+  "version": "0.1.0",
+  "description": "Month-end closing review for Qonto accounts, read-only. One prompt triggers a full review of the past month — missing receipts prioritized by stakes, the month's VAT (collected/deductible, cash-basis aware), anomalies (unusual spend, duplicate direct debit, new beneficiary), unlabeled transactions…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
