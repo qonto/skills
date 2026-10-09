@@ -1,0 +1,10 @@
+{
+  "name": "qonto-board-pack",
+  "version": "0.1.0",
+  "description": "Monthly investor and banker update generator for Qonto accounts. From one prompt, builds the full board pack — the month's numbers (cash in, spend by category, end-of-month cash, burn & runway), month-over-month and rolling-year comparisons, auto-detected highlights (big contract collected, new…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
