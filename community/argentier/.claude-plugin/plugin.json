@@ -1,0 +1,19 @@
+{
+  "name": "argentier",
+  "displayName": "Find savings in my spending",
+  "version": "0.2.0",
+  "description": "Finds the money a business can stop spending: true recurring run-rate, duplicate tools, ghost and new subscriptions, price increases and FX fees, with a ranked savings plan, cheaper alternatives and cancellation messages. Read-only.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "savings",
+    "costs",
+    "subscriptions",
+    "spend",
+    "argentier",
+    "qonto"
+  ]
+}
