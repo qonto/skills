@@ -5,6 +5,27 @@
   },
   "plugins": [
     {
+      "name": "argentier-cash-forecast",
+      "source": {
+        "source": "local",
+        "path": "./community/argentier-cash-forecast"
+      },
+      "description": "13-week cash forecast built client by client: real payment delays, recurring flows learned from history, base, stress and upside scenarios, lowest week, actions to take, and a 12-month outlook. Read-only.",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "argentier",
+        "cash",
+        "community",
+        "forecast",
+        "qonto",
+        "treasury",
+        "tresorerie"
+      ]
+    },
+    {
       "name": "qonto-asset-registry",
       "source": {
         "source": "local",
@@ -110,6 +131,21 @@
       ]
     },
     {
+      "name": "qonto-rgpd-register",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-rgpd-register"
+      },
+      "description": "GDPR Article 30 register drafted from a Qonto account's spending. Detects the SaaS tools that process personal data (CRM, email marketing, analytics, AI, cloud, payroll, support) in the debits, classifies them by processing activity (purpose, typical data categories, EU / non-EU vendor location)\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
       "name": "qonto-sector-benchmark",
       "source": {
         "source": "local",
@@ -197,6 +233,27 @@
       "category": "Community",
       "tags": [
         "community"
+      ]
+    },
+    {
+      "name": "well",
+      "source": {
+        "source": "local",
+        "path": "./community/well"
+      },
+      "description": "Board-ready finance numbers for Qonto customers: cash, burn, runway, recurring revenue, and what is owed on each side, computed by Well across Qonto and every other connected bank and tool.",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "board",
+        "burn",
+        "community",
+        "fpa",
+        "mrr",
+        "runway",
+        "well"
       ]
     }
   ]

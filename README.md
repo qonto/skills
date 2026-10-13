@@ -95,6 +95,7 @@ project. Needs Node.js 22.20 or later.
 <!-- skills:start -->
 | Plugin | Title | What it does | Author | Tier |
 |---|---|---|---|---|
+| [`argentier-cash-forecast`](./community/argentier-cash-forecast) | Forecast my cash for 13 weeks | 13-week cash forecast built client by client: real payment delays, recurring flows learned from history, base, stress and upside scenarios, lowest week, actions to take, and a 12-month outlook. | [Kevin MAMERI](https://github.com/kevinMPO) | community |
 | [`qonto-asset-registry`](./community/qonto-asset-registry) | Fixed-asset register | Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-carbon-ledger`](./community/qonto-carbon-ledger) |  | Spend-based carbon footprint estimator for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-counterparty-watch`](./community/qonto-counterparty-watch) | Client &amp; supplier payment risk | Legal-health radar for the clients and suppliers of a Qonto account. | [seb](https://github.com/SebDeNoocode) | community |
@@ -102,12 +103,14 @@ project. Needs Node.js 22.20 or later.
 | [`qonto-fisca-copilot`](./community/qonto-fisca-copilot) |  | Proactive tax co-pilot for a Qonto business account: detects the organization's country and legal form, scans a period's transactions and surfaces the tax reflexes a founder forgets (mileage, reverse-charge VAT on foreign SaaS, missing invoices, non-recoverable hotel VAT) plus under-used tax breaks, each with its source. | [François Guerlez (FRANSYS)](https://github.com/fransys-code) | community |
 | [`qonto-grant-scout`](./community/qonto-grant-scout) | Public funding finder | Public-funding scout for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-prescription-guard`](./community/qonto-prescription-guard) |  | Legal expiry radar for unpaid client invoices on Qonto accounts (France). | [seb](https://github.com/SebDeNoocode) | community |
+| [`qonto-rgpd-register`](./community/qonto-rgpd-register) |  | GDPR Article 30 register drafted from a Qonto account's spending. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-sector-benchmark`](./community/qonto-sector-benchmark) |  | Sector health check-up for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-supplier-detective`](./community/qonto-supplier-detective) |  | Forensic audit of supplier invoices and payments on a Qonto account. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-tax-pilot`](./community/qonto-tax-pilot) | Tax budget planner | French tax radar and cash pilot for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-tax-radar`](./community/qonto-tax-radar) | Tax radar | French tax pre-audit ("pré-contrôle fiscal") for Qonto accounts, 100% read-only. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-vat-return`](./community/qonto-vat-return) | French VAT return | French VAT return (CA3, form 3310-CA3) preparer for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`veto`](./community/veto) | Invoice compliance check | Manages guarded accounts receivable in Qonto for French businesses. | [Abdel-Karim](https://github.com/UnknOownU) | community |
+| [`well`](./community/well) |  | Board-ready finance numbers for Qonto customers: cash, burn, runway, recurring revenue, and what is owed on each side, computed by Well across Qonto and every other connected bank and tool. | [Well](https://wellapp.ai) | community |
 <!-- skills:end -->
 
 ## Contribute
