@@ -104,9 +104,8 @@ transport tickets, VAT-exempt sales.
 - `tax_identification_number` (client) ← **required**; missing → `create_quote`
   fails 422 `"tin_number must have a value"`. Ask / `update_client` then retry.
 - `terms_and_conditions` (invoice, ≤ 525 chars) ← carries **both** the legal
-  mention (reverse charge / §19 / export) **and** the meet2invoice proof string,
-  e.g.:
-  `Steuerschuldnerschaft des Leistungsempfängers (§13b UStG) | SHA-256: <hex> | doc never uploaded`
+  mention (reverse charge / §19 / export) **and** the payment terms, e.g.:
+  `Steuerschuldnerschaft des Leistungsempfängers (§13b UStG) | Zahlbar innerhalb von 30 Tagen`
 - Sequential numbering, VAT breakdown, and e-invoice format are handled by Qonto.
 
 ## Sources (retrieved 2026-07-12)
