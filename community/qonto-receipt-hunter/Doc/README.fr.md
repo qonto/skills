@@ -80,7 +80,7 @@ La démo ≤ 3 min jointe à la PR suit le storyboard : problème → inventaire
 | Brouillons Gmail de demande de duplicata au fournisseur (héritage P5) | Faible | `create_draft` — brouillons seulement, envoi par l'utilisateur |
 | Rituel mensuel : score de complétude suivi mois par mois (streak) | Faible | Réutilise le rapport existant |
 | Autres boîtes mail (Outlook/M365) détectées dynamiquement | Moyen | Même logique de chasse, autre MCP |
-| Détection de doublons de pièces (`remove_transaction_attachment` sous confirmation) | Moyen | Nettoyage inverse, mêmes garde-fous |
+| Nettoyage des doublons de pièces | Moyen | Fonctionnalité future nécessitant une revue de sécurité distincte ; non prise en charge par ce skill |
 | Contrôle fin montant/TVA par lecture du PDF (multi-lignes, devises) | Moyen | Renforce le contrôle de cohérence |
 
 ## 🛡 Garde-fous

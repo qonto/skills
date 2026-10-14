@@ -5,7 +5,7 @@ permissions:
   mcp:
     gmail: [search, get_message]
     google_drive: [search, get_file]
-    qonto: [get_attachment, get_organization, list_transaction_attachments, list_transactions, remove_transaction_attachment, request_attachment_upload, upload_attachment]
+    qonto: [get_attachment, get_organization, list_transaction_attachments, list_transactions, request_attachment_upload, upload_attachment]
   network: []
   env: []
   tools: [Read]
@@ -41,6 +41,7 @@ Coherence check before proposing: the document names the merchant, the amount ma
 Table: **attached ✅** / **found, to attach manually 📎** (with the direct pointer) / **not found ❌** with one concrete lead each — merchant portal (invoices section), secondary or personal inbox, Qonto's native receipt auto-collection, ask the supplier for a duplicate. Close with the completeness score (transactions with receipt ÷ transactions requiring one) before/after the session.
 
 ## Guardrails
+- Never delete or replace existing attachments. This skill only adds missing original receipts after explicit confirmation.
 - **NEVER fabricate a receipt**: no generated PDFs, no reconstructed invoices, no screenshots-as-receipts. If no original exists, the transaction stays in the "not found" list with a lead.
 - Never attach without explicit confirmation of the displayed match; if several transactions or documents are plausible candidates, ask — don't guess. No silent batch attaching, ever.
 - Exclude `attachment_required: false`, credit side and `attachment_lost` from the score — don't pollute it.

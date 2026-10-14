@@ -73,7 +73,7 @@ The ≤ 3-minute demo attached to the PR walks through: the problem → the prio
 - Gmail draft emails asking suppliers for duplicates (drafts only — the user sends)
 - Monthly ritual: completeness score tracked month over month (streak)
 - More mailboxes (Outlook/M365) detected dynamically — same hunt logic, different MCP
-- Duplicate-attachment cleanup (`remove_transaction_attachment`, behind the same confirmation guardrails)
+- Duplicate-attachment cleanup (future feature requiring a separate security review; not supported by this skill)
 - Fine-grained amount/VAT verification by reading the PDF (multi-line invoices, currencies)
 
 ## 🛡 Guardrails
