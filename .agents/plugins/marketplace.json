@@ -5,6 +5,27 @@
   },
   "plugins": [
     {
+      "name": "argentier",
+      "source": {
+        "source": "local",
+        "path": "./community/argentier"
+      },
+      "description": "Finds the money a business can stop spending: true recurring run-rate, duplicate tools, ghost and new subscriptions, price increases and FX fees, with a ranked savings plan, cheaper alternatives and cancellation messages. Read-only.",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "argentier",
+        "community",
+        "costs",
+        "qonto",
+        "savings",
+        "spend",
+        "subscriptions"
+      ]
+    },
+    {
       "name": "argentier-cash-forecast",
       "source": {
         "source": "local",
@@ -116,12 +137,42 @@
       ]
     },
     {
+      "name": "qonto-invoice-chaser",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-invoice-chaser"
+      },
+      "description": "Intelligent late-invoice chaser for Qonto accounts. Detects overdue client invoices, cross-checks them against real incoming transactions (an \"unpaid\" invoice may already be paid \u2014 proposes marking it), profiles each client's payment behavior, then drafts the right graduated reminder \u2014 courteous\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
       "name": "qonto-prescription-guard",
       "source": {
         "source": "local",
         "path": "./community/qonto-prescription-guard"
       },
       "description": "Legal expiry radar for unpaid client invoices on Qonto accounts (France). Every unpaid invoice has a legal death date \u2014 5 years between businesses (art. L110-4 French Commercial Code), 2 years against a consumer (art. L218-2 French Consumer Code). The skill scans the full invoice history, qualifies\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
+      "name": "qonto-receipt-hunter",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-receipt-hunter"
+      },
+      "description": "Receipt hunter for Qonto accounts. Finds transactions missing their receipt, ranks them by urgency (recoverable VAT at stake, amount, age), then hunts the original receipts down in connected sources \u2014 Gmail (merchant/amount/date search around the purchase date) and Google Drive \u2014 and attaches each\u2026",
       "policy": {
         "installation": "AVAILABLE"
       },

@@ -95,6 +95,7 @@ project. Needs Node.js 22.20 or later.
 <!-- skills:start -->
 | Plugin | Title | What it does | Author | Tier |
 |---|---|---|---|---|
+| [`argentier`](./community/argentier) | Find savings in my spending | Finds the money a business can stop spending: true recurring run-rate, duplicate tools, ghost and new subscriptions, price increases and FX fees, with a ranked savings plan, cheaper alternatives and cancellation messages. | [Kevin MAMERI](https://github.com/kevinMPO) | community |
 | [`argentier-cash-forecast`](./community/argentier-cash-forecast) | Forecast my cash for 13 weeks | 13-week cash forecast built client by client: real payment delays, recurring flows learned from history, base, stress and upside scenarios, lowest week, actions to take, and a 12-month outlook. | [Kevin MAMERI](https://github.com/kevinMPO) | community |
 | [`qonto-asset-registry`](./community/qonto-asset-registry) | Fixed-asset register | Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-carbon-ledger`](./community/qonto-carbon-ledger) |  | Spend-based carbon footprint estimator for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
@@ -102,7 +103,9 @@ project. Needs Node.js 22.20 or later.
 | [`qonto-crew-onboard`](./community/qonto-crew-onboard) | Employee onboarding | One-sentence financial onboarding (and offboarding) of an employee on Qonto. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-fisca-copilot`](./community/qonto-fisca-copilot) |  | Proactive tax co-pilot for a Qonto business account: detects the organization's country and legal form, scans a period's transactions and surfaces the tax reflexes a founder forgets (mileage, reverse-charge VAT on foreign SaaS, missing invoices, non-recoverable hotel VAT) plus under-used tax breaks, each with its source. | [François Guerlez (FRANSYS)](https://github.com/fransys-code) | community |
 | [`qonto-grant-scout`](./community/qonto-grant-scout) | Public funding finder | Public-funding scout for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
+| [`qonto-invoice-chaser`](./community/qonto-invoice-chaser) |  | Intelligent late-invoice chaser for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-prescription-guard`](./community/qonto-prescription-guard) |  | Legal expiry radar for unpaid client invoices on Qonto accounts (France). | [seb](https://github.com/SebDeNoocode) | community |
+| [`qonto-receipt-hunter`](./community/qonto-receipt-hunter) |  | Receipt hunter for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-rgpd-register`](./community/qonto-rgpd-register) |  | GDPR Article 30 register drafted from a Qonto account's spending. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-sector-benchmark`](./community/qonto-sector-benchmark) |  | Sector health check-up for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-supplier-detective`](./community/qonto-supplier-detective) |  | Forensic audit of supplier invoices and payments on a Qonto account. | [seb](https://github.com/SebDeNoocode) | community |

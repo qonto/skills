@@ -7,6 +7,27 @@
   "description": "Agent Skills for business banking and financial tools on Qonto. Featured plugins are built by Qonto, community plugins are reviewed by Qonto before they ship.",
   "plugins": [
     {
+      "name": "argentier",
+      "source": "./community/argentier",
+      "description": "Finds the money a business can stop spending: true recurring run-rate, duplicate tools, ghost and new subscriptions, price increases and FX fees, with a ranked savings plan, cheaper alternatives and cancellation messages. Read-only.",
+      "version": "0.2.0",
+      "category": "Community",
+      "tags": [
+        "argentier",
+        "community",
+        "costs",
+        "qonto",
+        "savings",
+        "spend",
+        "subscriptions"
+      ],
+      "author": {
+        "name": "Kevin MAMERI",
+        "url": "https://github.com/kevinMPO"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "argentier-cash-forecast",
       "source": "./community/argentier-cash-forecast",
       "description": "13-week cash forecast built client by client: real payment delays, recurring flows learned from history, base, stress and upside scenarios, lowest week, actions to take, and a 12-month outlook. Read-only.",
@@ -118,10 +139,40 @@
       "license": "MIT"
     },
     {
+      "name": "qonto-invoice-chaser",
+      "source": "./community/qonto-invoice-chaser",
+      "description": "Intelligent late-invoice chaser for Qonto accounts. Detects overdue client invoices, cross-checks them against real incoming transactions (an \"unpaid\" invoice may already be paid \u2014 proposes marking it), profiles each client's payment behavior, then drafts the right graduated reminder \u2014 courteous\u2026",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "qonto-prescription-guard",
       "source": "./community/qonto-prescription-guard",
       "description": "Legal expiry radar for unpaid client invoices on Qonto accounts (France). Every unpaid invoice has a legal death date \u2014 5 years between businesses (art. L110-4 French Commercial Code), 2 years against a consumer (art. L218-2 French Consumer Code). The skill scans the full invoice history, qualifies\u2026",
       "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
+      "name": "qonto-receipt-hunter",
+      "source": "./community/qonto-receipt-hunter",
+      "description": "Receipt hunter for Qonto accounts. Finds transactions missing their receipt, ranks them by urgency (recoverable VAT at stake, amount, age), then hunts the original receipts down in connected sources \u2014 Gmail (merchant/amount/date search around the purchase date) and Google Drive \u2014 and attaches each\u2026",
+      "version": "0.1.1",
       "category": "Community",
       "tags": [
         "community"
