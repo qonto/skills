@@ -1,0 +1,10 @@
+{
+  "name": "nexyzen-clearing-scout",
+  "version": "0.1.0",
+  "description": "Find money frozen in unpaid invoices and settle it without bank transfers. Builds a clearing ledger from Qonto client and supplier invoices, detects bilateral set-off opportunities (counterparties that are both client and supplier), previews multilateral clearing cycles across the network, and…",
+  "author": {
+    "name": "pepinfor",
+    "url": "https://github.com/fpagano"
+  },
+  "license": "MIT"
+}
