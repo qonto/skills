@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-brand-shield — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic</span>
+  <h1>qonto-brand-shield</h1>
+  <p class="sub">La marque que tu finances est-elle protégée ? — l'exposition de marque de ton compte Qonto, chiffrée.</p>
+  <div class="badges">
+    <span>🔍 100 % lecture — zéro écriture</span><span>💶 Exposition chiffrée depuis le compte</span>
+    <span>🇫🇷 INPI · classes de Nice suggérées</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Chaque mois, le compte paie des dépenses qui <strong>construisent une marque</strong> : un logo, des domaines, de la publicité, du packaging. Et pendant ce temps, personne ne vérifie si le nom lui-même est protégé. Le skill fait les deux :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Cumul par marque</h4><p>Design/logo, domaines, publicité, packaging, impression — détectés dans les dépenses réelles : « tu as investi X € sur [Marque] », rattachements tagués 🟢🟡.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Croisement INPI</h4><p>Déposée ? Par toi ? Marques proches dans tes classes ? Renouvellement des 10 ans ? Avec API, ou vérification manuelle guidée en 2 min.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Exposition financière</h4><p>L'investissement « à découvert » : tout ce qui est déjà dépensé sur un nom que rien ne protège.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Dossier de pré-dépôt</h4><p>Nom, classes de Nice suggérées depuis l'activité réelle, coût indicatif (~190-270 € pour 1-3 classes), prêt pour inpi.fr.</p></div>
+  </div>
+  <p style="margin-top:.8rem"><em>Exemple (chiffres et marque inventés)</em> : « Tu as dépensé 4 320 € en 8 mois pour la marque <em>Nordlys</em>. Elle n'est pas déposée. Une marque proche existe en classe 42 depuis 2021. Dépôt en 2 classes : ~230 €, soit ~5 % de l'investissement déjà à découvert. »</p>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><b>Registre : INPI = France.</b> Autres pays Qonto (DE, ES, IT…) : exposition financière valable partout ; côté registre, piste EUIPO — jamais de donnée de registre inventée</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Accès INPI</b></td><td>L'API data.inpi.fr demande un compte + une demande d'accès. Sans lui : lien de recherche pré-rempli + vérification manuelle guidée (~2 min). <b>Pas de scraping</b></td><td>⭕ optionnel</td></tr>
+    <tr><td><b>Historique ≥ 12 mois</b></td><td>24-36 mois recommandés — les cadences annuelles (domaines) ne se voient que sur des années pleines</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Tiers normalisés</strong> : casse, accents, graphies multiples du même fournisseur fusionnées en un seul tiers avant tout cumul</li>
+    <li><strong>Rattachement prouvé ou assumé</strong> : nom de marque extrait des justificatifs (<code>get_attachment</code>) ou du domaine → 🟢 ; sinon marque principale, tagué 🟡 — jamais présenté comme certain</li>
+    <li><strong>Registre jamais deviné</strong> : sans API INPI, le skill donne le lien pré-rempli data.inpi.fr et n'intègre que ce que l'utilisateur rapporte — les lignes non vérifiées restent « non vérifié »</li>
+    <li><strong>Historique court</strong> : les cadences annuelles (renouvellements de domaines) se détectent sur 24-36 mois — le skill dit ce qu'il ne peut pas encore voir</li>
+    <li>Compte vide, société non française, aucune facture design : le skill explique ce qu'il peut et ne peut pas chiffrer, annonce les totaux comme des planchers</li>
+    <li>Pagination ≤ 50 partout · <code>list_supplier_invoices</code> pour les noms fournisseurs propres · IBAN masqués</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>100 % lecture :</b> le skill ne crée aucune écriture MCP — pas de virement, pas de facture, rien à approuver. Le seul « acte » possible, le dépôt de marque, se fait sur <b>inpi.fr</b>, par toi, après validation humaine. La similarité de marques est une alerte indicative, <b>pas un avis juridique</b> — conseil en PI recommandé.</p>
+  </div>
+</section>
+
+<section>
+  <h2>💼 Postes de dépense détectés</h2>
+  <div class="scroll"><table>
+    <tr><th>Poste</th><th>Signaux</th><th>Exemples de tiers</th></tr>
+    <tr><td><b>Design &amp; identité</b></td><td>Libellés logo / branding / identité / charte graphique / naming</td><td>Plateformes freelance, agences, designers indépendants</td></tr>
+    <tr><td><b>Noms de domaine</b></td><td>Registrars, <b>cadence annuelle</b> (cross-réf. <code>qonto-subscription-audit</code>)</td><td>OVH, Gandi, Namecheap, GoDaddy, IONOS…</td></tr>
+    <tr><td><b>Publicité</b></td><td>Régies publicitaires</td><td>Google Ads, Meta, TikTok, LinkedIn…</td></tr>
+    <tr><td><b>Packaging &amp; impression</b></td><td>Libellés impression / packaging / étiquettes</td><td>Imprimeurs en ligne, fournisseurs packaging</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🏷 Classes de Nice &amp; coûts INPI (indicatifs)</h2>
+  <div class="scroll"><table>
+    <tr><th>Activité détectée dans le compte</th><th>Classes suggérées (à valider)</th></tr>
+    <tr><td>SaaS / services logiciels</td><td>42 (+9 si logiciel téléchargeable)</td></tr>
+    <tr><td>Vêtements / print-on-demand</td><td>25</td></tr>
+    <tr><td>Vente au détail, services publicitaires</td><td>35</td></tr>
+    <tr><td>Formation / contenus</td><td>41</td></tr>
+  </table></div>
+  <p style="margin-top:.7rem"><strong>Coûts indicatifs</strong> : dépôt <strong>190 € la 1<sup>re</sup> classe + 40 €/classe supplémentaire</strong> (~190-270 € pour 1-3 classes) · renouvellement <strong>tous les 10 ans</strong> (~290 € + 40 €/classe) · source de vérité : <code>inpi.fr</code>.</p>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown (investissement par marque, statut, exposition, alertes)</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>One-pager interactif</b></td><td>Fichier/artifact <strong>HTML</strong> : jauge d'exposition, postes, statut INPI, dossier</td><td>Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; repli automatique sur les tableaux sinon</td></tr>
+    <tr><td><b>Dossier de pré-dépôt</b></td><td>Texte structuré : nom, classes suggérées, coût indicatif, lien inpi.fr</td><td>À chaque marque non protégée détectée</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : problème → cumul d'investissement par marque → vérification INPI (mode manuel guidé montré honnêtement) → <strong>exposition chiffrée + dossier de pré-dépôt</strong>. Tournée en live sur un compte de production réel. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>MCP INPI dédié (API data.inpi.fr intégrée)</td><td>Moyen</td><td>Supprime l'étape manuelle ; détection dynamique, le cœur marche sans</td></tr>
+    <tr><td>Extension EUIPO / OMPI (marque UE &amp; internationale)</td><td>Moyen</td><td>Qonto est paneuropéen ; même logique, autres registres</td></tr>
+    <tr><td>Veille des nouveaux dépôts proches</td><td>Moyen</td><td>Le délai d'opposition INPI est court (2 mois après publication) — alerte utile</td></tr>
+    <tr><td>Croisement automatique <code>qonto-subscription-audit</code></td><td>Faible</td><td>Les domaines sont déjà des abonnements annuels détectés</td></tr>
+    <tr><td>Échéance de renouvellement poussée dans <code>qonto-tax-pilot</code></td><td>Faible</td><td>Le renouvellement rejoint l'échéancier des sorties datées</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>100 % lecture</strong> : aucun outil d'écriture, jamais — le dépôt reste une décision humaine sur inpi.fr</li>
+    <li>Similarité de marques = <strong>alerte indicative, pas une analyse juridique</strong> — conseil en PI recommandé avant tout dépôt</li>
+    <li>Classes de Nice <strong>suggérées, à valider</strong> ; coûts indicatifs — la source de vérité est inpi.fr</li>
+    <li>Jamais de fait de registre sans source (API ou vérification de l'utilisateur) ; <strong>pas de scraping</strong></li>
+    <li>Dégradation honnête (historique court, compte vide, pays ≠ FR) · IBAN masqués · pagination ≤ 50</li>
+  </ul>
+</section>
+
+<footer>qonto-brand-shield · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-brand-shield.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
