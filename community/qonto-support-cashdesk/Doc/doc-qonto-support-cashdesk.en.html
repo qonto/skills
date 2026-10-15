@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-support-cashdesk — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic MCP Hackathon</span>
+  <h1>qonto-support-cashdesk</h1>
+  <p class="sub">The billing counter of customer support — the skill checks Qonto, proves, acts and drafts the reply.</p>
+  <div class="badges">
+    <span>🧾 3 counters: invoice · link · duplicate</span><span>🔍 Proof from transactions</span>
+    <span>✅ Every write confirmed</span><span>🌍 All Qonto countries</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>"I never received my invoice." "The payment link expired." "You charged me twice." Three support messages that pull the founder away from real work — while <strong>the answer already sits in Qonto</strong>. The skill turns the account into a billing counter:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Conversation read</h4><p>Pulled from Intercom when that MCP is connected, otherwise pasted into the chat: claim, identity clues and quoted amounts extracted.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Client matched, never guessed</h4><p><code>list_clients</code> by email first, then name/company — candidates shown and confirmed by the user before anything happens.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Reality checked</h4><p>Invoices, the payment link's real state, incoming payments in the transactions: every conclusion cites its evidence.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Fix attached</h4><p>Invoice resent, fresh link, or a credit note when the duplicate is proven — plus the customer reply as a draft to review.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>Support inboxes fill up over the weekend — Monday morning is exactly when these three messages are waiting.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><strong>Universal</strong> — clients, invoices, payment links and transactions exist in every Qonto country (FR, DE, ES, IT…); no local tax rule involved</td><td>ℹ️ all countries</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Qonto invoicing in use</b></td><td>Client invoices and payment links issued through Qonto — otherwise nothing to verify</td><td>✅</td></tr>
+    <tr><td><b>Intercom MCP</b></td><td>Pull support conversations directly</td><td>⭕ optional — otherwise paste the conversation</td></tr>
+    <tr><td><b>Gmail MCP</b></td><td>Reply created as a <strong>draft</strong> (never sent by the skill)</td><td>⭕ optional — otherwise copy-paste text</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Customer email not in the clients list</strong> → search by normalized name/company (case, accents), candidates listed — never a silent "closest match"</li>
+    <li><strong>Two similar clients</strong> → both shown, the user picks</li>
+    <li><strong>"Charged twice" but only one credit found</strong> → no credit note; a factual report of what exists, however hard the customer insists</li>
+    <li>Amounts that don't line up (partial payment, currency) → the discrepancy is cited, not smoothed over</li>
+    <li>Link claimed expired but actually <strong>paid</strong> → flagged, no pointless new link</li>
+    <li>Card settlement lag: matching on <code>emitted_at</code>, not <code>settled_at</code> (1–2 days apart)</li>
+    <li>Intercom or Gmail MCP absent → said once, then the skill continues in pure Qonto mode</li>
+    <li>Pagination ≤ 50 everywhere · masked IBANs · date windows around the invoice</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Every write confirmed, every credit note proven:</b> reads (solid arrows) are risk-free; resend, link and credit note (dashed) each require explicit confirmation. A credit note is a <b>real accounting document</b> — only proposed with the proof on the table (two dated credits), never as a "commercial gesture" decided by the skill. The customer reply stays a <b>draft</b>: the user sends it. Any refund is a transfer made in the Qonto app (SCA) — the skill never moves money.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🧾 The three counters</h2>
+  <div class="scroll"><table>
+    <tr><th>Customer says</th><th>The skill checks</th><th>Honest outcome</th></tr>
+    <tr><td>"Never received the invoice"</td><td>Invoice exists? Status? Recipient email correct on the client record?</td><td>Found → resend proposed (<code>send_client_invoice</code>, email fixed first if wrong) · no invoice → nothing to resend, said as is</td></tr>
+    <tr><td>"The payment link expired"</td><td>Real link status (<code>get_payment_link</code>): open, expired, paid</td><td>Expired → fresh link proposed (<code>create_payment_link</code>) · already <strong>paid</strong> → flagged, no new link</td></tr>
+    <tr><td>"You charged me twice"</td><td>Two credits for the same invoice: same amount, close dates — <strong>both cited with date + amount</strong></td><td>Duplicate <strong>proven</strong> → credit note proposed (<code>create_credit_note</code>) · <strong>one credit → no credit note</strong></td></tr>
+  </table></div>
+  <p style="margin-top:.8rem">Example (invented): invoice INV-2026-042 for €480, two €480 credits collected one day apart → duplicate proven, a €480 credit note proposed with both dates cited in the reply. Purchase-side duplicates (a supplier charged <em>you</em> twice) belong to <code>qonto-supplier-detective</code>; proactive payment links to <code>qonto-pay-me-now</code>.</p>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Diagnosis + cited evidence + recap table (claim → evidence → action → status)</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Customer reply draft</b></td><td>Ready-to-review text; <strong>Gmail</strong> draft when that MCP is present (never sent by the skill)</td><td>Every conversation handled</td></tr>
+    <tr><td><b>Qonto documents</b></td><td>Invoice resent · payment link · credit note (numbered accounting document)</td><td>Case by case, after confirmation</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the three support messages → the confirmed client match → <strong>the duplicate proven in the transactions, then the credit note and the apology draft in one pass</strong> → the two other counters at speed. All demo data is invented. The detailed shooting script is kept internal (out of the repo).</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td><strong>Proactive</strong> duplicate-collection detection (periodic scan)</td><td>Medium</td><td>The sales-side twin of <code>qonto-supplier-detective</code></td></tr>
+    <tr><td>Per-client dispute history (repeat complaints, average resolution time)</td><td>Low</td><td>Reuses the client matching</td></tr>
+    <tr><td>Reply in the customer's language, detected from the conversation</td><td>Low</td><td>Qonto is pan-European</td></tr>
+    <tr><td>Guided refund: preparing the transfer request for SCA approval in the app</td><td>Medium</td><td>Same security model as <code>qonto-tax-pilot</code></td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Never</strong> acts on an unconfirmed client match; never presents a write as done when it is pending or failed</li>
+    <li><strong>Credit note = proof + confirmation</strong>: two dated credits cited and an explicit yes in the current conversation — otherwise no credit note</li>
+    <li>The skill never sends the customer reply itself: draft only, the user reviews and sends</li>
+    <li>Refunds are transfers made in the Qonto app (SCA) — the skill never moves money, and says so</li>
+    <li>Masked IBANs · pagination ≤ 50 · rehearsals on a fictional client (MCP invoices are real → draft, then delete)</li>
+  </ul>
+</section>
+
+<footer>qonto-support-cashdesk · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-support-cashdesk.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
