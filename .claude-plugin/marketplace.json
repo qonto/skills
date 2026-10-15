@@ -49,6 +49,27 @@
       "license": "MIT"
     },
     {
+      "name": "argentier-founder-pay",
+      "source": "./community/argentier-founder-pay",
+      "description": "Tells a founder how much the business can afford to pay them this month and next quarter, after commitments, tax provisions and a safety buffer, and compares the ways to take it by legal form (France). Read-only.",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "argentier",
+        "community",
+        "dividends",
+        "founder",
+        "qonto",
+        "remuneration",
+        "salary"
+      ],
+      "author": {
+        "name": "Kevin MAMERI",
+        "url": "https://github.com/kevinMPO"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "qonto-asset-registry",
       "source": "./community/qonto-asset-registry",
       "description": "Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices.",
