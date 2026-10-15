@@ -47,6 +47,27 @@
       ]
     },
     {
+      "name": "argentier-founder-pay",
+      "source": {
+        "source": "local",
+        "path": "./community/argentier-founder-pay"
+      },
+      "description": "Tells a founder how much the business can afford to pay them this month and next quarter, after commitments, tax provisions and a safety buffer, and compares the ways to take it by legal form (France). Read-only.",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "argentier",
+        "community",
+        "dividends",
+        "founder",
+        "qonto",
+        "remuneration",
+        "salary"
+      ]
+    },
+    {
       "name": "qonto-asset-registry",
       "source": {
         "source": "local",
