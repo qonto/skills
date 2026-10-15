@@ -1,0 +1,15 @@
+README_*
+REPORT*
+RESULT*
+
+# Dependencies and build output
+node_modules/
+dist/
+.vite/
+
+# Local CLI store (npm run pr -- prepare/act)
+.finance-pr/
+
+# Logs and editor noise
+*.log
+.DS_Store
