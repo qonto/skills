@@ -1,0 +1,20 @@
+{
+  "name": "argentier-btp",
+  "displayName": "Construction quote to cash",
+  "version": "0.1.0",
+  "description": "Quote-to-cash for French building trades: compliant quotes (VAT 20, 10, 5.5 percent or reverse charge, ten-year insurance mention), then deposit, progress and final invoices linked to the quote, retention tracking and payment links. Nothing is sent: quotes unsent, invoices as drafts, each confirmed by the user.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "btp",
+    "construction",
+    "quotes",
+    "invoices",
+    "artisans",
+    "argentier",
+    "qonto"
+  ]
+}
