@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-oss-navigator — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic</span>
+  <h1>qonto-oss-navigator</h1>
+  <p class="sub">La TVA e-commerce européenne, avant qu'elle te rattrape — jauge du seuil des 10 000 €, brouillon OSS trimestriel, provision sous SCA.</p>
+  <div class="badges">
+    <span>🇪🇺 Guichet unique OSS · 27 États</span><span>📏 Seuil 10 000 € surveillé</span>
+    <span>🔒 1 écriture optionnelle, sous SCA</span><span>🛍 Shopify optionnel, détecté</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Dès <strong>10 000 € de ventes B2C transfrontalières UE</strong> sur l'année (seuil unique, toutes ventes à distance cumulées — pas par pays), la TVA se déclare <strong>au taux du pays du client</strong>, via le guichet unique OSS. La plupart des e-commerçants le découvrent trop tard. Le skill transforme le compte Qonto en vigie OSS :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Ventes par pays de livraison</h4><p>Shopify si connecté (pays réel par commande), sinon inférence Qonto — annoncée comme partielle, jamais maquillée en couverture complète.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Jauge du seuil 10 000 €</h4><p>Cumul B2C transfrontalier de l'année (et contrôle de l'année passée) : « tu es à X € sur 10 000 € », franchissement daté ou estimé.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Brouillon OSS trimestriel</h4><p>Pays par pays : base HT, taux du pays du client (table millésimée des 27 États), TVA due, total, date limite, portail de dépôt.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Provision optionnelle</h4><p>Demande de virement vers le sous-compte impôts — l'argent ne bouge qu'après l'approbation SCA dans l'app Qonto.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Et les ventes <strong>B2B intracommunautaires</strong> (numéro de TVA valide) ? <strong>Exclues de l'OSS</strong> — autoliquidation, signalées à part, jamais mélangées à la jauge.</p>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><strong>Pensé pour un vendeur établi en UE.</strong> Seuil et taux : règles européennes, valables pour tous les pays Qonto. Seul le portail de dépôt est national (France : impots.gouv.fr, guichet OSS)</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>MCP Shopify</b></td><td>Optionnel, détecté dynamiquement : pays de livraison réels (<code>list-orders</code>, <code>run-analytics-query</code> — noms à tirets). Absent → mode Qonto pur, annoncé comme partiel</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Sous-compte « impôts »</b></td><td>Créé une fois dans l'app (le MCP ne sait pas créer de compte). Détecté par son nom : taxe / tax / impôt / TVA / OSS</td><td>⭕ recommandé — sinon calculs seuls</td></tr>
+    <tr><td><b>Ventes transfrontalières UE</b></td><td>Sans ventes B2C vers d'autres pays UE : le skill le dit et s'arrête — pas de jauge inventée</td><td>ℹ️ détecté</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Mode annoncé d'entrée</strong> : Shopify connecté → pays réels par commande ; sinon mode Qonto pur — factures clients, indices devises (SEK, PLN, DKK, CZK, HUF, RON, BGN) — <strong>couverture partielle annoncée</strong>, jauge présentée comme un plancher</li>
+    <li>Les payouts PSP (Shopify Payments, Stripe, PayPal…) agrègent les commandes et masquent le pays : le skill le dit au lieu de faire semblant</li>
+    <li><strong>B2B intracom isolé</strong> : numéro de TVA client valide → autoliquidation, hors jauge et hors brouillon, listé à part</li>
+    <li>Ventes domestiques (→ TVA nationale, voir <code>qonto-vat-return</code>) et exports hors UE exclus du calcul</li>
+    <li>Facture sans pays ni numéro de TVA → comptée « non attribuée », divulguée, jamais devinée</li>
+    <li>Vendeur établi hors UE → le skill explique que le régime diffère et cesse d'estimer · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Le modèle de sécurité, pas une limitation :</b> la lecture est sans risque ; l'écriture exige le consentement explicite dans la conversation et ne produit qu'une <b>demande</b>. Seule la SCA (2FA) du titulaire, dans l'app Qonto, déplace l'argent. Ni Claude ni le MCP ne le peuvent.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📅 Références OSS (les règles que le skill applique)</h2>
+  <div class="scroll"><table>
+    <tr><th>Règle</th><th>Détail</th></tr>
+    <tr><td><b>Seuil unique</b></td><td><strong>10 000 € HT / année civile</strong>, toutes ventes à distance B2C UE cumulées (biens + services numériques TBE) — évalué sur l'année en cours <strong>et</strong> l'année précédente</td></tr>
+    <tr><td><b>Sous le seuil</b></td><td>TVA du pays du vendeur autorisée (option OSS volontaire possible, engagement 2 ans)</td></tr>
+    <tr><td><b>Au-dessus</b></td><td>TVA du pays du <strong>client</strong>, dès la transaction qui franchit le seuil — immatriculation pays par pays OU guichet unique OSS</td></tr>
+    <tr><td><b>Déclaration OSS</b></td><td>Trimestrielle, dépôt avant la fin du mois suivant le trimestre : <strong>30/04 · 31/07 · 31/10 · 31/01</strong> — corrections des trimestres passés dans la déclaration courante ; devises non-euro converties au taux BCE du dernier jour du trimestre</td></tr>
+    <tr><td><b>Exclusions</b></td><td>Ventes domestiques (→ <code>qonto-vat-return</code>) · <strong>B2B intracom</strong> (autoliquidation, état récapitulatif — pas l'OSS) · exports hors UE</td></tr>
+  </table></div>
+  <h3>Taux normaux des 27 États membres — millésime 2026-07, à vérifier avant dépôt</h3>
+  <div class="scroll"><table>
+    <tr><th>Taux</th><th>États membres</th></tr>
+    <tr><td>17 %</td><td>Luxembourg</td></tr>
+    <tr><td>18 %</td><td>Malte</td></tr>
+    <tr><td>19 %</td><td>Allemagne · Chypre</td></tr>
+    <tr><td>20 %</td><td>Autriche · Bulgarie · France</td></tr>
+    <tr><td>21 %</td><td>Belgique · Tchéquie · Espagne · Lituanie · Lettonie · Pays-Bas · Roumanie</td></tr>
+    <tr><td>22 %</td><td>Italie · Slovénie</td></tr>
+    <tr><td>23 %</td><td>Irlande · Pologne · Portugal · Slovaquie</td></tr>
+    <tr><td>24 %</td><td>Estonie · Grèce</td></tr>
+    <tr><td>25 %</td><td>Danemark · Croatie · Suède</td></tr>
+    <tr><td>25,5 %</td><td>Finlande</td></tr>
+    <tr><td>27 %</td><td>Hongrie</td></tr>
+  </table></div>
+  <p style="margin-top:.6rem">Le skill applique le <strong>taux normal</strong> par défaut ; si les produits peuvent relever d'un taux réduit (livres, alimentaire, articles enfants…), il le <strong>signale et demande</strong> — jamais deviné.</p>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown (jauge, brouillon pays par pays, flux exclus)</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Dashboard interactif</b></td><td>Fichier/artifact <strong>HTML</strong> : barre de jauge, tableau par pays, frise des trimestres</td><td>Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; repli automatique sur les tableaux sinon</td></tr>
+    <tr><td><b>Note de la demande Qonto</b></td><td>Détail pays par pays joint à la demande, visible à l'approbation SCA</td><td>À chaque provision créée</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le piège du seuil → la jauge → le brouillon OSS pays par pays → la provision + <strong>approbation SCA filmée sur téléphone</strong> → le dashboard. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td><strong>IOSS</strong> (importations ≤ 150 €)</td><td>Moyen</td><td>Le pendant import du guichet unique — même moteur, autre régime</td></tr>
+    <tr><td>Taux réduits par catégorie produit</td><td>Moyen</td><td>Croiser les produits Shopify avec les catégories à taux réduit par pays</td></tr>
+    <tr><td>Rappel d'échéance OSS dans le calendrier (MCP calendrier détecté dynamiquement)</td><td>Faible</td><td>Multi-MCP optionnel, dans l'esprit du kickoff</td></tr>
+    <tr><td>Historique de jauge trimestre par trimestre</td><td>Faible</td><td>Réutilise les fenêtres de scan existantes</td></tr>
+    <tr><td>WooCommerce / autres sources de commandes</td><td>Moyen</td><td>Même interface : « pays de livraison par commande »</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Aide à la préparation, PAS une déclaration</strong> : le dépôt se fait sur le portail national (France : impots.gouv.fr, guichet OSS) ; validation expert-comptable recommandée dans chaque rapport</li>
+    <li>La table des taux porte son <strong>millésime (2026-07)</strong> et doit être vérifiée avant dépôt ; taux réduits demandés, jamais devinés</li>
+    <li><strong>B2B intracom exclu de l'OSS</strong> (autoliquidation) — signalé à part, jamais dans la jauge</li>
+    <li>Mode Qonto pur = couverture <strong>partielle</strong> annoncée (la jauge est un plancher) ; jamais de répartition par pays inventée</li>
+    <li><strong>Jamais</strong> de demande de virement sans confirmation explicite ; jamais présentée comme exécutée — en attente de la SCA</li>
+    <li>IBAN masqués · pagination ≤ 50 · répétitions : <code>decline_request</code> après chaque test (<code>request_type: "multi_transfers"</code>, pluriel)</li>
+  </ul>
+</section>
+
+<footer>qonto-oss-navigator · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-oss-navigator.en.html</code> · Voir aussi : <code>qonto-vat-return</code> · <code>qonto-tax-pilot</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
