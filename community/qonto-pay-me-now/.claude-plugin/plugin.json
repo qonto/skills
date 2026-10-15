@@ -1,0 +1,10 @@
+{
+  "name": "qonto-pay-me-now",
+  "version": "0.1.0",
+  "description": "Quote-to-cash accelerator for Qonto accounts. Detects accepted quotes that were never invoiced, generates the invoice from the quote (draft first, explicit confirmation before sending), creates a Qonto payment link so the client can pay instantly by card or bank transfer, optionally shortens it…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
