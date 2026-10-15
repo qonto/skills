@@ -1,0 +1,10 @@
+{
+  "name": "qonto-project-pnl",
+  "version": "0.1.0",
+  "description": "Per-project P&L that lives in Notion. Maps Qonto labels to projects, computes each project's real cashed revenue (paid client invoices matched to bank transactions), attributed costs, margin and monthly burn, flags overdue invoices and unusual costs, then — with explicit consent — creates or…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
