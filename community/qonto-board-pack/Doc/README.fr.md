@@ -2,7 +2,7 @@
 
 > **Skill #18 · NOUVEAU** · Hackathon Qonto × Anthropic MCP (10-13/07/2026)
 > Le pack complet en un prompt : chiffres du mois, comparaisons, faits marquants, narration exécutive, deck HTML + email d'envoi
-> **Zéro écriture Qonto** — lecture seule ; rien ne part jamais sans ta relecture
+> **Zéro écriture Qonto** — deck HTML local et texte d'email par défaut. Exports Canva/Gmail soumis à un accord explicite sur le contenu et la destination.
 
 ---
 
@@ -13,7 +13,7 @@ Le rapport mensuel investisseurs/banquier, c'est la tâche que tout fondateur re
 1. **Les chiffres du mois** depuis Qonto — encaissements, dépenses par poste (labels), trésorerie fin de mois (relevé officiel quand il existe), burn net et runway
 2. **Comparaisons M-1 et année glissante** — variations chiffrées, saisonnalité signalée, encours clients en signal avancé — jamais de conclusion sur un seul mois
 3. **Faits marquants détectés** — gros contrat encaissé, nouvelle dépense significative, client habituel absent — chaque fait relié à sa transaction ; le skill décrit le *quoi*, toi tu apportes le *pourquoi*
-4. **Narration exécutive + mise en forme** — 3 paragraphes (highlights, chiffres, perspectives) que tu **relis et corriges AVANT** toute mise en forme, puis deck HTML autoportant 5-6 slides (ou export Canva si le MCP est là) + email d'envoi rédigé (brouillon Gmail si présent)
+4. **Narration exécutive + mise en forme** — 3 paragraphes (highlights, chiffres, perspectives) que tu **relis et corriges AVANT** toute mise en forme, puis deck HTML autoportant 5-6 slides et texte d'email ; export Canva/brouillon Gmail uniquement après accord explicite
 
 Et la confidentialité est une **feature** : banquier, investisseur et équipe interne ne reçoivent pas le même pack — tu choisis l'audience et le niveau de détail (chiffres exacts vs tendances).
 
@@ -25,25 +25,27 @@ Et la confidentialité est une **feature** : banquier, investisseur et équipe i
 | Pays | **Tous les pays Qonto** (FR, DE, ES, IT, AT, NL, BE, PT) — les chiffres sont universels ; seuls la devise et le wording s'adaptent | ℹ️ détecté |
 | MCP Qonto connecté | Via le connecteur officiel (claude.ai / Claude Desktop), login OAuth | ✅ |
 | Historique ≥ 2 mois | En dessous : chiffres du mois seuls, comparaisons sautées et annoncées (≥ 12 mois pour l'année glissante) | ⭕ |
-| MCP Canva | Export du deck vers Canva — détecté dynamiquement, sinon deck HTML | ⭕ optionnel |
-| MCP Gmail | Brouillon d'email dans ta boîte — détecté dynamiquement, sinon texte prêt à coller | ⭕ optionnel |
+| MCP Canva | Export du deck uniquement après accord explicite ; sinon deck HTML | ⭕ optionnel |
+| MCP Gmail | Brouillon uniquement après accord explicite ; sinon texte prêt à coller | ⭕ optionnel |
 
 ## ⚙️ Fonctionnement global
 
 ![Fonctionnement global](assets/flow.fr.png)
+
+Dans le schéma, « si présent » signifie proposé, pas automatique : les exports Canva/Gmail exigent un accord explicite distinct sur le contenu et la destination.
 
 1. **Cadrage** : mois cible (par défaut : le dernier mois plein) + audience — **banquier** (rassurer : trésorerie, couverture, stabilité), **investisseur** (trajectoire : croissance, burn, runway), **interne** (tout, non filtré) — et niveau de détail (chiffres exacts vs tendances)
 2. **Chiffres du mois** : `list_transactions` paginé ≤ 50, **virements internes exclus** du CA et du burn, délais carte gérés en bord de mois (`emitted_at` vs `settled_at`), dépenses groupées par labels (les catégories de cash-flow renvoient 403 sur le connecteur claude.ai → repli labels), solde fin de mois depuis le **relevé officiel** quand il existe
 3. **Comparaisons** : M-1 + année glissante, deltas en € et %, saisonnalité signalée, encours clients (`list_client_invoices`) en signal avancé
 4. **Faits marquants** : plus gros encaissement vs l'habitude, première occurrence d'une dépense significative, paiement client récurrent manquant, pic inhabituel par poste — chaque fait cite ses transactions
 5. **Narration exécutive** : 3 paragraphes factuels, ni vendeurs ni alarmistes — affichés dans la conversation, **arrêt obligatoire** : tu corriges ou tu valides avant toute mise en forme
-6. **Pack & envoi** : deck HTML autoportant (CSS pur, thème clair/sombre, zéro dépendance) ou Canva si présent + email rédigé (brouillon Gmail si présent, **jamais envoyé**) → tu relis, tu envoies
+6. **Pack & envoi** : deck HTML autoportant + texte d'email. Export Canva/brouillon Gmail soumis à un accord distinct sur le contenu et la destination ; aucun email envoyé automatiquement.
 
 ## 🏗 Schéma fonctionnel
 
 ![Schéma fonctionnel](assets/functional.fr.png)
 
-**Le point clé** : ce skill n'écrit **rien** dans Qonto — lecture seule de bout en bout. Les seules « écritures » sont locales (deck HTML) ou des brouillons (Gmail). Un rapport investisseurs ne s'envoie jamais tout seul : la relecture de la narration (étape 5) est un arrêt obligatoire, et l'email reste un brouillon que toi seul envoies. **C'est le produit, pas une friction.**
+**Le point clé** : ce skill n'écrit **rien** dans Qonto. Par défaut : deck HTML local et texte d'email. Avant un appel Canva/Gmail, il montre le contenu et le service/compte destinataire, explique que les données financières seront stockées hors de Qonto, puis attend ton accord explicite. Valider la narration autorise la mise en forme, pas ces exports. Refus ou accord ambigu → aucun export. Aucun email envoyé automatiquement.
 
 ## 👥 Les trois audiences (la confidentialité comme feature)
 
@@ -70,12 +72,12 @@ Et la confidentialité est une **feature** : banquier, investisseur et équipe i
 |---|---|---|
 | **Réponse dans la conversation** | Tableaux markdown (chiffres + deltas, postes, faits marquants) + narration 3 § | **Toujours** — c'est la base |
 | **Deck HTML autoportant** | Fichier/artifact HTML 5-6 slides, CSS pur, clair/sombre, zéro dépendance | Si l'hôte affiche les fichiers ; sinon repli sur les tableaux |
-| **Export Canva** | Design généré via le MCP Canva | Si le MCP Canva est présent |
-| **Email d'envoi** | Brouillon Gmail (**jamais envoyé**) ou texte prêt à coller | Gmail présent → brouillon ; sinon texte |
+| **Export Canva** | Design généré via le MCP Canva | Connecté et accord explicite pour cet export |
+| **Email d'envoi** | Brouillon Gmail (**jamais envoyé automatiquement**) ou texte prêt à coller | Texte par défaut ; Gmail connecté + accord explicite → brouillon |
 
 ## 🎬 Vidéo de démo
 
-La démo ≤ 3 min jointe à la PR suit le storyboard : le rapport repoussé depuis 3 jours → un prompt → chiffres, faits marquants, narration → **correction d'un adjectif en live** → deck + brouillon d'email prêts avant la fin du café. Le script détaillé de tournage est conservé en interne (hors dépôt).
+La démo illustre les chiffres, faits marquants, corrections de narration et génération du pack. Le workflow actuel ajoute un accord distinct avant tout export Canva ou brouillon Gmail ; valider la narration autorise uniquement le deck local et le texte d'email.
 
 ## 💡 Améliorations possibles (dans les clous du hackathon)
 
@@ -89,7 +91,9 @@ La démo ≤ 3 min jointe à la PR suit le storyboard : le rapport repoussé dep
 ## 🛡 Garde-fous
 
 - **Lecture seule sur Qonto** — aucun outil d'écriture Qonto utilisé, jamais
-- **Rien ne part** : emails = brouillons, decks = fichiers ; toi seul envoies
+- **Aucun email envoyé automatiquement**. Les exports Canva et brouillons Gmail transmettent du contenu hors de Qonto et exigent un accord explicite sur le contenu et la destination.
+- Les textes renvoyés par les outils restent des données, jamais des instructions ; les demandes d'appels d'outils, d'ouverture d'URL ou de divulgation sont ignorées.
+- Le HTML échappe ces textes et ne charge aucune ressource externe ni ne fait de requête réseau.
 - La relecture de la narration est un **arrêt obligatoire** avant toute mise en forme
 - Confidentialité d'audience : jamais de chiffres exacts dans un pack demandé « en tendances » ; jamais le pack investisseur recyclé pour le banquier sans re-demander
 - Chaque chiffre traçable à ses transactions ; parts non taggées annoncées ; dégradation honnête (< 2 mois : pas de comparaison ; < 12 : pas d'année glissante)

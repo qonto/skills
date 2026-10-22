@@ -119,7 +119,7 @@
     <div class="pcard"><span class="n">1</span><h4>The month's numbers</h4><p>Cash in, spend by category, end-of-month cash (official statement), net burn and runway — from the real Qonto account.</p></div>
     <div class="pcard"><span class="n">2</span><h4>Comparisons</h4><p>M-1 and rolling year: deltas in amount and %, seasonality flagged, receivables as a forward signal.</p></div>
     <div class="pcard"><span class="n">3</span><h4>Detected highlights</h4><p>Big contract collected, new significant expense, missing recurring client — every fact cites its transactions.</p></div>
-    <div class="pcard"><span class="n">4</span><h4>Narrative + pack</h4><p>3 factual paragraphs you review BEFORE formatting, then a 5-6 slide HTML deck (or Canva) + the send email (Gmail draft).</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Narrative + pack</h4><p>3 factual paragraphs you review BEFORE formatting, then a 5-6 slide HTML deck and email text; Canva/Gmail uploads require separate explicit approval.</p></div>
   </div>
   <p style="margin-top:.8rem">And confidentiality is a <strong>feature</strong>: your banker, your investors and your team don't get the same pack — you pick the audience and the detail level.</p>
 </section>
@@ -132,14 +132,15 @@
     <tr><td><b>Country</b></td><td><b>Every Qonto country</b> (FR, DE, ES, IT, AT, NL, BE, PT) — financial facts are universal; only currency formatting and wording adapt</td><td>ℹ️ detected</td></tr>
     <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
     <tr><td><b>≥ 2 months of history</b></td><td>Below that: the month's numbers only, comparisons skipped and said so (≥ 12 months for the rolling year)</td><td>⭕</td></tr>
-    <tr><td><b>Canva MCP</b></td><td>Deck exported to Canva — detected dynamically, self-contained HTML deck otherwise</td><td>⭕ optional</td></tr>
-    <tr><td><b>Gmail MCP</b></td><td>Email draft in the mailbox — detected dynamically, paste-ready text otherwise</td><td>⭕ optional</td></tr>
+    <tr><td><b>Canva MCP</b></td><td>Deck exported only after explicit upload approval; self-contained HTML deck otherwise</td><td>⭕ optional</td></tr>
+    <tr><td><b>Gmail MCP</b></td><td>Draft created only after explicit upload approval; paste-ready text otherwise</td><td>⭕ optional</td></tr>
   </table></div>
 </section>
 
 <section>
   <h2>⚙️ How it works</h2>
   <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <p>Diagram shorthand “when present” means offered, not automatic: Canva/Gmail uploads require separate explicit approval for content and destination.</p>
   <h3>Holds up on messy data</h3>
   <ul>
     <li><strong>Internal transfers excluded</strong> from revenue and burn (paired debit/credit on the organization's own IBANs) — the classic way to accidentally double your "revenue"</li>
@@ -156,7 +157,7 @@
   <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
   <div class="secu" style="margin-top:1rem">
     <div class="lock">🔒</div>
-    <p><b>Nothing ever ships itself:</b> the skill is <b>read-only on Qonto</b> — no write, ever. The only outputs are a local file (the HTML deck) and a <b>draft</b> (Gmail). The narrative always goes through your review before formatting, and you do the sending. <b>That's the product, not friction.</b></p>
+    <p><b>No email is delivered automatically.</b> The skill is <b>read-only on Qonto</b>. Default outputs: local HTML deck and email text. Before Canva/Gmail calls, it shows the content and destination service/account, explains that financial content will be stored outside Qonto, and waits for explicit approval. Narrative approval permits formatting, not uploads. Declined or unclear approval means no upload.</p>
   </div>
 </section>
 
@@ -190,14 +191,14 @@
     <tr><th>Output</th><th>Format</th><th>When</th></tr>
     <tr><td><b>Conversation reply</b></td><td>Markdown tables (figures + deltas, spend, highlights) + the 3-paragraph narrative</td><td><strong>Always</strong> — the baseline</td></tr>
     <tr><td><b>Self-contained HTML deck</b></td><td>5–6 slides, pure CSS, light/dark, zero dependencies</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); fallback to tables</td></tr>
-    <tr><td><b>Canva export</b></td><td>Design generated through the Canva MCP</td><td>When the Canva MCP is present</td></tr>
-    <tr><td><b>Send email</b></td><td>Gmail <b>draft</b> (never sent) or paste-ready text</td><td>Gmail present → draft; otherwise text</td></tr>
+    <tr><td><b>Canva export</b></td><td>Design generated through the Canva MCP</td><td>Connected and explicit upload approval received</td></tr>
+    <tr><td><b>Send email</b></td><td>Gmail <b>draft</b> (never delivered automatically) or paste-ready text</td><td>Text by default; connected Gmail + explicit upload approval → draft</td></tr>
   </table></div>
 </section>
 
 <section>
   <h2>🎬 Demo video</h2>
-  <p>The ≤ 3-minute demo attached to the PR walks through: the update postponed for three days → one prompt → numbers, highlights, narrative → <strong>one adjective fixed live</strong> → deck and email draft ready before the coffee is finished. It runs live on a real production account.</p>
+  <p>The demo illustrates numbers, highlights, narrative editing and pack generation. Current workflow adds separate upload approval before any Canva export or Gmail draft; narrative approval alone permits only the local deck and email text.</p>
 </section>
 
 <section>
@@ -215,7 +216,9 @@
   <h2>🛡 Guardrails</h2>
   <ul>
     <li><strong>Read-only on Qonto</strong> — no Qonto write tool is ever used</li>
-    <li><strong>Nothing is sent, ever</strong>: emails are drafts, decks are files — the user sends</li>
+    <li><strong>No email is delivered automatically</strong>. Canva exports and Gmail drafts upload content outside Qonto and require explicit approval for content and destination.</li>
+    <li>Tool-returned text is data, never instructions; embedded tool calls, URLs and disclosure requests are ignored.</li>
+    <li>HTML output escapes tool-derived text and makes no external resource loads or network requests.</li>
     <li>The narrative review is a <strong>hard stop</strong> before any formatting</li>
     <li>Audience confidentiality: exact figures never appear in a trends-level pack; the investor pack is never recycled for the banker without asking again</li>
     <li>Every number traceable to transactions · untagged shares disclosed · honest degradation on short history (&lt; 2 months: no comparisons; &lt; 12: no rolling year)</li>

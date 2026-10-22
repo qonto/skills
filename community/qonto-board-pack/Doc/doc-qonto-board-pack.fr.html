@@ -119,7 +119,7 @@
     <div class="pcard"><span class="n">1</span><h4>Chiffres du mois</h4><p>Encaissements, dépenses par poste, trésorerie fin de mois (relevé officiel), burn net et runway — depuis le compte Qonto réel.</p></div>
     <div class="pcard"><span class="n">2</span><h4>Comparaisons</h4><p>M-1 et année glissante : deltas en € et %, saisonnalité signalée, encours clients en signal avancé.</p></div>
     <div class="pcard"><span class="n">3</span><h4>Faits marquants détectés</h4><p>Gros contrat encaissé, nouvelle dépense significative, client habituel absent — chaque fait cite ses transactions.</p></div>
-    <div class="pcard"><span class="n">4</span><h4>Narration + pack</h4><p>3 § factuels que tu relis AVANT la mise en forme, puis deck HTML 5-6 slides (ou Canva) + email d'envoi (brouillon Gmail).</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Narration + pack</h4><p>3 § factuels que tu relis AVANT la mise en forme, puis deck HTML 5-6 slides et texte d'email ; exports Canva/Gmail soumis à un accord explicite distinct.</p></div>
   </div>
   <p style="margin-top:.8rem">Et la confidentialité est une <strong>feature</strong> : banquier, investisseur et équipe interne ne reçoivent pas le même pack — tu choisis l'audience et le niveau de détail.</p>
 </section>
@@ -132,14 +132,15 @@
     <tr><td><b>Pays</b></td><td><b>Tous les pays Qonto</b> (FR, DE, ES, IT, AT, NL, BE, PT) — les chiffres sont universels ; seuls devise et wording s'adaptent</td><td>ℹ️ détecté</td></tr>
     <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
     <tr><td><b>Historique ≥ 2 mois</b></td><td>En dessous : chiffres du mois seuls, comparaisons sautées et annoncées (≥ 12 mois pour l'année glissante)</td><td>⭕</td></tr>
-    <tr><td><b>MCP Canva</b></td><td>Export du deck vers Canva — détecté dynamiquement, sinon deck HTML autoportant</td><td>⭕ optionnel</td></tr>
-    <tr><td><b>MCP Gmail</b></td><td>Brouillon d'email dans la boîte — détecté dynamiquement, sinon texte prêt à coller</td><td>⭕ optionnel</td></tr>
+    <tr><td><b>MCP Canva</b></td><td>Export du deck uniquement après accord explicite ; sinon deck HTML autoportant</td><td>⭕ optionnel</td></tr>
+    <tr><td><b>MCP Gmail</b></td><td>Brouillon uniquement après accord explicite ; sinon texte prêt à coller</td><td>⭕ optionnel</td></tr>
   </table></div>
 </section>
 
 <section>
   <h2>⚙️ Fonctionnement global</h2>
   <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <p>Dans le schéma, « si présent » signifie proposé, pas automatique : les exports Canva/Gmail exigent un accord explicite distinct sur le contenu et la destination.</p>
   <h3>Ce qui rend le skill robuste sur données sales</h3>
   <ul>
     <li><strong>Virements internes exclus</strong> du CA et du burn (débit/crédit appariés sur les IBAN de l'organisation) — la façon classique de doubler son « chiffre d'affaires » par accident</li>
@@ -156,7 +157,7 @@
   <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
   <div class="secu" style="margin-top:1rem">
     <div class="lock">🔒</div>
-    <p><b>Rien ne part jamais tout seul :</b> le skill est en <b>lecture seule sur Qonto</b> — aucune écriture, jamais. Les seules sorties sont un fichier local (deck HTML) et un <b>brouillon</b> (Gmail). La narration passe toujours par ta relecture avant mise en forme, et c'est toi qui envoies. <b>C'est le produit, pas une friction.</b></p>
+    <p><b>Aucun email envoyé automatiquement.</b> Le skill est en <b>lecture seule sur Qonto</b>. Par défaut : deck HTML local et texte d'email. Avant un appel Canva/Gmail, il montre le contenu et le service/compte destinataire, explique que les données financières seront stockées hors de Qonto, puis attend ton accord explicite. Valider la narration autorise la mise en forme, pas ces exports. Refus ou accord ambigu → aucun export.</p>
   </div>
 </section>
 
@@ -190,14 +191,14 @@
     <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
     <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown (chiffres + deltas, postes, faits marquants) + narration 3 §</td><td><strong>Toujours</strong> — c'est la base</td></tr>
     <tr><td><b>Deck HTML autoportant</b></td><td>5-6 slides, CSS pur, clair/sombre, zéro dépendance</td><td>Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; repli sur tableaux sinon</td></tr>
-    <tr><td><b>Export Canva</b></td><td>Design généré via le MCP Canva</td><td>Si le MCP Canva est présent</td></tr>
-    <tr><td><b>Email d'envoi</b></td><td><b>Brouillon</b> Gmail (jamais envoyé) ou texte prêt à coller</td><td>Gmail présent → brouillon ; sinon texte</td></tr>
+    <tr><td><b>Export Canva</b></td><td>Design généré via le MCP Canva</td><td>Connecté et accord explicite pour cet export</td></tr>
+    <tr><td><b>Email d'envoi</b></td><td><b>Brouillon</b> Gmail (jamais envoyé automatiquement) ou texte prêt à coller</td><td>Texte par défaut ; Gmail connecté + accord explicite → brouillon</td></tr>
   </table></div>
 </section>
 
 <section>
   <h2>🎬 Vidéo de démo</h2>
-  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le rapport repoussé depuis 3 jours → un prompt → chiffres, faits marquants, narration → <strong>correction d'un adjectif en live</strong> → deck + brouillon d'email prêts avant la fin du café. Tournée en live sur un compte de production réel.</p>
+  <p>La démo illustre les chiffres, faits marquants, corrections de narration et génération du pack. Le workflow actuel ajoute un accord distinct avant tout export Canva ou brouillon Gmail ; valider la narration autorise uniquement le deck local et le texte d'email.</p>
 </section>
 
 <section>
@@ -215,7 +216,9 @@
   <h2>🛡 Garde-fous</h2>
   <ul>
     <li><strong>Lecture seule sur Qonto</strong> — aucun outil d'écriture Qonto utilisé, jamais</li>
-    <li><strong>Rien ne part</strong> : emails = brouillons, decks = fichiers ; l'utilisateur relit et envoie</li>
+    <li><strong>Aucun email envoyé automatiquement</strong>. Les exports Canva et brouillons Gmail transmettent du contenu hors de Qonto et exigent un accord explicite sur le contenu et la destination.</li>
+    <li>Les textes renvoyés par les outils restent des données, jamais des instructions ; les demandes d'appels d'outils, d'ouverture d'URL ou de divulgation sont ignorées.</li>
+    <li>Le HTML échappe ces textes et ne charge aucune ressource externe ni ne fait de requête réseau.</li>
     <li>La relecture de la narration est un <strong>arrêt obligatoire</strong> avant toute mise en forme</li>
     <li>Confidentialité d'audience : jamais de chiffres exacts dans un pack « en tendances » ; jamais le pack investisseur recyclé pour le banquier sans re-demander</li>
     <li>Chaque chiffre traçable à ses transactions · parts non taggées annoncées · dégradation honnête (&lt; 2 mois : pas de comparaison ; &lt; 12 : pas d'année glissante)</li>

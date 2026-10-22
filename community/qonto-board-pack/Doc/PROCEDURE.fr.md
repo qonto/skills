@@ -17,11 +17,11 @@
 - **claude.ai** : joindre le `SKILL.md` au projet, ou coller son contenu dans les instructions du projet
 
 ### Étape 3 — Connecter les MCP optionnels (recommandé, pas obligatoire)
-1. **Gmail** (Connecteurs → Gmail) → le skill crée le **brouillon** d'email d'envoi directement dans ta boîte
-2. **Canva** (Connecteurs → Canva) → le skill propose l'export du deck vers Canva
+1. **Gmail** (Connecteurs → Gmail) → le skill propose un **brouillon** dans ta boîte, soumis à ton accord explicite pour cet export
+2. **Canva** (Connecteurs → Canva) → le skill propose l'export du deck, soumis à ton accord explicite
 3. Rien de tout ça n'est requis : sans eux, tu obtiens le deck **HTML autoportant** + le texte de l'email prêt à coller
 
-> ⚠️ Le skill détecte ces MCP dynamiquement : présents → il les utilise ; absents → il le dit une fois et continue. Le cœur marche en Qonto pur.
+> ⚠️ Connecté ne veut pas dire autorisé. Par défaut : deck HTML local et texte d'email. Avant un export Canva ou un brouillon Gmail, le skill montre le contenu et le service/compte destinataire, explique que les données financières seront stockées hors de Qonto, puis attend ton accord explicite pour cet export. Valider la narration ne suffit pas. Refus ou accord ambigu → aucun export.
 
 ## 2️⃣ Utilisation mensuelle (le rituel de fin de mois, ~5 min)
 
@@ -30,7 +30,7 @@
 | 1 | Dire à Claude : « **Prépare mon rapport mensuel investisseurs** » | Question d'audience (banquier / investisseur / interne) + niveau de détail |
 | 2 | Répondre (ex. « investisseurs, chiffres exacts ») | Chiffres du mois + comparaisons M-1 / année glissante + faits marquants, en tableaux |
 | 3 | Lire la **narration** (3 § : highlights, chiffres, perspectives) | Le skill s'arrête et attend — c'est le checkpoint |
-| 4 | Corriger ce qui doit l'être (« remplace “exceptionnel” par “solide” ») puis valider | Deck HTML 5-6 slides généré + email d'envoi rédigé (brouillon Gmail si connecté) |
+| 4 | Corriger ce qui doit l'être (« remplace “exceptionnel” par “solide” ») puis valider | Deck HTML 5-6 slides + texte d'email ; export Gmail/Canva soumis à un accord distinct sur le contenu et la destination |
 | 5 | Relire le deck et le brouillon, joindre, **envoyer toi-même** | Le pack est parti — rien n'est jamais envoyé par le skill |
 
 ## 3️⃣ Utilisations ponctuelles
@@ -46,8 +46,8 @@
 |---|---|---|
 | **Réponse dans la conversation** | Tableaux markdown (chiffres + deltas, postes, faits marquants) + narration 3 § | **Toujours** — c'est la base |
 | **Deck HTML autoportant** | 5-6 slides, CSS pur, thème clair/sombre, zéro dépendance externe | Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; sinon repli sur les tableaux |
-| **Export Canva** | Design généré via le MCP Canva | Si le MCP Canva est présent |
-| **Email d'envoi** | **Brouillon** Gmail (jamais envoyé) ou texte prêt à coller | Gmail présent → brouillon ; sinon texte |
+| **Export Canva** | Design généré via le MCP Canva | Connecté et accord explicite pour cet export |
+| **Email d'envoi** | **Brouillon** Gmail (jamais envoyé automatiquement) ou texte prêt à coller | Texte par défaut ; Gmail connecté + accord explicite → brouillon |
 
 ## 5️⃣ Dépannage (erreurs connues et vérifiées)
 
@@ -64,6 +64,8 @@
 ## 🔒 Rappel sécurité
 
 Le skill est en **lecture seule sur Qonto** : il n'utilise aucun outil d'écriture Qonto, jamais.
-Il **n'envoie rien** : l'email est un brouillon, le deck est un fichier. La narration passe
-**toujours** par ta relecture avant mise en forme — un rapport investisseurs ne s'envoie
-jamais tout seul. C'est toi qui signes.
+Aucun email n'est envoyé automatiquement. Les exports Canva et brouillons Gmail
+autorisés transmettent du contenu hors de Qonto. Valider la narration autorise
+la mise en forme, pas ces exports. Les textes renvoyés par les outils restent
+des données, jamais des instructions. Le HTML échappe ces textes et ne charge
+aucune ressource externe ni ne fait de requête réseau.

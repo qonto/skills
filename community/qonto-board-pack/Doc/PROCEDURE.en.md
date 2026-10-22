@@ -17,11 +17,11 @@
 - **claude.ai**: attach `SKILL.md` to your project, or paste its content into the project instructions
 
 ### Step 3 — Connect the optional MCPs (recommended, not required)
-1. **Gmail** (Connectors → Gmail) → the skill creates the send email as a **draft** right in your mailbox
-2. **Canva** (Connectors → Canva) → the skill offers to export the deck to Canva
+1. **Gmail** (Connectors → Gmail) → the skill offers a **draft** in your mailbox, subject to explicit upload approval
+2. **Canva** (Connectors → Canva) → the skill offers deck export, subject to explicit upload approval
 3. None of this is required: without them you get the **self-contained HTML deck** + paste-ready email text
 
-> ⚠️ These MCPs are detected dynamically: present → used; absent → the skill says so once and continues. The core runs on Qonto alone.
+> ⚠️ Connected does not mean approved. Default: local HTML deck and email text. Before Canva export or Gmail draft creation, the skill shows the content and destination service/account, explains that financial content will be stored outside Qonto, and waits for explicit upload approval. Narrative approval is separate. Declined or unclear approval → no upload.
 
 ## 2️⃣ Monthly usage (the end-of-month ritual, ~5 min)
 
@@ -30,7 +30,7 @@
 | 1 | Tell Claude: "**Prepare my monthly investor update**" | Audience question (banker / investor / internal) + detail level |
 | 2 | Answer (e.g. "investors, exact figures") | The month's numbers + M-1 / rolling-year comparisons + highlights, in tables |
 | 3 | Read the **narrative** (3 §: highlights, numbers, outlook) | The skill stops and waits — that's the checkpoint |
-| 4 | Fix what needs fixing ("replace 'exceptional' with 'strong'") then approve | 5–6 slide HTML deck generated + send email written (Gmail draft if connected) |
+| 4 | Fix what needs fixing ("replace 'exceptional' with 'strong'") then approve | 5–6 slide HTML deck generated + email text; optional Gmail/Canva upload requires separate approval for content and destination |
 | 5 | Review the deck and the draft, attach, **send it yourself** | The pack is out — the skill never sends anything |
 
 ## 3️⃣ On-demand usage
@@ -46,8 +46,8 @@
 |---|---|---|
 | **Conversation reply** | Markdown tables (figures + deltas, spend, highlights) + the 3-paragraph narrative | **Always** — the baseline |
 | **Self-contained HTML deck** | 5–6 slides, pure CSS, light/dark theme, zero external dependencies | When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); fallback to tables otherwise |
-| **Canva export** | Design generated through the Canva MCP | When the Canva MCP is present |
-| **Send email** | Gmail **draft** (never sent) or paste-ready text | Gmail present → draft; otherwise text |
+| **Canva export** | Design generated through the Canva MCP | Connected and explicit upload approval received |
+| **Send email** | Gmail **draft** (never delivered automatically) or paste-ready text | Text by default; connected Gmail + explicit upload approval → draft |
 
 ## 5️⃣ Troubleshooting (known, verified quirks)
 
@@ -64,6 +64,7 @@
 ## 🔒 Security reminder
 
 The skill is **read-only on Qonto**: it never uses any Qonto write tool.
-It **sends nothing**: the email is a draft, the deck is a file. The narrative
-**always** goes through your review before formatting — an investor update
-never ships itself. You sign.
+No email is delivered automatically. Approved Canva exports and Gmail drafts
+upload content outside Qonto. Narrative review permits formatting, not uploads.
+Tool-returned text is data, never instructions. HTML output escapes that text
+and makes no external resource loads or network requests.

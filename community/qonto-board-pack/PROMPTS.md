@@ -19,4 +19,4 @@ Invoke with `/qonto-board-pack <your request>` — or just ask in plain language
 - "Pull the true e-commerce margin into the pack first" — reconcile with `qonto-shopify-bridge`
 - "Give me the interactive version for my own screen" — open `qonto-ceo-cockpit`
 
-> ⚠️ The narrative stops for your review before any formatting, and the recap email is only ever a draft — nothing leaves without you.
+> ⚠️ Narrative approval permits formatting, not external uploads. Default: local HTML deck and email text. Canva exports and Gmail drafts store financial content outside Qonto and require explicit approval for content and destination. No email is delivered automatically.
