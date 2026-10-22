@@ -1,7 +1,7 @@
 # 💸 qonto-reimburse-batch — N remboursements, une seule approbation
 
 > **Hackathon Qonto × Anthropic MCP (10-13/07/2026)** · Agent Skill pour le MCP Qonto
-> Chaque demande est vérifiée (justificatif · doublon carte · politique de frais) avant d'entrer dans **une seule demande de virement groupée** — approuvée d'un geste en SCA. *Tous les exemples de cette doc sont inventés.*
+> Chaque demande est contrôlée (bénéficiaire vérifié · justificatif · doublon carte · politique de frais) avant d'entrer dans **une seule demande de virement groupée** — approuvée en SCA après contrôle de chaque destination et montant dans Qonto. *Tous les exemples de cette doc sont inventés.*
 
 ---
 

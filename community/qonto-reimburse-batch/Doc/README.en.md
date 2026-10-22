@@ -1,7 +1,7 @@
 # 💸 qonto-reimburse-batch — N reimbursements, one approval
 
 > **Qonto × Anthropic MCP Hackathon submission** · Agent Skill for the Qonto MCP
-> Every claim is verified (receipt · card duplicate · expense policy) before it enters **one grouped transfer request** — approved in a single SCA gesture. *All examples in this doc are invented.*
+> Every claim is checked (verified recipient · receipt · card duplicate · expense policy) before it enters **one grouped transfer request** — approved with SCA after reviewing every destination and amount in Qonto. *All examples in this doc are invented.*
 
 ---
 
