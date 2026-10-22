@@ -1,7 +1,7 @@
 {
   "name": "qonto-reimburse-batch",
   "version": "0.1.0",
-  "description": "Batch expense reimbursement for teams on Qonto. Collects employee expense claims from a Slack channel or Notion base (optional — pasted claims work too), verifies each one (receipt present and consistent, no duplicate of a company-card expense or of a past reimbursement, expense policy respected)…",
+  "description": "Batch expense reimbursement for teams on Qonto. Checks claims against a finance-controlled verified recipient list, receipts, duplicates and expense policy; prepares one pending grouped transfer request after explicit confirmation. Review every destination and amount in Qonto before SCA approval.",
   "author": {
     "name": "seb",
     "url": "https://github.com/SebDeNoocode"

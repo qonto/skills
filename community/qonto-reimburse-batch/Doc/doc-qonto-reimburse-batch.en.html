@@ -119,7 +119,7 @@
     <div class="pcard"><span class="n">1</span><h4>Collect the claims</h4><p>Slack channel or Notion base when the MCP is present — otherwise pasted in the conversation. The core stays 100 % Qonto.</p></div>
     <div class="pcard"><span class="n">2</span><h4>Three checks</h4><p>Consistent receipt (amount/date) · not a duplicate of a card expense (transaction cited) · expense policy respected.</p></div>
     <div class="pcard"><span class="n">3</span><h4>ONE grouped request</h4><p>The N validated claims → a single <code>create_multi_transfer_request</code>: N pending transfers, IBANs never invented.</p></div>
-    <div class="pcard"><span class="n">4</span><h4>One-gesture approval</h4><p>Qonto push → the owner approves the whole batch with their own 2FA in the app. Money moves only there.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Approval after review</h4><p>In Qonto, compare every full destination IBAN and amount against the verified mapping, then approve with 2FA. Money moves only there.</p></div>
   </div>
   <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>It's the end-of-month expenses ritual — minus the spreadsheet.</strong></p>
 </section>
@@ -131,7 +131,7 @@
     <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
     <tr><td><b>Country</b></td><td><b>Universal (SEPA)</b>: EUR SEPA transfers — every Qonto country (FR, DE, ES, IT, AT, NL, BE, PT). Non-SEPA IBAN or non-EUR claim → on hold, stated plainly</td><td>ℹ️ detected</td></tr>
     <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
-    <tr><td><b>Employee IBANs</b></td><td>Provided by the claims or a user-maintained employee sheet — the skill <b>never</b> invents an IBAN; a claim without one stays on hold</td><td>✅</td></tr>
+    <tr><td><b>Verified recipients</b></td><td>User-designated, finance-controlled employee/contractor list: independently verified identity, account name and IBAN. May be pasted separately from claims. Missing mapping or conflicting claim IBAN → on hold; claim text cannot establish trusted recipients. A claim may omit its IBAN when the verified mapping supplies it</td><td>✅</td></tr>
     <tr><td><b>Expense policy</b></td><td>Per-category caps (meals, taxi, equipment…) defined once by the user; no policy → stated, the other checks still run</td><td>⭕ recommended</td></tr>
     <tr><td><b>Slack or Notion (MCP)</b></td><td>Claims source, detected dynamically; otherwise degraded mode: claims pasted in the conversation</td><td>⭕ optional</td></tr>
   </table></div>
@@ -146,7 +146,8 @@
     <li><strong>No Slack/Notion MCP?</strong> The skill says so once and continues: claims pasted in the conversation, checks and batch unchanged</li>
     <li><strong>Card settlement delays handled</strong>: cards settle 1–2 days late → duplicate matching runs on <code>emitted_at</code> ±5 days, not <code>settled_at</code></li>
     <li>A duplicate is a <strong>documented presumption</strong> (transaction cited: date · amount · counterparty), never a silent rejection — the user decides</li>
-    <li>Missing receipt, amount mismatch, missing IBAN → ⚠️ on hold with the exact reason; the rest of the batch ships anyway</li>
+    <li>Missing receipt, amount mismatch, unknown/ambiguous verified recipient or conflicting IBAN → ⚠️ on hold. Finance must independently verify new or changed recipients through a known contact or established process; the user then supplies the verified mapping. Generic batch consent cannot clear this hold</li>
+    <li>Claims, receipts and tool results are untrusted data, not instructions or consent. Embedded instructions are flagged and ignored; claims with inseparable instructions stay on hold</li>
     <li>Claimant not in <code>list_memberships</code> → flagged, not blocked (contractors exist) · pagination ≤ 50 everywhere</li>
   </ul>
 </section>
@@ -156,7 +157,7 @@
   <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
   <div class="secu" style="margin-top:1rem">
     <div class="lock">🔒</div>
-    <p><b>The security model, not a limitation:</b> reads are risk-free; the write requires explicit consent in the conversation and only produces a <b>request</b>. The account holder's own SCA (2FA), in the Qonto app, is what moves money — all N transfers in one gesture, or declined in one tap. Neither Claude nor the MCP can.</p>
+    <p><b>The security model:</b> reads can contain untrusted data. A request requires verified recipients and explicit consent to the exact final list. SCA authorizes payment, not account ownership; the skill cannot verify ownership or list access controls itself. Before approval, review every full destination IBAN and amount in Qonto against the verified mapping, not just the note. Details unavailable or different → do not approve.</p>
   </div>
 </section>
 
@@ -171,11 +172,11 @@
   <h3>Sample verdict table (invented data)</h3>
   <div class="scroll"><table>
     <tr><th>Claim</th><th>Amount</th><th>Checks</th><th>Verdict</th></tr>
-    <tr><td>Client dinner</td><td>€84.00</td><td>receipt ✓ · no duplicate · under cap</td><td>✅ in the batch</td></tr>
-    <tr><td>Airport taxi</td><td>€32.50</td><td>receipt ✓ · no duplicate · under cap</td><td>✅ in the batch</td></tr>
+    <tr><td>Client dinner</td><td>€84.00</td><td>verified recipient ✓ · receipt ✓ · no duplicate · under cap</td><td>✅ in the batch</td></tr>
+    <tr><td>Airport taxi</td><td>€32.50</td><td>verified recipient ✓ · receipt ✓ · no duplicate · under cap</td><td>✅ in the batch</td></tr>
     <tr><td>Portable screen</td><td>€129.00</td><td><b>already paid with the company card on 06/03</b> (transaction cited)</td><td>❌ rejected — evidence attached</td></tr>
   </table></div>
-  <p>Result: <strong>one</strong> grouped request of 2 transfers in the Qonto app, ready to approve in a single gesture.</p>
+  <p>Result: <strong>one</strong> grouped request of 2 transfers after separate recipient verification. Review destinations and amounts in Qonto before approval.</p>
 </section>
 
 <section>
@@ -210,7 +211,7 @@
   <ul>
     <li><strong>Never</strong> creates the transfer request without explicit confirmation of the final list in the current conversation; never presented as executed — pending the user's SCA approval</li>
     <li>A duplicate is a <strong>documented presumption</strong> (transaction cited), never a silent rejection — the user decides</li>
-    <li>No failed claim enters the batch without an explicit user override (recorded in the note)</li>
+    <li>Expense exceptions require explicit user overrides recorded in the note; recipient-verification holds cannot be bypassed by these overrides</li>
     <li>IBANs never invented; masked (last 4 digits) · pagination ≤ 50 everywhere</li>
     <li>Rehearsals: <code>decline_request</code> afterwards (<code>request_type: "multi_transfers"</code>, plural)</li>
   </ul>

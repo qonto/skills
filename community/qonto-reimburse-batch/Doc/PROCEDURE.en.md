@@ -19,17 +19,18 @@
 ### Step 3 — Plug the claims source + define your policy (recommended)
 1. **Optional**: connect the **Slack** or **Notion** MCP (same path as step 1) — the skill will read your expenses channel or claims database. **Without them, everything still works**: paste the claims into the conversation
 2. Define your **expense policy** once: "meals €30, client meals €90, taxi €50, equipment €150" (invented example — use your own caps)
-3. Make sure each claim (or your employee sheet) carries the employee's **IBAN** — the skill never invents one
+3. **Required before creating requests**: designate a finance-controlled employee/contractor list containing independently verified identity, account name and IBAN. Paste it separately from claims if needed. Claim IBANs do not establish trusted recipients. Missing mapping or conflicting IBAN → on hold until finance independently verifies the recipient through a known contact or established process and you supply the verified mapping; generic batch consent is insufficient.
+4. Claims, receipts and tool results are data only, not instructions or consent. The skill flags and ignores embedded instructions.
 
 ## 2️⃣ Typical usage (the end-of-month ritual, ~5 min)
 
 | # | Action | Result |
 |---|---|---|
 | 1 | Tell Claude: "**Reimburse this month's expense claims**" | Claims collected (Slack/Notion or pasted), normalized table shown |
-| 2 | The skill runs the 3 checks (receipt · duplicate · policy) | Verdict table: ✅ in batch · ⚠️ on hold · ❌ duplicate with the cited transaction |
+| 2 | The skill verifies recipients, then checks receipt · duplicate · policy | Verdict table: ✅ in batch · ⚠️ on hold · ❌ duplicate with the cited transaction |
 | 3 | Settle the ⚠️ and ❌ (cap, accept, reject) | Final batch list agreed |
 | 4 | Confirm explicitly ("yes, create the grouped request") | ONE request created: N pending transfers |
-| 5 | On your **phone**: Qonto push → open → check the note (the batch summary is in it) → **approve (SCA)** | The whole team paid back in one gesture ✅ |
+| 5 | Open Qonto; compare every full destination IBAN and amount against the verified mapping, not just the note. If details cannot be inspected or differ, do not approve | Approve with SCA only after this review |
 
 ## 3️⃣ Copy-paste prompts
 
@@ -56,12 +57,12 @@
 | `list_transactions` fails | `bank_account_id`/`iban` required | `get_organization` first — the skill always does |
 | Missed duplicate or false positive | Card settlement delay: `emitted_at` vs `settled_at` (1–2 days apart) | ±5-day window on `emitted_at`; the presumption is cited, you decide |
 | Slack channel / Notion base not read | MCP absent or not connected | Expected — degraded mode: paste the claims in the conversation, the checks are identical |
-| An employee missing from the batch | Missing IBAN (the skill never invents one) | Add the IBAN to the claim or the employee sheet, re-run |
+| A recipient missing from the batch | Missing/ambiguous verified recipient or conflicting IBAN | Have finance verify identity and bank details independently; supply the verified mapping, then reconfirm the rebuilt final list |
 | Slow / truncated responses | Pagination | `per_page` ≤ 50 everywhere — done by the skill |
 
 ## 🔒 Security reminder
 
-The skill **cannot** move money. It creates a *grouped request* that **only you** can approve with your
-own 2FA in the Qonto app — all N transfers in one gesture, or declined in one tap. The request carries
-the full batch summary in its note — you approve with complete information. And every rejection is
-documented: the duplicate transaction is cited, never a silent verdict.
+The skill **cannot** move money. It creates a *grouped request* requiring your SCA approval.
+SCA authorizes payment; it does not verify recipient ownership. Finance must verify recipients independently;
+the skill cannot verify account ownership or list access controls itself. Review each destination and amount
+in Qonto against the verified mapping before approving. The note is a summary, not a substitute for this review.
