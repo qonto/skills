@@ -1,0 +1,10 @@
+{
+  "name": "meet2invoice",
+  "version": "0.1.0",
+  "description": "Turn a sales meeting artifact (transcript, notes, calendar event) into a Qonto quote and, on acceptance, a finalized invoice sent from Qonto — with VAT handled per country and a confirmation before every write.",
+  "author": {
+    "name": "Dr. Martin Kaiser – Kaiser Data & AI",
+    "url": "https://kaiser-data-ai.de"
+  },
+  "license": "MIT"
+}
