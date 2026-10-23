@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cash simulator</title>
+<!--
+DATA CONTRACT (edit only the JSON in <script id="sim-data">)
+- labels: UI strings; translate values, keep keys. {x} placeholders are filled at runtime.
+- org, currency (ISO), locale (BCP-47), asOf (YYYY-MM-DD, first day of week 1), weeks (number, usually 13)
+- openingCash: cash available on asOf (use authorized_balance if lower than balance), openingNote: one line
+- buffer: minimum cash the owner wants to keep (default: one month of fixed costs)
+- receipts: { weekly: expected client receipts per week, status, note,
+              largestClient: { name, share 0..1 } }
+- events: dated one-off flows, amount signed (+ in, - out):
+    { date, amount, label, category, status, payLaterEligible? }
+  category: receipts | suppliers | payroll | taxes | financing | fixed | other
+  status:   known | probable | assumed
+  Client receipts listed here are also delayed by the "clients pay later" control.
+- recurring: weekly flows from a date: { label, category, weekly (signed), fromDate, status, flexEligible? }
+- products: overdraft { status, limit, annualRate|null }, payLater { status, monthlyRateFrom, instalmentOptions, defaultInstalments },
+            flex { status, settlementDay, defaultShare 0..1 }
+  status: active | eligible | unknown | not_available (not_available hides the control)
+- notes: list of short assumption lines shown at the bottom
+- workingCapital (optional): { dso:{value,terms,daysLate,onTimePct,invoices,coveragePct,status}, dpo:{same}, cycle,
+    supplierTermsTrend:[{month,terms,invoices}], clientTermsTrend:[...], notes:[...] }   status: measured | estimated
+- counterparties (optional): { clients:[{name,amount,share,open,nextDue,invoices?,invoiced?,daysToPay?,terms?,daysLate?,onTimePct?,lateCount?,maxLate?}], suppliers:[same] }
+  amount/share come from bank transactions; the invoice fields only for counterparties with paid invoices.
+  Client events with "client":"<name>" are removed when that client is removed from the forecast.
+- openItems (optional): [{side: client|supplier, name, ref, amount, issue, due}]
+- monthly (optional): [{month:"YYYY-MM", inflow, outflow, partial?}] operating flows, excluding financing and internal transfers
+Dates use T12:00:00Z and UTC methods to avoid time-zone bugs.
+-->
+<style>
+:root{
+  --paper:#F7F8F6; --panel:#FFFFFF; --ink:#18233A; --muted:#5B6574; --line:#DCE0E5;
+  --with:#0E7C86; --without:#6B7480; --buffer:#B86E00; --neg:#B4432F; --negbg:rgba(180,67,47,.08);
+  --chip-active:#E3F2F1; --chip-unknown:#F3EEE3; --chip-eligible:#E7EEF8;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --paper:#10151F; --panel:#171E2B; --ink:#E6E9EE; --muted:#9AA4B2; --line:#2A3344;
+  --with:#4FC1C9; --without:#8C96A5; --buffer:#E3A23A; --neg:#E06B57; --negbg:rgba(224,107,87,.12);
+  --chip-active:#173B3D; --chip-unknown:#3A3220; --chip-eligible:#1F2C42;
+}}
+:root[data-theme="dark"]{
+  --paper:#10151F; --panel:#171E2B; --ink:#E6E9EE; --muted:#9AA4B2; --line:#2A3344;
+  --with:#4FC1C9; --without:#8C96A5; --buffer:#E3A23A; --neg:#E06B57; --negbg:rgba(224,107,87,.12);
+  --chip-active:#173B3D; --chip-unknown:#3A3220; --chip-eligible:#1F2C42;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Public Sans","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px;line-height:1.5;font-variant-numeric:tabular-nums}
+main{max-width:1080px;margin:0 auto;padding:28px 20px 48px}
+.org{color:var(--muted);font-size:.95rem;margin:0 0 6px}
+h1{font-size:clamp(1.45rem,3.2vw,2.15rem);line-height:1.2;font-weight:650;margin:0 0 6px;max-width:30ch;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 18px;max-width:70ch}
+.chart{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 8px 4px;position:relative}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.9rem;color:var(--muted);padding:2px 10px 8px}
+.legend span::before{content:"";display:inline-block;width:18px;height:0;border-top:3px solid currentColor;vertical-align:middle;margin-right:6px}
+.lg-with{color:var(--with)} .lg-without{color:var(--without)} .lg-buf{color:var(--buffer)}
+.lg-without::before{border-top-style:dashed!important} .lg-buf::before{border-top-style:dotted!important}
+svg{display:block;width:100%;height:auto}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--paper);padding:8px 10px;border-radius:8px;font-size:.85rem;line-height:1.35;opacity:0;transition:opacity .12s;white-space:nowrap}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+section.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 18px 8px}
+h2{font-size:1.1rem;margin:0 0 4px;font-weight:650}
+.hint{color:var(--muted);font-size:.9rem;margin:0 0 14px}
+.ctl{margin:0 0 16px}
+.ctl label{display:flex;justify-content:space-between;gap:12px;font-weight:550;font-size:.95rem}
+.ctl output{font-weight:650}
+.ctl small{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--with);margin:6px 0 0}
+input[type=number],select{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:6px 8px;width:7.5em}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:450;margin:6px 0}
+.check input{margin-top:4px;accent-color:var(--with)}
+.tool{border-top:1px solid var(--line);padding-top:14px;margin-top:4px}
+.tool:first-of-type{border-top:0;padding-top:0}
+.tool h3{font-size:1rem;margin:0 0 4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{font-size:.78rem;font-weight:600;border-radius:999px;padding:2px 9px;color:var(--ink)}
+.chip.active{background:var(--chip-active)} .chip.eligible{background:var(--chip-eligible)} .chip.unknown{background:var(--chip-unknown)}
+.toggle{display:flex;gap:10px;align-items:center;font-weight:550;margin:8px 0 12px}
+.toggle input{width:1.1em;height:1.1em;accent-color:var(--with)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-weight:600;color:var(--muted)}
+.cmp{margin-top:22px}
+.scroll{overflow-x:auto}
+td.neg{color:var(--neg);font-weight:600}
+details{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+summary{cursor:pointer;font-weight:600}
+.status-known{color:var(--ink)} .status-probable,.status-assumed{color:var(--muted)}
+.notes{color:var(--muted);font-size:.9rem;margin-top:22px;max-width:75ch}
+.notes li{margin:4px 0}
+.legal{color:var(--muted);font-size:.85rem;margin-top:16px;max-width:75ch}
+.cp h3{font-size:1rem;margin:20px 0 6px}
+.wc{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 24px;margin:6px 0 18px}
+.wc div{padding:10px 0;border-bottom:1px solid var(--line)}
+.wc b{display:block;font-size:1.6rem;font-weight:650;line-height:1.2}
+.wc span{color:var(--muted);font-size:.9rem}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;margin:4px 0 14px}
+.seg button{font:inherit;border:0;background:none;color:var(--ink);padding:6px 16px;border-radius:999px;cursor:pointer}
+.seg button[aria-selected=true]{background:var(--ink);color:var(--paper)}
+.conc{display:flex;height:18px;border-radius:6px;overflow:hidden;margin:6px 0 6px;background:var(--line)}
+.conc i{display:block;height:100%}
+.conc-l{color:var(--muted);font-size:.9rem;margin:0 0 12px}
+.bar{display:inline-block;height:8px;border-radius:4px;background:var(--with);vertical-align:middle;margin-right:6px}
+th.sort{cursor:pointer;user-select:none} th.sort[aria-sort]{color:var(--ink)}
+td.late{color:var(--neg);font-weight:600} td.early{color:var(--with)}
+td small{color:var(--muted)}
+button.link{font:inherit;font-size:.85rem;background:none;border:0;color:var(--with);cursor:pointer;padding:0;text-decoration:underline}
+.cp table th,.cp table td{padding:8px 8px}
+.cp #cpt td:first-child{white-space:normal;min-width:8.5em;max-width:14em}
+.cp #cpt small{white-space:normal}
+.keys{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:.88rem;margin:0 0 12px;padding:0;list-style:none}
+.keys li::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--k);margin-right:6px;vertical-align:-1px}
+.cpnotes{color:var(--muted);font-size:.9rem;margin:12px 0 0;padding-left:18px}
+button.reset{font:inherit;background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+:focus-visible{outline:3px solid var(--with);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.tip{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <p class="org" id="org"></p>
+  <h1 id="verdict" aria-live="polite"></h1>
+  <p class="sub" id="subverdict"></p>
+
+  <div class="chart" id="chartbox">
+    <div class="legend"><span class="lg-with" id="lg-with"></span><span class="lg-without" id="lg-without"></span><span class="lg-buf" id="lg-buf"></span></div>
+    <svg id="chart" viewBox="0 0 1000 380" role="img" aria-labelledby="verdict"></svg>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="h-whatif">
+      <h2 id="h-whatif"></h2>
+      <p class="hint" id="hint-whatif"></p>
+      <div class="ctl"><label for="delay"><span id="l-delay"></span><output id="o-delay"></output></label>
+        <input type="range" id="delay" min="0" max="60" step="5"><small id="s-delay"></small></div>
+      <div class="ctl"><label for="level"><span id="l-level"></span><output id="o-level"></output></label>
+        <input type="range" id="level" min="50" max="130" step="5"><small id="s-level"></small></div>
+      <div class="ctl" id="lose-ctl"><label for="lose"><span id="l-lose"></span></label>
+        <select id="lose" style="width:100%;margin-top:6px"></select><small id="s-lose"></small></div>
+      <div class="ctl"><label for="payroll"><span id="l-payroll"></span><output id="o-payroll"></output></label>
+        <input type="range" id="payroll" min="0" max="200" step="10"><small id="s-payroll"></small></div>
+      <div class="ctl"><label for="extra"><span id="l-extra"></span><output id="o-extra"></output></label>
+        <input type="range" id="extra" min="0" max="30000" step="500"><small id="s-extra"></small></div>
+      <div class="ctl"><label for="buffer"><span id="l-buffer"></span><output id="o-buffer"></output></label>
+        <input type="range" id="buffer" min="0" max="40000" step="500"><small id="s-buffer"></small></div>
+      <p><button class="reset" id="reset" type="button"></button></p>
+    </section>
+
+    <section class="card" aria-labelledby="h-tools">
+      <h2 id="h-tools"></h2>
+      <p class="hint" id="hint-tools"></p>
+      <div class="tool" id="t-flex">
+        <h3><span id="n-flex"></span><span class="chip" id="c-flex"></span></h3>
+        <div class="ctl"><label for="flexshare"><span id="l-flex"></span><output id="o-flex"></output></label>
+          <input type="range" id="flexshare" min="0" max="100" step="10"><small id="s-flex"></small></div>
+      </div>
+      <div class="tool" id="t-pl">
+        <h3><span id="n-pl"></span><span class="chip" id="c-pl"></span></h3>
+        <p class="hint" id="s-pl"></p>
+        <div id="pl-list"></div>
+        <div class="row" style="margin:10px 0 16px">
+          <label for="pln" id="l-pln"></label><select id="pln"></select>
+          <label for="plr" id="l-plr"></label><input type="number" id="plr" min="0" max="5" step="0.01">
+        </div>
+      </div>
+      <div class="tool" id="t-od">
+        <h3><span id="n-od"></span><span class="chip" id="c-od"></span></h3>
+        <div class="ctl"><label for="odl"><span id="l-odl"></span><output id="o-odl"></output></label>
+          <input type="range" id="odl" min="0" max="60000" step="1000"><small id="s-od"></small></div>
+        <div class="row" style="margin:-4px 0 16px"><label for="odr" id="l-odr"></label><input type="number" id="odr" min="0" max="30" step="0.1"></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card cmp" aria-labelledby="h-cmp">
+    <h2 id="h-cmp"></h2>
+    <div class="scroll"><table id="cmp"></table></div>
+  </section>
+
+  <section class="card cmp cp" id="cp" aria-labelledby="h-cp">
+    <h2 id="h-cp"></h2>
+    <p class="hint" id="hint-cp"></p>
+    <div class="wc" id="wc"></div>
+    <div class="seg" role="tablist"><button type="button" role="tab" id="tab-c" aria-selected="true"></button><button type="button" role="tab" id="tab-s" aria-selected="false"></button></div>
+    <div class="conc" id="conc" aria-hidden="true"></div>
+    <ul class="keys" id="conc-k"></ul>
+    <p class="conc-l" id="conc-l"></p>
+    <div class="scroll"><table id="cpt"></table></div>
+    <h3 id="h-open"></h3>
+    <div class="scroll"><table id="opent"></table></div>
+    <h3 id="h-monthly"></h3>
+    <p class="hint" id="hint-monthly"></p>
+    <ul class="keys" id="m-k"></ul>
+    <svg id="mchart" viewBox="0 0 1000 260" role="img" aria-labelledby="h-monthly"></svg>
+    <ul class="cpnotes" id="cpnotes"></ul>
+  </section>
+
+  <details>
+    <summary id="h-weekly"></summary>
+    <div class="scroll"><table id="weekly"></table></div>
+  </details>
+
+  <ul class="notes" id="notes"></ul>
+  <p class="legal" id="legal"></p>
+</main>
+
+<script id="sim-data" type="application/json">{
+ "labels": {
+  "title": "Cash simulator, next 13 weeks",
+  "orgLine": "{org}. Cash available on {d}: {cash}",
+  "vOk": "Your cash stays above your safety buffer for the next 13 weeks. The lowest point is {min}, around {d}.",
+  "vBuffer": "Cash drops below your safety buffer from the week of {d}, but stays positive. The lowest point is {min}.",
+  "vNeg": "Cash drops below your safety buffer from the week of {d} and below zero from the week of {n}. The lowest point is {min}.",
+  "vOverdraft": "Cash drops below your safety buffer from the week of {d}. Your overdraft covers the dip below zero from the week of {n}.",
+  "subWithout": "Dashed line: your plan as it stands. Turn on the Qonto tools below to see what changes.",
+  "subWith": "With the tools you selected, your lowest point improves by {gain}, for an estimated cost of {cost}.",
+  "lineWith": "With the tools you selected",
+  "lineWithout": "Your plan as it stands",
+  "lineBuffer": "Safety buffer",
+  "whatIf": "What if",
+  "whatIfHint": "Test what could go differently. The forecast updates as you move each control.",
+  "delay": "Clients pay later than expected",
+  "delayHint": "Moves every expected client payment by this many days.",
+  "onTime": "on time",
+  "days": "+{n} days",
+  "level": "Client payments, compared with recent months",
+  "levelHint": "100% = {v} per month. {note}",
+  "loseSel": "Remove a client from the forecast",
+  "loseNone": "Keep all clients",
+  "loseOpt": "Without {name} ({share}% of client payments)",
+  "loseHint": "Removes that client's share of expected payments, and their open invoices.",
+  "cpTitle": "Clients and suppliers",
+  "cpHint": "Who brings in your cash, who you pay, and how fast. Payment delays are measured on your Qonto invoices; shares come from your bank transactions since March.",
+  "tabClients": "Clients",
+  "tabSuppliers": "Suppliers",
+  "measuredOn": "Measured on {n} invoices ({c}% of the amounts)",
+  "estimatedLbl": "Estimated from the terms you gave",
+  "dsoLbl": "Clients take to pay you (terms: {terms} days)",
+  "dpoLbl": "You take to pay suppliers (terms: {terms} days)",
+  "cycleNeg": "Suppliers wait longer than your clients do, so they partly fund your activity",
+  "cyclePos": "Clients take longer to pay than you take to pay suppliers, so you fund the gap",
+  "onTimeLbl": "Invoices paid on time, by your clients and by you",
+  "termsTrend": "Supplier terms in days, {a} to {b} invoices",
+  "nDays": "{n} days",
+  "nDays1": "1 day",
+  "nLate": "{n} days late",
+  "nLate1": "1 day late",
+  "nEarly": "{n} days early",
+  "nEarly1": "1 day early",
+  "onDue": "On the due date",
+  "concC": "{name} brings {s1}% of your client payments. Your top 3 clients: {s3}% of {total}.",
+  "concS": "{name} receives {s1}% of your supplier spend. Your top 3 suppliers: {s3}% of {total}.",
+  "colName": "Name",
+  "colReceived": "Received",
+  "colPaid": "Paid",
+  "colInvoices": "Invoices",
+  "colPaysIn": "Pays in",
+  "colYouPayIn": "You pay in",
+  "colTerms": "Terms",
+  "colLate": "Early or late",
+  "colOnTime": "On time",
+  "colOpen": "Open",
+  "noInvoices": "none in Qonto",
+  "maxLate": "worst: {n} days late",
+  "dueOn": "due {d}",
+  "testWithout": "Test without",
+  "openTitle": "Open invoices",
+  "colRef": "Invoice",
+  "colAmount": "Amount",
+  "colDue": "Due",
+  "colStatus": "Status",
+  "noOpen": "No open invoice.",
+  "overdue": "{n} days overdue",
+  "dueIn": "due in {n} days",
+  "monthlyTitle": "Money in and out each month",
+  "monthlyHint": "Day-to-day flows only: Pay Later, Flex card settlements, internal transfers and owner flows are left out. * Month in progress.",
+  "mIn": "Money in",
+  "mOut": "Money out",
+  "others": "Others",
+  "showAll": "Show {n} smaller ones",
+  "showLess": "Show fewer",
+  "payroll": "Payroll",
+  "payrollHint": "Change it if the monthly payroll differs from this figure.",
+  "perMonth": "per month",
+  "extra": "Unexpected cost in two weeks",
+  "extraHint": "A one-off expense, such as a repair or a tax adjustment.",
+  "buffer": "Safety buffer",
+  "bufferHint": "The cash you never want to go below. Default: about one month of fixed costs.",
+  "reset": "Reset all controls",
+  "tools": "Qonto tools",
+  "toolsHint": "Each tool is subject to Qonto's eligibility review. Rates come from Qonto's public pricing or from your app.",
+  "flex": "Flex card",
+  "flexShare": "Supplier spend paid with the Flex card",
+  "flexHint": "Card purchases are debited once a month, which gives you up to a month of extra time.",
+  "payLater": "Pay Later",
+  "plHint": "Pick the supplier invoices to spread into monthly instalments.",
+  "plNone": "No upcoming supplier invoice to finance.",
+  "plInstalments": "Instalments",
+  "instalments": "{n} months",
+  "plRate": "Monthly rate (%)",
+  "overdraft": "Overdraft",
+  "odLimit": "Overdraft limit",
+  "odHint": "Lets your balance go below zero, up to this limit. Use the limit shown in your app.",
+  "odRate": "Yearly rate (%)",
+  "odFloor": "Overdraft limit",
+  "odNoRate": "(add the overdraft rate to include its cost)",
+  "st_active": "You use it",
+  "st_eligible": "Available in your app",
+  "st_unknown": "To check in your app",
+  "compare": "Before and after",
+  "colWithout": "As it stands",
+  "colWith": "With your selection",
+  "rMin": "Lowest cash",
+  "rBuf": "First week below the buffer",
+  "rNeg": "First week below zero",
+  "rWeeks": "Weeks below the buffer",
+  "rCost": "Estimated cost of the tools",
+  "rEnd": "Cash at the end",
+  "never": "never",
+  "weekly": "Week by week",
+  "week": "Week",
+  "weekOf": "Week of {d}",
+  "open": "Opening",
+  "cat_receipts": "Clients",
+  "cat_suppliers": "Suppliers",
+  "cat_payroll": "Payroll",
+  "cat_taxes": "Taxes",
+  "cat_financing": "Financing",
+  "cat_fixed": "Fixed costs",
+  "cat_other": "Other",
+  "close": "Closing",
+  "legal": "This simulator is a planning aid built from your Qonto data and the assumptions listed above. It is not a credit offer or a credit decision. Every Qonto financing product is subject to eligibility and to Qonto's review."
+ },
+ "org": "Atelier Exemple SAS",
+ "currency": "EUR",
+ "locale": "en-GB",
+ "asOf": "2026-10-12",
+ "weeks": 13,
+ "openingCash": 18500,
+ "openingNote": "Main account plus site account, as reported by Qonto",
+ "buffer": 6000,
+ "receipts": {
+  "weekly": 3800,
+  "status": "assumed",
+  "note": "Example data.",
+  "largestClient": {
+   "name": "Client A",
+   "share": 0.31
+  }
+ },
+ "events": [
+  {
+   "date": "2026-10-16",
+   "amount": -4200,
+   "label": "Supplier A, invoice 001",
+   "category": "suppliers",
+   "status": "known",
+   "payLaterEligible": true
+  },
+  {
+   "date": "2026-10-23",
+   "amount": -2600,
+   "label": "Supplier B, invoice 014",
+   "category": "suppliers",
+   "status": "known",
+   "payLaterEligible": true
+  },
+  {
+   "date": "2026-10-30",
+   "amount": 3100,
+   "label": "Client B, invoice 2026-041",
+   "category": "receipts",
+   "status": "known",
+   "client": "Client B"
+  },
+  {
+   "date": "2026-10-15",
+   "amount": -1900,
+   "label": "Social charges",
+   "category": "taxes",
+   "status": "assumed"
+  },
+  {
+   "date": "2026-10-19",
+   "amount": -2400,
+   "label": "VAT payment",
+   "category": "taxes",
+   "status": "assumed"
+  },
+  {
+   "date": "2026-10-30",
+   "amount": -5200,
+   "label": "Payroll",
+   "category": "payroll",
+   "status": "assumed"
+  },
+  {
+   "date": "2026-11-30",
+   "amount": -5200,
+   "label": "Payroll",
+   "category": "payroll",
+   "status": "assumed"
+  },
+  {
+   "date": "2026-12-30",
+   "amount": -5200,
+   "label": "Payroll",
+   "category": "payroll",
+   "status": "assumed"
+  },
+  {
+   "date": "2026-11-02",
+   "amount": -1800,
+   "label": "Rent, insurance, software",
+   "category": "fixed",
+   "status": "probable"
+  },
+  {
+   "date": "2026-12-01",
+   "amount": -1800,
+   "label": "Rent, insurance, software",
+   "category": "fixed",
+   "status": "probable"
+  },
+  {
+   "date": "2027-01-01",
+   "amount": -1800,
+   "label": "Rent, insurance, software",
+   "category": "fixed",
+   "status": "probable"
+  }
+ ],
+ "recurring": [
+  {
+   "label": "Ongoing supplier spend",
+   "category": "suppliers",
+   "weekly": -1500,
+   "fromDate": "2026-11-02",
+   "status": "assumed",
+   "flexEligible": true
+  }
+ ],
+ "products": {
+  "overdraft": {
+   "status": "eligible",
+   "limit": 0,
+   "annualRate": null
+  },
+  "payLater": {
+   "status": "unknown",
+   "monthlyRateFrom": 0.0062,
+   "instalmentOptions": [
+    3,
+    9,
+    12
+   ],
+   "defaultInstalments": 3
+  },
+  "flex": {
+   "status": "unknown",
+   "settlementDay": 1,
+   "defaultShare": 0
+  }
+ },
+ "notes": [
+  "Example data only. The skill replaces this block with the customer's assessment."
+ ],
+ "workingCapital": {
+  "dso": {
+   "value": 41,
+   "terms": 30,
+   "daysLate": 11,
+   "onTimePct": 62,
+   "invoices": 24,
+   "coveragePct": 88,
+   "status": "measured"
+  },
+  "dpo": {
+   "value": 27,
+   "terms": 30,
+   "daysLate": -3,
+   "onTimePct": 100,
+   "invoices": 31,
+   "coveragePct": 70,
+   "status": "measured"
+  },
+  "cycle": 14,
+  "supplierTermsTrend": [
+   {
+    "month": "2026-06",
+    "terms": 30,
+    "invoices": 6
+   },
+   {
+    "month": "2026-09",
+    "terms": 30,
+    "invoices": 5
+   }
+  ],
+  "notes": [
+   "Example data only."
+  ]
+ },
+ "counterparties": {
+  "clients": [
+   {
+    "name": "Client A",
+    "amount": 31000,
+    "share": 0.31,
+    "open": 3100,
+    "nextDue": "2026-10-30",
+    "invoices": 8,
+    "daysToPay": 48,
+    "terms": 30,
+    "daysLate": 18,
+    "onTimePct": 38,
+    "lateCount": 5,
+    "maxLate": 34
+   },
+   {
+    "name": "Client B",
+    "amount": 24000,
+    "share": 0.24,
+    "open": 0,
+    "invoices": 7,
+    "daysToPay": 33,
+    "terms": 30,
+    "daysLate": 3,
+    "onTimePct": 71,
+    "lateCount": 2,
+    "maxLate": 9
+   },
+   {
+    "name": "Client C",
+    "amount": 45000,
+    "share": 0.45,
+    "open": 0,
+    "invoices": 9,
+    "daysToPay": 29,
+    "terms": 30,
+    "daysLate": -1,
+    "onTimePct": 100,
+    "lateCount": 0,
+    "maxLate": 0
+   }
+  ],
+  "suppliers": [
+   {
+    "name": "Supplier A",
+    "amount": 26000,
+    "share": 0.52,
+    "open": 4200,
+    "nextDue": "2026-10-16",
+    "invoices": 14,
+    "daysToPay": 26,
+    "terms": 30,
+    "daysLate": -4,
+    "onTimePct": 100,
+    "lateCount": 0,
+    "maxLate": 0
+   },
+   {
+    "name": "Supplier B",
+    "amount": 24000,
+    "share": 0.48,
+    "open": 2600,
+    "nextDue": "2026-10-23",
+    "invoices": 17,
+    "daysToPay": 28,
+    "terms": 30,
+    "daysLate": -2,
+    "onTimePct": 100,
+    "lateCount": 0,
+    "maxLate": 0
+   }
+  ]
+ },
+ "openItems": [
+  {
+   "side": "client",
+   "name": "Client B",
+   "ref": "2026-041",
+   "amount": 3100,
+   "issue": "2026-09-30",
+   "due": "2026-10-30"
+  },
+  {
+   "side": "supplier",
+   "name": "Supplier A",
+   "ref": "001",
+   "amount": 4200,
+   "issue": "2026-09-16",
+   "due": "2026-10-16"
+  },
+  {
+   "side": "supplier",
+   "name": "Supplier B",
+   "ref": "014",
+   "amount": 2600,
+   "issue": "2026-09-23",
+   "due": "2026-10-23"
+  }
+ ],
+ "monthly": [
+  {
+   "month": "2026-07",
+   "inflow": 15800,
+   "outflow": 14200
+  },
+  {
+   "month": "2026-08",
+   "inflow": 12100,
+   "outflow": 16900
+  },
+  {
+   "month": "2026-09",
+   "inflow": 17400,
+   "outflow": 15300
+  },
+  {
+   "month": "2026-10",
+   "inflow": 4100,
+   "outflow": 6200,
+   "partial": true
+  }
+ ]
+}</script>
+<script>
+(function(){
+"use strict";
+var D=JSON.parse(document.getElementById("sim-data").textContent);
+var L=D.labels;
+function t(k,o){var s=L[k]||k;if(o)for(var p in o)s=s.split("{"+p+"}").join(o[p]);return s;}
+var nf=new Intl.NumberFormat(D.locale,{style:"currency",currency:D.currency,maximumFractionDigits:0});
+var fmt={format:function(v){var x=Math.round(v);return x<0?"\u2212\u2060"+nf.format(-x):nf.format(x);}};
+var fmtK=function(v){var a=Math.abs(v);var s=a>=1000?(Math.round(a/100)/10).toLocaleString(D.locale)+"k":Math.round(a).toLocaleString(D.locale);return (v<0?"\u2212":"")+s;};
+var dfmt=new Intl.DateTimeFormat(D.locale,{day:"numeric",month:"short",timeZone:"UTC"});
+function day(s){return new Date(s+"T12:00:00Z");}
+function addDays(d,n){var x=new Date(d.getTime());x.setUTCDate(x.getUTCDate()+n);return x;}
+function addMonths(d,n){var x=new Date(d.getTime());var dd=x.getUTCDate();x.setUTCDate(1);x.setUTCMonth(x.getUTCMonth()+n);var last=new Date(Date.UTC(x.getUTCFullYear(),x.getUTCMonth()+1,0,12)).getUTCDate();x.setUTCDate(Math.min(dd,last));return x;}
+function nextSettlement(d,sd){var x=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),sd,12));if(x<=d)x=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,sd,12));return x;}
+
+// weeks: week 1 = asOf .. next Sunday (merged with the following week if shorter than 3 days), then Monday..Sunday
+var W=[];var s0=day(D.asOf);var dow=(s0.getUTCDay()+6)%7;var e0=addDays(s0,6-dow);if(6-dow<2)e0=addDays(e0,7);
+W.push({s:s0,e:e0});for(var i=1;i<D.weeks;i++){var s=addDays(W[i-1].e,1);W.push({s:s,e:addDays(s,6)});}
+function wk(d){for(var i=0;i<W.length;i++){if(d>=W[i].s&&d<=addDays(W[i].e,0.99))return i;}return -1;}
+var CATS=["receipts","suppliers","payroll","taxes","financing","fixed","other"];
+var P=D.products;
+var payrollBase=D.events.filter(function(e){return e.category==="payroll";}).reduce(function(a,e){return a+e.amount;},0);
+var payrollMonthly=payrollBase?Math.abs(D.events.filter(function(e){return e.category==="payroll";})[0].amount):0;
+
+var CP=D.counterparties||{clients:[],suppliers:[]};
+var CLIENTS=(CP.clients&&CP.clients.length?CP.clients:(D.receipts.largestClient?[D.receipts.largestClient]:[])).filter(function(c){return c.share>0;});
+var defaults={delay:0,level:100,lose:"",payroll:100,extra:0,buffer:D.buffer,flex:Math.round((P.flex.defaultShare||0)*100),pl:{},pln:P.payLater.defaultInstalments||P.payLater.instalmentOptions[0],plr:+(P.payLater.monthlyRateFrom*100).toFixed(2),odl:P.overdraft.limit||0,odr:P.overdraft.annualRate==null?"":P.overdraft.annualRate};
+var S=JSON.parse(JSON.stringify(defaults));
+
+function simulate(useTools){
+  var rows=W.map(function(){var r={};CATS.forEach(function(c){r[c]=0;});return r;});
+  function add(d,c,a){var i=wk(d);if(i>=0)rows[i][c]+=a;}
+  var lc=S.lose!==""?CLIENTS[+S.lose]:null;var share=lc?1-lc.share:1;
+  var mult=S.level/100*share;
+  // receipts: weekly expected, shifted by delay
+  W.forEach(function(w){add(addDays(w.s,S.delay),"receipts",D.receipts.weekly*mult);});
+  var plCost=0;
+  D.events.forEach(function(e,idx){
+    var d=day(e.date),a=e.amount,c=e.category;
+    if(c==="receipts"&&a>0){add(addDays(d,S.delay),c,(lc&&e.client===lc.name)?0:a);return;}
+    if(c==="payroll")a=a*S.payroll/100;
+    if(useTools&&e.payLaterEligible&&S.pl[idx]&&P.payLater.status!=="not_available"){
+      var n=+S.pln,r=(+S.plr||0)/100,inst=a*(1+r*n)/n;plCost+=Math.abs(a)*r*n;
+      for(var k=1;k<=n;k++)add(addMonths(d,k),"financing",inst);
+      return;
+    }
+    add(d,c,a);
+  });
+  (D.recurring||[]).forEach(function(rc){
+    var from=day(rc.fromDate);
+    W.forEach(function(w){
+      var d=w.s<from?from:w.s; if(d>w.e)return;
+      var a=rc.weekly;
+      if(useTools&&rc.flexEligible&&S.flex>0&&P.flex.status!=="not_available"){
+        var moved=a*S.flex/100;add(d,rc.category,a-moved);add(nextSettlement(d,P.flex.settlementDay||1),"financing",moved);
+      }else add(d,rc.category,a);
+    });
+  });
+  if(S.extra>0)add(addDays(W[0].s,14),"other",-S.extra);
+  var cash=D.openingCash,out=[],odCost=0,odRate=(S.odr===""?null:+S.odr/100);
+  rows.forEach(function(r,i){var o=cash,net=0;CATS.forEach(function(c){net+=r[c];});cash+=net;
+    if(useTools&&cash<0&&odRate!=null)odCost+=Math.min(-cash,S.odl)*odRate*7/365;
+    out.push({i:i,open:o,close:cash,r:r});});
+  return {weeks:out,plCost:plCost,odCost:useTools?odCost:0};
+}
+function stats(sim,useTools){
+  var w=sim.weeks,min=w[0],firstBuf=null,firstNeg=null,below=0,beyond=null;
+  w.forEach(function(x){if(x.close<min.close)min=x;if(x.close<S.buffer){below++;if(firstBuf==null)firstBuf=x;}if(x.close<0&&firstNeg==null)firstNeg=x;
+    if(useTools&&S.odl>0&&x.close< -S.odl&&beyond==null)beyond=x;});
+  return {min:min,firstBuf:firstBuf,firstNeg:firstNeg,below:below,beyond:beyond,cost:sim.plCost+sim.odCost};
+}
+function toolsOn(){return S.flex>0||Object.keys(S.pl).some(function(k){return S.pl[k];})||S.odl>0;}
+
+// ---------- chart
+var svg=document.getElementById("chart"),tip=document.getElementById("tip");
+function drawChart(a,b){
+  var Wd=Math.max(320,Math.round(svg.parentNode.clientWidth-16)),H=Math.round(Math.min(380,Math.max(240,Wd*0.42))),m={l:Wd<520?48:64,r:20,t:16,b:36};svg.setAttribute("viewBox","0 0 "+Wd+" "+H);
+  var every=Wd<520?4:2;
+  var pts=function(sim){return [D.openingCash].concat(sim.weeks.map(function(x){return x.close;}));};
+  var pa=pts(a),pb=pts(b);
+  var vals=pa.concat(pb,[S.buffer,0]);if(S.odl>0&&toolsOn())vals.push(-S.odl);
+  var lo=Math.min.apply(null,vals),hi=Math.max.apply(null,vals);var pad=(hi-lo)*0.08||1000;lo-=pad;hi+=pad;
+  var X=function(i){return m.l+(Wd-m.l-m.r)*i/W.length;},Y=function(v){return m.t+(H-m.t-m.b)*(hi-v)/(hi-lo);};
+  var g=[];
+  // grid
+  var step=niceStep((hi-lo)/5);for(var v=Math.ceil(lo/step)*step;v<=hi;v+=step){g.push('<line x1="'+m.l+'" x2="'+(Wd-m.r)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)" stroke-width="1"/>');
+    g.push('<text x="'+(m.l-8)+'" y="'+(Y(v)+4)+'" text-anchor="end" font-size="13" fill="var(--muted)">'+fmtK(v)+'</text>');}
+  // below-zero band
+  if(lo<0)g.push('<rect x="'+m.l+'" y="'+Y(0)+'" width="'+(Wd-m.l-m.r)+'" height="'+(Y(lo)-Y(0))+'" fill="var(--negbg)"/>');
+  g.push('<line x1="'+m.l+'" x2="'+(Wd-m.r)+'" y1="'+Y(0)+'" y2="'+Y(0)+'" stroke="var(--neg)" stroke-width="1.2"/>');
+  g.push('<line x1="'+m.l+'" x2="'+(Wd-m.r)+'" y1="'+Y(S.buffer)+'" y2="'+Y(S.buffer)+'" stroke="var(--buffer)" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round"/>');
+  if(S.odl>0&&toolsOn()){g.push('<line x1="'+m.l+'" x2="'+(Wd-m.r)+'" y1="'+Y(-S.odl)+'" y2="'+Y(-S.odl)+'" stroke="var(--with)" stroke-width="1" stroke-dasharray="6 4" opacity=".7"/>');
+    g.push('<text x="'+(Wd-m.r-4)+'" y="'+(Y(-S.odl)-6)+'" text-anchor="end" font-size="12" fill="var(--with)">'+t("odFloor")+'</text>');}
+  // x labels
+  for(var i=0;i<=W.length;i++){if(i%every===0||W.length<=6){var d=i===0?W[0].s:W[i-1].e;g.push('<text x="'+X(i)+'" y="'+(H-14)+'" text-anchor="middle" font-size="13" fill="var(--muted)">'+dfmt.format(d)+'</text>');}}
+  var path=function(p){return p.map(function(v,i){return (i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1);}).join(" ");};
+  var same=pa.every(function(v,i){return Math.abs(v-pb[i])<1;});
+  g.push('<path d="'+path(pa)+'" fill="none" stroke="var(--without)" stroke-width="2.2" stroke-dasharray="7 6"/>');
+  if(!same)g.push('<path d="'+path(pb)+'" fill="none" stroke="var(--with)" stroke-width="3.2" stroke-linejoin="round"/>');
+  pb.forEach(function(v,i){if(i)g.push('<circle cx="'+X(i)+'" cy="'+Y(same?pa[i]:v)+'" r="3.5" fill="'+(v<0?"var(--neg)":(same?"var(--without)":"var(--with)"))+'"/>');});
+  // hover zones
+  for(var j=1;j<=W.length;j++)g.push('<rect class="hz" data-i="'+j+'" x="'+(X(j)-(Wd-m.l-m.r)/W.length/2)+'" y="'+m.t+'" width="'+((Wd-m.l-m.r)/W.length)+'" height="'+(H-m.t-m.b)+'" fill="transparent" tabindex="0" aria-label="'+t("week")+' '+j+'"/>');
+  svg.innerHTML=g.join("");
+  var show=function(el){var j=+el.getAttribute("data-i"),wk=W[j-1];
+    tip.innerHTML='<strong>'+t("weekOf",{d:dfmt.format(wk.s)})+'</strong><br>'+t("lineWithout")+': '+fmt.format(pa[j])+(same?'':'<br>'+t("lineWith")+': '+fmt.format(pb[j]));
+    var box=svg.getBoundingClientRect(),sc=box.width/Wd;sc=sc||1;var x=X(j)*sc,y=Y(Math.min(pa[j],pb[j]))*sc;
+    tip.style.left=Math.min(Math.max(x-80,4),box.width-190)+"px";tip.style.top=(y+20)+"px";tip.style.opacity=1;};
+  svg.querySelectorAll(".hz").forEach(function(el){el.addEventListener("mouseenter",function(){show(el);});el.addEventListener("focus",function(){show(el);});
+    el.addEventListener("click",function(){show(el);});el.addEventListener("mouseleave",function(){tip.style.opacity=0;});el.addEventListener("blur",function(){tip.style.opacity=0;});});
+}
+function niceStep(x){var p=Math.pow(10,Math.floor(Math.log10(x)));var n=x/p;return (n<1.5?1:n<3?2:n<7?5:10)*p;}
+
+// ---------- text
+function verdict(st,useTools){
+  if(!st.firstBuf)return t("vOk",{min:fmt.format(st.min.close),d:dfmt.format(W[st.min.i].e)});
+  var b=dfmt.format(W[st.firstBuf.i].s);
+  if(!st.firstNeg)return t("vBuffer",{d:b,min:fmt.format(st.min.close)});
+  if(useTools&&S.odl>0&&!st.beyond)return t("vOverdraft",{d:b,n:dfmt.format(W[st.firstNeg.i].s)});
+  return t("vNeg",{d:b,n:dfmt.format(W[st.firstNeg.i].s),min:fmt.format(st.min.close)});
+}
+function render(){
+  var a=simulate(false),b=simulate(true),sa=stats(a,false),sb=stats(b,true),on=toolsOn();
+  document.getElementById("verdict").textContent=verdict(on?sb:sa,on);
+  document.getElementById("subverdict").textContent=on?t("subWith",{gain:fmt.format(sb.min.close-sa.min.close),cost:fmt.format(sb.cost)}):t("subWithout");
+  drawChart(a,on?b:a);document.getElementById("lg-with").style.display=on?"":"none";
+  // comparison table
+  var row=function(lbl,f){return "<tr><td>"+lbl+"</td><td>"+f(sa,false)+"</td><td>"+f(sb,true)+"</td></tr>";};
+  var dd=function(x){return x?dfmt.format(W[x.i].s):t("never");};
+  var money=function(v){return '<span'+(v<0?' style="color:var(--neg);font-weight:600"':'')+'>'+fmt.format(v)+'</span>';};
+  document.getElementById("cmp").innerHTML="<thead><tr><th></th><th>"+t("colWithout")+"</th><th>"+t("colWith")+"</th></tr></thead><tbody>"+
+    row(t("rMin"),function(s){return money(s.min.close)+" <small>("+dfmt.format(W[s.min.i].e)+")</small>";})+
+    row(t("rBuf"),function(s){return dd(s.firstBuf);})+row(t("rNeg"),function(s){return dd(s.firstNeg);})+
+    row(t("rWeeks"),function(s){return s.below+" / "+W.length;})+
+    row(t("rCost"),function(s,u){return u?(fmt.format(s.cost)+(S.odl>0&&S.odr===""?" <small>"+t("odNoRate")+"</small>":"")):fmt.format(0);})+
+    row(t("rEnd"),function(s,u){return money((u?b:a).weeks[W.length-1].close);})+"</tbody>";
+  // weekly table (with tools if on)
+  var sim=on?b:a,h="<thead><tr><th>"+t("week")+"</th><th>"+t("open")+"</th>"+CATS.map(function(c){return "<th>"+t("cat_"+c)+"</th>";}).join("")+"<th>"+t("close")+"</th></tr></thead><tbody>";
+  sim.weeks.forEach(function(x){h+="<tr><td>"+dfmt.format(W[x.i].s)+"</td><td>"+fmt.format(x.open)+"</td>"+CATS.map(function(c){var v=x.r[c];return "<td>"+(Math.abs(v)<1?"":fmt.format(v))+"</td>";}).join("")+'<td class="'+(x.close<0?"neg":"")+'">'+fmt.format(x.close)+"</td></tr>";});
+  document.getElementById("weekly").innerHTML=h+"</tbody>";
+  // outputs
+  o("delay",S.delay?t("days",{n:S.delay}):t("onTime"));o("level",S.level+"%");o("payroll",fmt.format(payrollMonthly*S.payroll/100)+" "+t("perMonth"));
+  o("extra",fmt.format(S.extra));o("buffer",fmt.format(S.buffer));o("flex",S.flex+"%");o("odl",fmt.format(S.odl));
+}
+function o(id,v){document.getElementById("o-"+id).textContent=v;}
+
+// ---------- controls
+function setText(id,k,p){var el=document.getElementById(id);if(el)el.textContent=t(k,p);}
+function chip(id,st){var el=document.getElementById(id);el.className="chip "+(st==="active"?"active":st==="eligible"?"eligible":"unknown");el.textContent=t("st_"+st);}
+function init(){
+  document.title=t("title");
+  setText("org","orgLine",{org:D.org,d:dfmt.format(day(D.asOf)),cash:fmt.format(D.openingCash)});
+  ["lg-with:lineWith","lg-without:lineWithout","lg-buf:lineBuffer","h-whatif:whatIf","hint-whatif:whatIfHint","l-delay:delay","s-delay:delayHint","l-level:level","l-payroll:payroll","s-payroll:payrollHint","l-extra:extra","s-extra:extraHint","l-buffer:buffer","s-buffer:bufferHint","reset:reset",
+   "h-tools:tools","hint-tools:toolsHint","n-flex:flex","l-flex:flexShare","s-flex:flexHint","n-pl:payLater","s-pl:plHint","l-pln:plInstalments","l-plr:plRate","n-od:overdraft","l-odl:odLimit","s-od:odHint","l-odr:odRate","h-cmp:compare","h-weekly:weekly","legal:legal"].forEach(function(p){var a=p.split(":");setText(a[0],a[1]);});
+  setText("s-level","levelHint",{v:fmt.format(D.receipts.weekly*52/12),note:D.receipts.note||""});
+  setText("l-lose","loseSel");setText("s-lose","loseHint");
+  var ls=document.getElementById("lose");if(!CLIENTS.length)document.getElementById("lose-ctl").style.display="none";
+  var o0=document.createElement("option");o0.value="";o0.textContent=t("loseNone");ls.appendChild(o0);
+  CLIENTS.forEach(function(c,i){var op=document.createElement("option");op.value=i;op.textContent=t("loseOpt",{name:c.name,share:Math.round(c.share*100)});ls.appendChild(op);});
+  initCP();
+  if(!payrollMonthly)document.getElementById("payroll").closest(".ctl").style.display="none";
+  [["flex","t-flex","c-flex"],["payLater","t-pl","c-pl"],["overdraft","t-od","c-od"]].forEach(function(x){var st=P[x[0]].status;if(st==="not_available")document.getElementById(x[1]).style.display="none";else chip(x[2],st);});
+  var sel=document.getElementById("pln");P.payLater.instalmentOptions.forEach(function(n){var op=document.createElement("option");op.value=n;op.textContent=t("instalments",{n:n});sel.appendChild(op);});
+  var list=document.getElementById("pl-list"),hasPl=false;
+  D.events.forEach(function(e,idx){if(!e.payLaterEligible)return;hasPl=true;var id="pl"+idx;var w=document.createElement("label");w.className="check";w.innerHTML='<input type="checkbox" id="'+id+'" data-idx="'+idx+'"><span>'+esc(e.label)+" <small>("+fmt.format(Math.abs(e.amount))+", "+dfmt.format(day(e.date))+")</small></span>";list.appendChild(w);});
+  if(!hasPl)list.textContent=t("plNone");
+  var notes=document.getElementById("notes");(D.notes||[]).forEach(function(n){var li=document.createElement("li");li.textContent=n;notes.appendChild(li);});
+  bind();apply();render();
+}
+// ---------- clients and suppliers
+var cpSide="clients",cpSort={key:"amount",dir:-1},cpAll=false;
+function pl(k,n){return t(n===1&&L[k+"1"]?k+"1":k,{n:n});}
+function days(v){return v==null?"":pl("nDays",Math.round(Math.abs(v)));}
+function lateCell(v){if(v==null)return "<td></td>";var n=Math.round(v);if(n>0)return '<td class="late">'+pl("nLate",n)+"</td>";if(n<0)return '<td class="early">'+pl("nEarly",-n)+"</td>";return "<td>"+t("onDue")+"</td>";}
+function initCP(){
+  var box=document.getElementById("cp");
+  if(!D.workingCapital&&!(CP.clients||[]).length){box.style.display="none";return;}
+  ["h-cp:cpTitle","hint-cp:cpHint","tab-c:tabClients","tab-s:tabSuppliers","h-open:openTitle","h-monthly:monthlyTitle","hint-monthly:monthlyHint"].forEach(function(p){var a=p.split(":");setText(a[0],a[1]);});
+  var wc=D.workingCapital,h="";
+  if(wc){
+    var cov=function(x){return t(x.status==="measured"?"measuredOn":"estimatedLbl",{n:x.invoices,c:x.coveragePct});};
+    if(wc.dso)h+="<div><b>"+t("nDays",{n:Math.round(wc.dso.value)})+"</b><span>"+t("dsoLbl",{terms:Math.round(wc.dso.terms)})+"<br>"+cov(wc.dso)+"</span></div>";
+    if(wc.dpo)h+="<div><b>"+t("nDays",{n:Math.round(wc.dpo.value)})+"</b><span>"+t("dpoLbl",{terms:Math.round(wc.dpo.terms)})+"<br>"+cov(wc.dpo)+"</span></div>";
+    if(wc.cycle!=null)h+="<div><b>"+(wc.cycle>0?"+":wc.cycle<0?"\u2212":"")+t("nDays",{n:Math.abs(Math.round(wc.cycle))})+"</b><span>"+t(wc.cycle<=0?"cycleNeg":"cyclePos")+"</span></div>";
+    if(wc.dso&&wc.dpo)h+="<div><b>"+wc.dso.onTimePct+"% / "+wc.dpo.onTimePct+"%</b><span>"+t("onTimeLbl")+"</span></div>";
+    var tr=wc.supplierTermsTrend||[];if(tr.length>1){var a=tr.filter(function(x){return x.invoices>=2;});if(a.length>1){var f=a[0],l=a[a.length-1];if(l.terms!==f.terms)h+="<div><b>"+f.terms+" \u2192 "+l.terms+"</b><span>"+t("termsTrend",{a:monthName(f.month),b:monthName(l.month)})+"</span></div>";}}
+  }
+  document.getElementById("wc").innerHTML=h;
+  var notes=document.getElementById("cpnotes");((wc&&wc.notes)||[]).forEach(function(n){var li=document.createElement("li");li.textContent=n;notes.appendChild(li);});
+  document.getElementById("tab-c").addEventListener("click",function(){cpSide="clients";cpSort={key:"amount",dir:-1};cpAll=false;renderCP();});
+  document.getElementById("tab-s").addEventListener("click",function(){cpSide="suppliers";cpSort={key:"amount",dir:-1};cpAll=false;renderCP();});
+  renderCP();renderMonthly();
+}
+function monthName(m){return new Intl.DateTimeFormat(D.locale,{month:"short",timeZone:"UTC"}).format(day(m+"-15"));}
+var PALETTE=["var(--with)","var(--buffer)","var(--without)","var(--neg)","var(--ink)"];
+function renderCP(){
+  document.getElementById("tab-c").setAttribute("aria-selected",cpSide==="clients");document.getElementById("tab-s").setAttribute("aria-selected",cpSide==="suppliers");
+  var list=(CP[cpSide]||[]).filter(function(x){return x.amount>0||x.open>0;}).slice();
+  var tot=list.reduce(function(a,x){return a+x.amount;},0);
+  // concentration bar
+  var bar="",shown=0;list.slice(0,5).forEach(function(x,i){if(!x.share)return;shown+=x.share;bar+='<i style="width:'+(x.share*100)+'%;background:'+PALETTE[i]+'" title="'+esc(x.name)+'"></i>';});
+  document.getElementById("conc").innerHTML=bar;
+  var ks=list.filter(function(x){return x.share;}).slice(0,5).map(function(x,i){return '<li style="--k:'+PALETTE[i]+'">'+esc(x.name)+" "+Math.round(x.share*100)+"%</li>";});
+  var rest=1-list.slice(0,5).reduce(function(a,x){return a+(x.share||0);},0);if(rest>0.005)ks.push('<li style="--k:var(--line)">'+t("others")+" "+Math.round(rest*100)+"%</li>");
+  document.getElementById("conc-k").innerHTML=ks.join("");
+  var top=list.filter(function(x){return x.share;}).slice(0,3);
+  var t1=top[0]?Math.round(top[0].share*100):0,t3=Math.round(top.reduce(function(a,x){return a+x.share;},0)*100);
+  document.getElementById("conc-l").textContent=top.length?t(cpSide==="clients"?"concC":"concS",{name:top[0].name,s1:t1,s3:t3,total:fmt.format(tot)}):"";
+  // sort
+  list.sort(function(a,b){var x=a[cpSort.key],y=b[cpSort.key];if(x==null)return 1;if(y==null)return -1;return (typeof x==="string"?x.localeCompare(y):x-y)*cpSort.dir;});
+  var cols=[["name",t("colName")],["amount",t(cpSide==="clients"?"colReceived":"colPaid")],["invoices",t("colInvoices")],["daysToPay",t(cpSide==="clients"?"colPaysIn":"colYouPayIn")],["terms",t("colTerms")],["daysLate",t("colLate")],["onTimePct",t("colOnTime")],["open",t("colOpen")]];
+  var h="<thead><tr>"+cols.map(function(c){var s=cpSort.key===c[0]?(cpSort.dir>0?"ascending":"descending"):null;return '<th class="sort" data-k="'+c[0]+'"'+(s?' aria-sort="'+s+'"':'')+' tabindex="0">'+c[1]+(s?(cpSort.dir>0?" \u2191":" \u2193"):"")+"</th>";}).join("")+(cpSide==="clients"?"<th></th>":"")+"</tr></thead><tbody>";
+  var mx=Math.max.apply(null,list.map(function(x){return x.share||0;}).concat([0.0001]));
+  var minor=function(x){return (x.share||0)<0.01&&!x.open&&!x.invoices;},hidden=list.filter(minor).length;
+  if(!cpAll)list=list.filter(function(x){return !minor(x);});
+  list.forEach(function(x){
+    var ci=CLIENTS.findIndex(function(c){return c.name===x.name;});
+    h+="<tr><td>"+esc(x.name)+"</td><td>"+(x.amount?'<span class="bar" style="width:'+Math.max(4,Math.round(60*(x.share||0)/mx))+'px"></span>'+fmt.format(x.amount)+" <small>"+Math.round((x.share||0)*100)+"%</small>":"")+"</td>"+
+      "<td>"+(x.invoices||'<small>'+t("noInvoices")+'</small>')+"</td><td>"+days(x.daysToPay)+"</td><td>"+days(x.terms)+"</td>"+lateCell(x.daysLate)+
+      "<td>"+(x.onTimePct!=null?x.onTimePct+"%"+(x.lateCount?" <small>("+t("maxLate",{n:x.maxLate})+")</small>":""):"")+"</td>"+
+      "<td>"+(x.open?fmt.format(x.open):"")+"</td>"+
+      (cpSide==="clients"?"<td>"+(ci>=0?'<button class="link" type="button" data-ci="'+ci+'">'+t("testWithout")+"</button>":"")+"</td>":"")+"</tr>";});
+  if(hidden)h+='<tr><td colspan="'+(cols.length+(cpSide==="clients"?1:0))+'"><button class="link" type="button" id="cp-more">'+t(cpAll?"showLess":"showAll",{n:hidden})+"</button></td></tr>";
+  var tb=document.getElementById("cpt");tb.innerHTML=h+"</tbody>";
+  var mb=document.getElementById("cp-more");if(mb)mb.addEventListener("click",function(){cpAll=!cpAll;renderCP();});
+  tb.querySelectorAll("th.sort").forEach(function(th){var go=function(){var k=th.dataset.k;cpSort=cpSort.key===k?{key:k,dir:-cpSort.dir}:{key:k,dir:k==="name"?1:-1};renderCP();};th.addEventListener("click",go);th.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
+  tb.querySelectorAll("button[data-ci]").forEach(function(b){b.addEventListener("click",function(){S.lose=b.dataset.ci;document.getElementById("lose").value=S.lose;render();document.getElementById("verdict").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});});});
+  // open items
+  var today=day(D.asOf),items=(D.openItems||[]).filter(function(o){return o.side===(cpSide==="clients"?"client":"supplier");}).sort(function(a,b){return a.due<b.due?-1:1;});
+  var oh="<thead><tr><th>"+t("colName")+"</th><th>"+t("colRef")+"</th><th>"+t("colAmount")+"</th><th>"+t("colDue")+"</th><th>"+t("colStatus")+"</th></tr></thead><tbody>";
+  if(!items.length)oh+='<tr><td colspan="5">'+t("noOpen")+"</td></tr>";
+  items.forEach(function(o){var dd=Math.round((day(o.due)-today)/864e5);oh+="<tr><td>"+esc(o.name)+"</td><td>"+esc(o.ref)+"</td><td>"+fmt.format(o.amount)+"</td><td>"+dfmt.format(day(o.due))+"</td>"+(dd<0?'<td class="late">'+t("overdue",{n:-dd})+"</td>":"<td>"+t("dueIn",{n:dd})+"</td>")+"</tr>";});
+  document.getElementById("opent").innerHTML=oh+"</tbody>";
+}
+function renderMonthly(){
+  var M=D.monthly||[],svgm=document.getElementById("mchart");if(!M.length){svgm.style.display="none";document.getElementById("h-monthly").style.display="none";document.getElementById("hint-monthly").style.display="none";return;}
+  var Wd=Math.max(320,Math.round(svgm.parentNode.clientWidth-40)),H=240,m={l:Wd<520?44:60,r:10,t:14,b:30};svgm.setAttribute("viewBox","0 0 "+Wd+" "+H);
+  var hi=Math.max.apply(null,M.map(function(x){return Math.max(x.inflow,x.outflow);}))*1.1||1;
+  var bw=(Wd-m.l-m.r)/M.length,Y=function(v){return m.t+(H-m.t-m.b)*(1-v/hi);},g=[];
+  var step=niceStep(hi/4);for(var v=0;v<=hi;v+=step){g.push('<line x1="'+m.l+'" x2="'+(Wd-m.r)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)"/><text x="'+(m.l-6)+'" y="'+(Y(v)+4)+'" text-anchor="end" font-size="12" fill="var(--muted)">'+fmtK(v)+'</text>');}
+  M.forEach(function(x,i){var x0=m.l+i*bw+bw*0.15,w=bw*0.33;
+    g.push('<rect x="'+x0+'" y="'+Y(x.inflow)+'" width="'+w+'" height="'+(Y(0)-Y(x.inflow))+'" fill="var(--with)"'+(x.partial?' opacity=".5"':'')+'><title>'+t("mIn")+": "+fmt.format(x.inflow)+'</title></rect>');
+    g.push('<rect x="'+(x0+w+2)+'" y="'+Y(x.outflow)+'" width="'+w+'" height="'+(Y(0)-Y(x.outflow))+'" fill="var(--without)"'+(x.partial?' opacity=".5"':'')+'><title>'+t("mOut")+": "+fmt.format(x.outflow)+'</title></rect>');
+    g.push('<text x="'+(m.l+i*bw+bw/2)+'" y="'+(H-10)+'" text-anchor="middle" font-size="12" fill="var(--muted)">'+monthName(x.month)+(x.partial?"*":"")+'</text>');});
+  svgm.innerHTML=g.join("");
+  document.getElementById("m-k").innerHTML='<li style="--k:var(--with)">'+t("mIn")+'</li><li style="--k:var(--without)">'+t("mOut")+"</li>";
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function apply(){val("delay",S.delay);val("level",S.level);document.getElementById("lose").value=S.lose;val("payroll",S.payroll);val("extra",S.extra);val("buffer",S.buffer);val("flexshare",S.flex);val("pln",S.pln);val("plr",S.plr);val("odl",S.odl);val("odr",S.odr);
+  document.querySelectorAll("#pl-list input").forEach(function(c){c.checked=!!S.pl[c.getAttribute("data-idx")];});}
+function val(id,v){document.getElementById(id).value=v;}
+function bind(){
+  var num=function(id,key){document.getElementById(id).addEventListener("input",function(e){S[key]=e.target.value===""?"":+e.target.value;render();});};
+  num("delay","delay");num("level","level");num("payroll","payroll");num("extra","extra");num("buffer","buffer");num("flexshare","flex");num("plr","plr");num("odl","odl");
+  document.getElementById("odr").addEventListener("input",function(e){S.odr=e.target.value;render();});
+  document.getElementById("pln").addEventListener("change",function(e){S.pln=+e.target.value;render();});
+  document.getElementById("lose").addEventListener("change",function(e){S.lose=e.target.value;render();});
+  document.getElementById("pl-list").addEventListener("change",function(e){if(e.target.dataset.idx!=null){S.pl[e.target.dataset.idx]=e.target.checked;render();}});
+  document.getElementById("reset").addEventListener("click",function(){S=JSON.parse(JSON.stringify(defaults));apply();render();});
+  var rt;window.addEventListener("resize",function(){tip.style.opacity=0;clearTimeout(rt);rt=setTimeout(function(){render();if(D.monthly)renderMonthly();},120);});
+}
+init();
+})();
+</script>
+</body>
+</html>
