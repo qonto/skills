@@ -1,0 +1,10 @@
+{
+  "name": "qonto-support-cashdesk",
+  "version": "0.1.0",
+  "description": "Customer-support billing desk for Qonto accounts. Takes a customer conversation (\"I never received my invoice\", \"the payment link expired\", \"you charged me twice\" — pulled from Intercom when that MCP is connected, or simply pasted into the chat), matches the customer against Qonto clients…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
