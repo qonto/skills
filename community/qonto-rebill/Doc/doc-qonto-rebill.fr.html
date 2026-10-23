@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-rebill — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic</span>
+  <h1>qonto-rebill</h1>
+  <p class="sub">Les frais avancés pour tes clients, littéralement récupérés — la refacturation ligne à ligne, justificatifs inventoriés.</p>
+  <div class="badges">
+    <span>💶 De l'argent récupéré</span><span>🔒 Écriture = brouillon seulement</span>
+    <span>⚖️ Débours vs refacturé expliqué</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Freelances et agences avancent des frais pour leurs clients — plugins, banques d'images, hébergement, déplacements, repas de mission — et <strong>oublient d'en refacturer la moitié</strong>. Le skill va rechercher cet argent :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Détection des frais clients</h4><p>Labels Qonto « client », équipes, ou attribution assistée par l'historique — transaction par transaction, jamais en silence.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Regroupement + justificatifs</h4><p>Frais groupés par client et par période, avec l'inventaire des justificatifs déjà attachés — les manques sont signalés.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Le point fiscal, expliqué</h4><p>Débours (hors TVA) vs frais refacturés (TTC) : le skill compare et demande ton régime — il ne décide jamais seul.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Facture en brouillon</h4><p>Une ligne par frais, majoration 5-10 % optionnelle — envoi uniquement après ta confirmation explicite.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td>Mécanique universelle (détecter → regrouper → facturer). Le régime <b>débours</b> est français (art. 267 II-2° CGI) : hors France, TVA locale renvoyée à l'expert-comptable</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Labels « client »</b></td><td>Labels Qonto nommés comme les clients (ou équipes par mission). Sans labels : attribution interactive, transaction par transaction</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Clients dans la facturation</b></td><td><code>list_clients</code> — la facture a besoin d'un client existant ; sinon le skill explique la création</td><td>⭕</td></tr>
+    <tr><td><b>Justificatifs attachés</b></td><td>Inventoriés automatiquement ; pour les manques : <code>qonto-receipt-hunter</code> avant de refacturer</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Aucun label client ?</strong> → attribution interactive : le skill présélectionne les candidats (tiers déjà attribués, dépenses typées mission : SaaS, images, hébergement, transport, repas) et demande transaction par transaction — puis propose de labelliser pour que le trimestre suivant soit automatique</li>
+    <li><strong>Labels et clients rapprochés</strong> : normalisation casse/accents — le label « acme studio » = le client « ACME Studio »</li>
+    <li><strong>Frais carte à cheval sur deux périodes</strong> : regroupés par <code>emitted_at</code>, pas <code>settled_at</code> (règlement 1-2 jours plus tard)</li>
+    <li>Justificatif manquant sur une ligne → signalé, renvoi vers <code>qonto-receipt-hunter</code> avant l'envoi</li>
+    <li>Compte vide, période sans frais, client absent de la facturation, pays ≠ FR : le skill dit ce qu'il peut et ne peut pas faire</li>
+    <li>Pagination ≤ 50 partout · <code>get_organization</code> toujours en premier (<code>bank_account_id</code> exigé par <code>list_transactions</code>)</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Une seule écriture, et c'est un brouillon :</b> la lecture est sans risque ; l'écriture (<b>create_client_invoice</b>) ne produit qu'un brouillon dans Qonto. L'envoi au client exige la confirmation explicite dans la conversation. Les factures MCP étant réelles, les répétitions se font sur client fictif puis <b>delete_client_invoice</b>.</p>
+  </div>
+</section>
+
+<section>
+  <h2>⚖️ Débours vs frais refacturés (le tableau que le skill affiche)</h2>
+  <div class="scroll"><table>
+    <tr><th>Critère</th><th>Débours (art. 267 II-2° CGI)</th><th>Frais refacturés (classique)</th></tr>
+    <tr><td>Principe</td><td>Dépense engagée <strong>au nom et pour le compte</strong> du client (mandat)</td><td>Dépense engagée en son nom propre, refacturée comme élément du prix</td></tr>
+    <tr><td>Marge</td><td>Interdite — remboursement à l'euro l'euro</td><td>Autorisée (frais de gestion 5-10 %…)</td></tr>
+    <tr><td>TVA</td><td><strong>Hors champ</strong> : pas de TVA sur la ligne, TVA de l'achat non déductible</td><td><strong>TTC, au taux de la prestation principale</strong> (souvent 20 %) — même si l'achat était à 10 % ou sans TVA</td></tr>
+    <tr><td>Justificatif</td><td>Facture d'origine <strong>au nom du client</strong>, à lui remettre</td><td>Facture d'origine au nom du prestataire, conservée</td></tr>
+    <tr><td>Comptabilité</td><td>Compte de tiers (pas du chiffre d'affaires)</td><td>Produit (chiffre d'affaires)</td></tr>
+    <tr><td>Pays</td><td>Régime français</td><td>Mécanique universelle ; hors France → expert-comptable local</td></tr>
+  </table></div>
+  <p><strong>Le skill explique et demande — il ne décide jamais seul</strong> (ligne à ligne si les régimes sont mixtes), et chaque rapport recommande la validation de l'expert-comptable.</p>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : frais par client (justificatif ✅/⚠️), facture ligne à ligne, total récupéré</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Brouillon de facture Qonto</b></td><td><code>create_client_invoice</code> en brouillon, visible dans Facturation</td><td>Après l'accord sur le régime ; envoi après confirmation explicite</td></tr>
+    <tr><td><b>Pack justificatifs</b></td><td>Liens de téléchargement (<code>get_attachment</code>, durée limitée) à joindre à l'envoi</td><td>À chaque facture préparée</td></tr>
+    <tr><td><b>Récap HTML</b></td><td>Cartes par client, jauge justificatifs, montants récupérés</td><td>Si l'hôte affiche les fichiers ; repli sur les tableaux sinon</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le problème (les frais avancés qu'on oublie) → détection par labels → le choix fiscal expliqué → <strong>la facture brouillon ligne à ligne, justificatifs inventoriés</strong> → envoi confirmé et récap. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Apprentissage des tiers « refacturables » par client</td><td>Moyen</td><td>Les attributions acceptées pré-remplissent le trimestre suivant</td></tr>
+    <tr><td>Devis d'accord préalable (<code>create_quote</code>) pour les gros frais</td><td>Faible</td><td>Le client valide la dépense AVANT l'avance</td></tr>
+    <tr><td>Rituel mensuel/trimestriel planifié</td><td>Faible</td><td>« Frais à refacturer ce mois-ci ? » en automatique</td></tr>
+    <tr><td>Chaînage <code>qonto-receipt-hunter</code> → <code>qonto-rebill</code> → <code>qonto-invoice-chaser</code></td><td>Faible</td><td>Justificatifs complets → facture → relance de paiement</td></tr>
+    <tr><td>Frais en devises</td><td>Moyen</td><td>Conversion au taux de la transaction, mention sur la ligne</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li>Les factures créées via MCP sont <strong>réelles</strong> : brouillon jusqu'à confirmation explicite, jamais présenté comme envoyé, répétitions sur client fictif + <code>delete_client_invoice</code></li>
+    <li><strong>Jamais d'attribution silencieuse</strong> : chaque frais douteux est demandé ; rien d'inventé — ni montant, ni justificatif, ni client</li>
+    <li>Le choix débours/refacturation appartient à l'utilisateur (avec son expert-comptable) — le skill explique et demande</li>
+    <li>Dégradation honnête (pas de labels, compte vide, pays ≠ FR) · IBAN masqués (4 derniers chiffres) · pagination ≤ 50</li>
+  </ul>
+</section>
+
+<footer>qonto-rebill · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-rebill.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
