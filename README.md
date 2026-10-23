@@ -96,7 +96,10 @@ project. Needs Node.js 22.20 or later.
 | Plugin | Title | What it does | Author | Tier |
 |---|---|---|---|---|
 | [`argentier`](./community/argentier) | Find savings in my spending | Finds the money a business can stop spending: true recurring run-rate, duplicate tools, ghost and new subscriptions, price increases and FX fees, with a ranked savings plan, cheaper alternatives and cancellation messages. | [Kevin MAMERI](https://github.com/kevinMPO) | community |
+| [`argentier-btp`](./community/argentier-btp) | Construction quote to cash | Quote-to-cash for French building trades: compliant quotes (VAT 20, 10, 5.5 percent or reverse charge, ten-year insurance mention), then deposit, progress and final invoices linked to the quote, retention tracking and payment links. | [Kevin MAMERI](https://github.com/kevinMPO) | community |
 | [`argentier-cash-forecast`](./community/argentier-cash-forecast) | Forecast my cash for 13 weeks | 13-week cash forecast built client by client: real payment delays, recurring flows learned from history, base, stress and upside scenarios, lowest week, actions to take, and a 12-month outlook. | [Kevin MAMERI](https://github.com/kevinMPO) | community |
+| [`argentier-founder-pay`](./community/argentier-founder-pay) | How much can I pay myself | Tells a founder how much the business can afford to pay them this month and next quarter, after commitments, tax provisions and a safety buffer, and compares the ways to take it by legal form (France). | [Kevin MAMERI](https://github.com/kevinMPO) | community |
+| [`nexyzen-clearing-scout`](./community/nexyzen-clearing-scout) |  | Find money frozen in unpaid invoices and settle it without bank transfers. | [pepinfor](https://github.com/fpagano) | community |
 | [`qonto-asset-registry`](./community/qonto-asset-registry) | Fixed-asset register | Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-carbon-ledger`](./community/qonto-carbon-ledger) |  | Spend-based carbon footprint estimator for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-counterparty-watch`](./community/qonto-counterparty-watch) | Client &amp; supplier payment risk | Legal-health radar for the clients and suppliers of a Qonto account. | [seb](https://github.com/SebDeNoocode) | community |
@@ -108,6 +111,7 @@ project. Needs Node.js 22.20 or later.
 | [`qonto-receipt-hunter`](./community/qonto-receipt-hunter) |  | Receipt hunter for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-rgpd-register`](./community/qonto-rgpd-register) |  | GDPR Article 30 register drafted from a Qonto account's spending. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-sector-benchmark`](./community/qonto-sector-benchmark) |  | Sector health check-up for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
+| [`qonto-subscription-audit`](./community/qonto-subscription-audit) |  | Complete recurring-spend audit for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-supplier-detective`](./community/qonto-supplier-detective) |  | Forensic audit of supplier invoices and payments on a Qonto account. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-tax-pilot`](./community/qonto-tax-pilot) | Tax budget planner | French tax radar and cash pilot for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-tax-radar`](./community/qonto-tax-radar) | Tax radar | French tax pre-audit ("pré-contrôle fiscal") for Qonto accounts, 100% read-only. | [seb](https://github.com/SebDeNoocode) | community |

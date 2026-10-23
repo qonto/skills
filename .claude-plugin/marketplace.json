@@ -28,6 +28,28 @@
       "license": "MIT"
     },
     {
+      "name": "argentier-btp",
+      "source": "./community/argentier-btp",
+      "description": "Quote-to-cash for French building trades: compliant quotes (VAT 20, 10, 5.5 percent or reverse charge, ten-year insurance mention), then deposit, progress and final invoices linked to the quote, retention tracking and payment links. Nothing is sent: quotes unsent, invoices as drafts, each confirmed by the user.",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "argentier",
+        "artisans",
+        "btp",
+        "community",
+        "construction",
+        "invoices",
+        "qonto",
+        "quotes"
+      ],
+      "author": {
+        "name": "Kevin MAMERI",
+        "url": "https://github.com/kevinMPO"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "argentier-cash-forecast",
       "source": "./community/argentier-cash-forecast",
       "description": "13-week cash forecast built client by client: real payment delays, recurring flows learned from history, base, stress and upside scenarios, lowest week, actions to take, and a 12-month outlook. Read-only.",
@@ -45,6 +67,42 @@
       "author": {
         "name": "Kevin MAMERI",
         "url": "https://github.com/kevinMPO"
+      },
+      "license": "MIT"
+    },
+    {
+      "name": "argentier-founder-pay",
+      "source": "./community/argentier-founder-pay",
+      "description": "Tells a founder how much the business can afford to pay them this month and next quarter, after commitments, tax provisions and a safety buffer, and compares the ways to take it by legal form (France). Read-only.",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "argentier",
+        "community",
+        "dividends",
+        "founder",
+        "qonto",
+        "remuneration",
+        "salary"
+      ],
+      "author": {
+        "name": "Kevin MAMERI",
+        "url": "https://github.com/kevinMPO"
+      },
+      "license": "MIT"
+    },
+    {
+      "name": "nexyzen-clearing-scout",
+      "source": "./community/nexyzen-clearing-scout",
+      "description": "Find money frozen in unpaid invoices and settle it without bank transfers. Builds a clearing ledger from Qonto client and supplier invoices, detects bilateral set-off opportunities (counterparties that are both client and supplier), previews multilateral clearing cycles across the network, and\u2026",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "pepinfor",
+        "url": "https://github.com/fpagano"
       },
       "license": "MIT"
     },
@@ -202,6 +260,21 @@
       "name": "qonto-sector-benchmark",
       "source": "./community/qonto-sector-benchmark",
       "description": "Sector health check-up for Qonto accounts. Computes the company's real ratios from transactions and invoices (fixed-cost share, software subscription weight, observed client payment delay, revenue seasonality, cash in days of expenses) and compares them against official French sector statistics\u2026",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
+      "name": "qonto-subscription-audit",
+      "source": "./community/qonto-subscription-audit",
+      "description": "Complete recurring-spend audit for Qonto accounts. Inventories every recurring charge (cards AND direct debits) over 24\u201336 months, computes the TOTAL annualized subscription cost, classifies each line (\u2705 active \u00b7 \ud83d\udc65 duplicate \u00b7 \ud83e\udddf zombie, always user-confirmed \u00b7 \ud83c\udfa3 trial gone paid), catches nascent\u2026",
       "version": "0.1.0",
       "category": "Community",
       "tags": [
