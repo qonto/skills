@@ -6,7 +6,7 @@ metadata:
   argument-hint: "[meeting transcript/notes + client hints, or an existing Qonto quote ID + 'accepted']"
 permissions:
   mcp:
-    qonto: [change_client_invoice_status, create_client, create_client_invoice, create_credit_note, create_payment_link, create_quote, get_client_invoice, get_organization, get_payment_link, get_quote, list_clients, send_client_invoice, update_client]
+    qonto: [change_client_invoice_status, create_client, create_client_invoice, create_credit_note, create_payment_link, create_quote, get_client_invoice, get_organization, get_quote, list_client_invoices, list_clients, list_quotes, send_client_invoice, update_client]
   network: []
   env: []
   tools: [Read]
