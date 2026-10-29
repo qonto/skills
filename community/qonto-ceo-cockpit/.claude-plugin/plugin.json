@@ -1,7 +1,7 @@
 {
   "name": "qonto-ceo-cockpit",
   "displayName": "Company dashboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One-prompt CEO cockpit for Qonto accounts. Builds a self-contained interactive HTML dashboard of the whole company — where money comes from and where it goes (month + year flow view), month/year/forecast cards, a 3-month projection from recurring flows and open invoices, a live day-rate ×…",
   "author": {
     "name": "seb",

@@ -1,7 +1,7 @@
 {
   "name": "qonto-supplier-detective",
   "displayName": "Supplier invoice audit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Forensic audit of supplier invoices and payments on a Qonto account. Sweeps every supplier invoice and every debit to find money leaking out — duplicate invoices, invoices paid twice, invoice-vs-payment amount gaps, and the highest-value security signal, a known supplier whose payment IBAN suddenly…",
   "author": {
     "name": "seb",
