@@ -1,7 +1,7 @@
 {
   "name": "argentier-founder-pay",
-  "displayName": "How much can I pay myself",
-  "version": "0.1.0",
+  "displayName": "Founder pay planner",
+  "version": "0.1.1",
   "description": "Tells a founder how much the business can afford to pay them this month and next quarter, after commitments, tax provisions and a safety buffer, and compares the ways to take it by legal form (France). Read-only.",
   "author": {
     "name": "Kevin MAMERI",
