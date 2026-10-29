@@ -1,5 +1,6 @@
 {
   "name": "qonto-receipt-hunter",
+  "displayName": "Missing receipt finder",
   "version": "0.1.1",
   "description": "Receipt hunter for Qonto accounts. Finds transactions missing their receipt, ranks them by urgency (recoverable VAT at stake, amount, age), then hunts the original receipts down in connected sources — Gmail (merchant/amount/date search around the purchase date) and Google Drive — and attaches each…",
   "author": {

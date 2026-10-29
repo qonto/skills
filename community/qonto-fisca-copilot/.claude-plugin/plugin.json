@@ -1,5 +1,6 @@
 {
   "name": "qonto-fisca-copilot",
+  "displayName": "Tax co-pilot",
   "version": "0.1.0",
   "description": "Proactive tax co-pilot for a Qonto business account: detects the organization's country and legal form, scans a period's transactions and surfaces the tax reflexes a founder forgets (mileage, reverse-charge VAT on foreign SaaS, missing invoices, non-recoverable hotel VAT) plus under-used tax breaks, each with its source. Read-only on Qonto; writes the transactions to a local JSON file for its trigger script, reads receipts via get_attachment and optionally searches sanitized merchant names to resolve cities after user confirmation. Advisory only — not tax or financial advice.",
   "author": {
