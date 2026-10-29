@@ -59,16 +59,18 @@ class AutomaticExecutionTests(unittest.TestCase):
         self.assertFalse(report.failed)
         self.assertTrue(any(f.level == "note" and f.check == "hooks" for f in report.findings))
 
-    def manifest(self, tier="community", **extra):
+    def manifest(self, tier="community", without=(), **extra):
         plugin = self.root / tier / "plugin"
         path = plugin / ".claude-plugin" / "plugin.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         data = {
-            "name": "plugin", "version": "0.1.0",
+            "name": "plugin", "displayName": "Plugin", "version": "0.1.0",
             "description": "A sufficiently detailed plugin description.",
             "author": {"name": "Contributor"}, "license": "MIT",
             **extra,
         }
+        for key in without:
+            data.pop(key)
         path.write_text(json.dumps(data))
         report = fc.Report()
         fc.check_plugin_manifest(plugin, report)
@@ -96,6 +98,16 @@ class AutomaticExecutionTests(unittest.TestCase):
                 report = self.manifest(skills=value)
                 self.assertTrue(any(f.level == "fail" and "Manifest `skills` points" in f.message
                                     for f in report.findings))
+
+    def test_manifest_requires_display_name(self):
+        for tier in ("community", "featured"):
+            with self.subTest(tier=tier, value="absent"):
+                report = self.manifest(tier=tier, without=("displayName",))
+                self.assertTrue(any(f.level == "fail" and "`displayName`" in f.message for f in report.findings))
+            for value in (None, "", "   ", 3):
+                with self.subTest(tier=tier, value=value):
+                    report = self.manifest(tier=tier, displayName=value)
+                    self.assertTrue(any(f.level == "fail" and "`displayName`" in f.message for f in report.findings))
 
     def test_featured_manifest_components_remain_reviewable(self):
         self.assertFalse(self.manifest(tier="featured", hooks={}).failed)
