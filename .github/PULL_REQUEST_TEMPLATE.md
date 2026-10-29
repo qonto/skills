@@ -29,6 +29,7 @@ everything in it. Please read the checklist before submitting.
 - [ ] `SKILL.md` is under roughly 500 lines, with detail moved to `references/`
 - [ ] The plugin lives in `community/<plugin-name>/` with a `.claude-plugin/plugin.json`
       and its skills under `skills/<skill-name>/SKILL.md`
+- [ ] `.claude-plugin/plugin.json` has a `displayName`, the short title shown in the **Available skills** table
 - [ ] The frontmatter has a `permissions` block listing every Qonto MCP tool, host,
       environment variable and native tool the skill uses
 - [ ] `python3 .github/format-check/format_check.py --base origin/main` passes

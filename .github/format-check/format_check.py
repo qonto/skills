@@ -345,7 +345,8 @@ def check_plugin_manifest(pdir: Path, rep: Report) -> dict:
     if not manifest.is_file():
         rep.add("fail", "layout", f"`{r}` is missing.", file=rel(pdir),
                 fix="Every plugin carries a manifest, the marketplace entry is built from it:\n```json\n{\n"
-                    '  "name": "' + name + '",\n  "version": "0.1.0",\n  "description": "What it does, and when an agent should use it.",\n'
+                    '  "name": "' + name + '",\n  "displayName": "Short title",\n  "version": "0.1.0",\n'
+                    '  "description": "What it does, and when an agent should use it.",\n'
                     '  "author": { "name": "Your name", "url": "https://github.com/you" },\n  "license": "MIT"\n}\n```')
         return {}
     try:
@@ -367,6 +368,11 @@ def check_plugin_manifest(pdir: Path, rep: Report) -> dict:
     if m.get("name") != name:
         rep.add("fail", "layout", f"Manifest `name` is `{m.get('name')}` but the directory is `{name}`.", file=r,
                 fix="Make them identical.")
+    title = m.get("displayName")
+    if not isinstance(title, str) or not title.strip():
+        rep.add("fail", "layout", "Manifest `displayName` is missing or empty.", file=r,
+                fix='Add a short title. It fills the Title column of the **Available skills** table in README.md, '
+                    'for example `"displayName": "Late invoice reminders"`.')
     desc = m.get("description")
     if not isinstance(desc, str) or len(desc.strip()) < 20:
         rep.add("fail", "layout", "Manifest `description` is missing or too short.", file=r,
