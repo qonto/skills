@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-project-burn — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon</span>
+  <h1>qonto-project-burn</h1>
+  <p class="sub">What project X actually cost — real burn per project, written where the team lives.</p>
+  <div class="badges">
+    <span>📊 Real burn vs declared budget</span><span>🔒 Qonto read-only</span>
+    <span>🧩 Linear/Jira optional, detected</span><span>🌍 Universal (all Qonto countries)</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>Teams plan in Linear or Jira; the money lives in Qonto. So <strong>nobody knows what project X actually cost</strong> — dedicated SaaS, freelancers, ads, hardware. The skill closes that gap:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Label ↔ project mapping</h4><p>A simple config table proposed from existing Qonto labels, correctable line by line, remembered in the conversation or the Claude project.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Real burn vs budget</h4><p>Up to 36 months scanned (annual renewals included), refunds deducted, orphans listed apart — never silently attributed.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Projected overrun date</h4><p>Current monthly run rate → "at this pace, Alpha crosses on Aug 12", confidence tags 🟢🟡, thresholds ⚠️ 80 % · 🔴 100 %.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Status where the team lives</h4><p>With consent: an "X € / Y € — Z %" comment on the Linear/Jira project + an alert issue when a threshold is crossed, backed by Qonto transactions.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>It's the sprint-planning question — "where is Alpha, really?" — with the money in the answer.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><strong>Universal</strong> — labels + transactions, no tax rules: every Qonto country (FR, DE, ES, IT, AT, NL, BE, PT)</td><td>ℹ️ all</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Qonto labels</b></td><td>A few transactions labelled per project. No labels: mapping proposed from recurring suppliers (🟡 tags)</td><td>⭕ recommended</td></tr>
+    <tr><td><b>Linear or Jira/Atlassian MCP</b></td><td>Detected dynamically — otherwise degraded mode: full report + HTML dashboard in the conversation</td><td>⭕ optional</td></tr>
+    <tr><td><b>Declared budgets</b></td><td>Provided by the user in the mapping (or read from the Linear project description when formatted) — never invented</td><td>✅ at setup</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>No labels at all?</strong> Mapping proposed from recurring counterparties, everything tagged 🟡, with app labelling instructions</li>
+    <li><strong>Orphan transactions</strong>: listed with count and total, two clean-up paths — never silently attributed to a project. The MCP has <strong>no tool</strong> to attach a label: a paste-ready list for the app, or optional filing via <code>modify_transaction_cash_flow_category</code> (light, reversible, confirmed write)</li>
+    <li><strong>Multi-label transaction</strong>: counted <em>once</em>, under the mapping's first matching label — disclosed in the report</li>
+    <li><strong>Annual cadences</strong>: 24–36-month scan when history allows — yearly SaaS licences don't slip through</li>
+    <li>Refunds deducted · card settlement delays (<code>emitted_at</code> vs <code>settled_at</code>) · multi-account orgs handled · pagination ≤ 50 everywhere</li>
+    <li>No Linear/Jira MCP? The skill says so and delivers the full report + dashboard — the core runs on Qonto alone</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>On the Qonto side, everything is a read</b> — no transfer, no payment, nothing touches the money. The dashed (write) arrow points at <b>Linear/Jira</b>, not at the bank: a comment or an issue, always previewed in full and posted only after explicit consent in the conversation.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📊 Sample report (invented data)</h2>
+  <div class="scroll"><table>
+    <tr><th>Project</th><th>Spent</th><th>Budget</th><th>%</th><th>Run rate</th><th>Projected overrun</th><th>Status</th></tr>
+    <tr><td>Alpha</td><td>€10,440</td><td>€12,000</td><td>87 %</td><td>€1,950/mo</td><td>Aug 12</td><td>⚠️</td></tr>
+    <tr><td>Kepler</td><td>€3,100</td><td>€8,000</td><td>39 %</td><td>€620/mo</td><td>—</td><td>✅</td></tr>
+    <tr><td>Odyssey</td><td>€21,500</td><td>€20,000</td><td>108 %</td><td>€1,400/mo</td><td>crossed</td><td>🔴</td></tr>
+  </table></div>
+  <p style="margin-top:.6rem"><em>Entirely fictional example — projects, amounts and dates invented for illustration.</em></p>
+  <h3>The mapping table (proposed, then corrected)</h3>
+  <div class="scroll"><table>
+    <tr><th>Qonto label</th><th>Project</th><th>Linear/Jira project</th><th>Declared budget</th></tr>
+    <tr><td><code>alpha</code></td><td>Alpha</td><td>Alpha (Linear)</td><td>€12,000</td></tr>
+    <tr><td><code>kepler-app</code></td><td>Kepler</td><td>Kepler (Linear)</td><td>€8,000</td></tr>
+    <tr><td><code>ody</code></td><td>Odyssey</td><td>— (no tracker project)</td><td>€20,000</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables (burn per project, orphans, alerts)</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Linear/Jira comment</b></td><td>"X € / Y € — Z % · projected overrun on [date] · top 5 lines" on the mapped project</td><td>Tracker MCP detected + explicit consent</td></tr>
+    <tr><td><b>Linear/Jira alert issue</b></td><td>"⚠️ Budget [project] Z %" + the Qonto transactions that justify it</td><td>Threshold crossed + explicit consent</td></tr>
+    <tr><td><b>Interactive dashboard</b></td><td><strong>HTML</strong> file/artifact: spent-vs-budget bars, run rate, overrun markers</td><td>When the host renders files; automatic fallback to tables</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem → the mapping → burn &amp; overrun dates → <strong>opening Linear and finding the "⚠️ Budget Alpha 87 %" issue Claude created, backed by the Qonto transactions</strong> → the final dashboard. The finance comes to the team — not the other way around. The detailed shooting script is kept internal (outside the repo).</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Budget per sprint/cycle, not just per project</td><td>Medium</td><td>Reuses the mapping, sliced by Linear cycle dates</td></tr>
+    <tr><td>Real per-project margin: cross with <code>list_client_invoices</code></td><td>Medium</td><td>Burn − invoiced = project margin</td></tr>
+    <tr><td>Weekly ritual: status posted every Monday</td><td>Low</td><td>Same write, same consent</td></tr>
+    <tr><td>Slack/Notion as alternative status targets</td><td>Low</td><td>Optional multi-MCP, detected dynamically</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Never</strong> writes to Linear/Jira without showing the exact content and getting explicit confirmation in the current conversation; never presented as done if the call failed</li>
+    <li>The label → project attribution is <strong>always shown and correctable</strong> — no silent reassignment</li>
+    <li>Budgets are user-declared, spend is Qonto data — the skill invents neither</li>
+    <li><code>list_cash_flow_categories</code> → 403 on the claude.ai connector: expected, labels are the fallback</li>
+    <li>IBANs masked (last 4 digits) · pagination ≤ 50 · honest degradation (no labels, short history, no tracker MCP)</li>
+  </ul>
+  <p style="margin-top:.6rem">For the <strong>company-wide</strong> view (runway, all-costs cockpit): the <code>qonto-ceo-cockpit</code> skill. This one is the <strong>project-level</strong> granularity.</p>
+</section>
+
+<footer>qonto-project-burn · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-project-burn.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
