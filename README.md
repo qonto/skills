@@ -101,6 +101,7 @@ project. Needs Node.js 22.20 or later.
 | [`argentier-founder-pay`](./community/argentier-founder-pay) | Founder pay planner | Tells a founder how much the business can afford to pay them this month and next quarter, after commitments, tax provisions and a safety buffer, and compares the ways to take it by legal form (France). | [Kevin MAMERI](https://github.com/kevinMPO) | community |
 | [`nexyzen-clearing-scout`](./community/nexyzen-clearing-scout) | Invoice set-off finder | Find money frozen in unpaid invoices and settle it without bank transfers. | [pepinfor](https://github.com/fpagano) | community |
 | [`qonto-asset-registry`](./community/qonto-asset-registry) | Fixed-asset register | Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices. | [seb](https://github.com/SebDeNoocode) | community |
+| [`qonto-board-pack`](./community/qonto-board-pack) | Monthly investor update | Monthly investor and banker update generator for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-carbon-ledger`](./community/qonto-carbon-ledger) | Carbon footprint estimate | Spend-based carbon footprint estimator for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-ceo-cockpit`](./community/qonto-ceo-cockpit) | Company dashboard | One-prompt CEO cockpit for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-counterparty-watch`](./community/qonto-counterparty-watch) | Client &amp; supplier payment risk | Legal-health radar for the clients and suppliers of a Qonto account. | [seb](https://github.com/SebDeNoocode) | community |
@@ -110,6 +111,7 @@ project. Needs Node.js 22.20 or later.
 | [`qonto-invoice-chaser`](./community/qonto-invoice-chaser) | Late invoice reminders | Intelligent late-invoice chaser for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-prescription-guard`](./community/qonto-prescription-guard) | Unpaid invoice deadlines | Legal expiry radar for unpaid client invoices on Qonto accounts (France). | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-receipt-hunter`](./community/qonto-receipt-hunter) | Missing receipt finder | Receipt hunter for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
+| [`qonto-reimburse-batch`](./community/qonto-reimburse-batch) |  | Batch expense reimbursement for teams on Qonto. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-rgpd-register`](./community/qonto-rgpd-register) | GDPR processing register | GDPR Article 30 register drafted from a Qonto account's spending. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-sector-benchmark`](./community/qonto-sector-benchmark) | Sector benchmark | Sector health check-up for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
 | [`qonto-subscription-audit`](./community/qonto-subscription-audit) | Subscription audit | Complete recurring-spend audit for Qonto accounts. | [seb](https://github.com/SebDeNoocode) | community |
