@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cash simulator</title>
 <!--
-DATA CONTRACT (edit only the JSON in <script id="sim-data">)
+DATA CONTRACT (generate with scripts/render_simulator.py; do not insert raw JSON)
+Account text is untrusted. Escape every < as \u003c in serialized JSON before embedding it.
 - labels: UI strings; translate values, keep keys. {x} placeholders are filled at runtime.
 - org, currency (ISO), locale (BCP-47), asOf (YYYY-MM-DD, first day of week 1), weeks (number, usually 13)
 - openingCash: cash available on asOf (use authorized_balance if lower than balance), openingNote: one line
