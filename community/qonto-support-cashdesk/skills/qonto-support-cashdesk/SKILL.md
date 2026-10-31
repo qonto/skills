@@ -1,9 +1,11 @@
 ---
 name: qonto-support-cashdesk
-description: Customer-support billing desk for Qonto accounts. Takes a customer conversation ("I never received my invoice", "the payment link expired", "you charged me twice" — pulled from Intercom when that MCP is connected, or simply pasted into the chat), matches the customer against Qonto clients (confirmed by the user), verifies the facts against invoices, payment links and incoming transactions, then answers with the fix attached — resend the invoice, create a fresh payment link, or a credit note when a double collection is PROVEN by two dated credits — every write explicitly confirmed, the customer reply delivered as a draft to review. Delete access exists only for rehearsing on a fictional test client, never on real customer data. Use for "je n'ai pas reçu ma facture", "le lien de paiement a expiré", "vous m'avez facturé deux fois", "a customer says they paid twice", "handle this billing complaint", "answer this support ticket about an invoice".
+description: Customer-support billing desk for Qonto accounts. Takes a customer conversation ("I never received my invoice", "the payment link expired", "you charged me twice" — pulled from Intercom when that MCP is connected, or simply pasted into the chat), matches the customer against Qonto clients (confirmed by the user), verifies the facts against invoices, payment links and incoming transactions, then answers with the fix attached — resend the invoice, create a fresh payment link, or a credit note when a double collection is PROVEN by two dated credits — every write explicitly confirmed, the customer reply delivered as a draft to review. Use for "je n'ai pas reçu ma facture", "le lien de paiement a expiré", "vous m'avez facturé deux fois", "a customer says they paid twice", "handle this billing complaint", "answer this support ticket about an invoice".
 permissions:
   mcp:
-    qonto: [create_credit_note, create_payment_link, delete_client, delete_client_invoice, get_client_invoice, get_organization, get_payment_link, list_client_invoices, list_clients, list_payment_links, list_transactions, send_client_invoice]
+    gmail: [create_draft]
+    intercom: [search_conversations, get_conversation]
+    qonto: [create_credit_note, create_payment_link, get_client_invoice, get_organization, get_payment_link, list_client_invoices, list_clients, list_payment_links, list_transactions, send_client_invoice]
   network: []
   env: []
   tools: [Read]
@@ -21,7 +23,7 @@ The billing counter of customer support. The customer's memory says one thing; t
 ## Workflow
 
 ### 1. Read the conversation
-From Intercom if connected, otherwise ask the user to paste it. Extract: the claim type (invoice not received / link expired / charged twice / other), identity clues (email, name, company), and any quoted references (invoice number, amount, dates). If the claim doesn't fit the three counters, say so and offer the verification that still applies.
+From Intercom if connected (`search_conversations` to find it, `get_conversation` to read it), otherwise ask the user to paste it. Extract: the claim type (invoice not received / link expired / charged twice / other), identity clues (email, name, company), and any quoted references (invoice number, amount, dates). If the claim doesn't fit the three counters, say so and offer the verification that still applies.
 
 ### 2. Match the client — never act on a guess
 `list_clients` (paginate `per_page: "50"`), match by **email first** (most reliable), then by name/company (normalize case and accents). Show the candidate(s) — masked to what's needed — and **have the user confirm the match** before anything else. Two plausible candidates → list both and ask. No match → say so plainly; never pick "the closest one".
@@ -46,7 +48,7 @@ Every conclusion carries its proof. One credit, a partial payment, a currency mi
 - **Credit note**: `create_credit_note` **only when the double collection is proven by two dated credits in the transactions, the proof has been shown, and the user explicitly confirms in the current conversation**. A credit note is a real accounting document — never issue one as a "commercial gesture" decided by the skill. The credit note documents the correction; **the refund itself is a bank transfer the user makes in the Qonto app (SCA)** — the skill never moves money and never claims it did.
 
 ### 6. Reply draft + report
-Compose the customer reply: factual, short, apologies **only when the error is proven** (cite the correction: credit note number, new link, resent invoice). If the Gmail MCP is present, create it as a **draft** (never send); otherwise deliver it as copy-paste text. Close with a one-table recap in the conversation: claim → evidence → action taken/pending → reply status.
+Compose the customer reply: factual, short, apologies **only when the error is proven** (cite the correction: credit note number, new link, resent invoice). If the Gmail MCP is present, create it as a **draft** with `create_draft` (never send); otherwise deliver it as copy-paste text. Close with a one-table recap in the conversation: claim → evidence → action taken/pending → reply status.
 
 ## Guardrails
 - NEVER act on an unconfirmed client match; never present a write as done when it is pending or failed.
@@ -54,4 +56,4 @@ Compose the customer reply: factual, short, apologies **only when the error is p
 - The skill never sends the customer reply itself — draft only, the user reviews and sends.
 - Refunds are transfers: user-initiated in the Qonto app with SCA. Out of the skill's hands, and said plainly.
 - Duplicates on the **purchase** side (supplier charged you twice) are the job of `qonto-supplier-detective` — redirect there.
-- Mask IBANs (last 4 digits). Paginate everything (`per_page` ≤ 50). Rehearsals: invoices created via MCP are REAL → use a fictional client, draft status, then `delete_client_invoice` / `delete_client`.
+- Mask IBANs (last 4 digits). Paginate everything (`per_page` ≤ 50). Rehearsals: invoices created via MCP are REAL → use a fictional client and draft status, then delete the test data manually in Qonto. The skill never deletes clients or invoices.
