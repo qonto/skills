@@ -1,0 +1,10 @@
+{
+  "name": "qonto-support-cashdesk",
+  "version": "0.1.0",
+  "description": "Customer-support billing desk for Qonto accounts. Takes a customer billing complaint (invoice not received, expired payment link, double charge), from Intercom or pasted into the chat, checks the facts against Qonto invoices, payment links and transactions, then proposes the fix (resend the invoice, a fresh payment link, or a credit note when a double charge is proven) and drafts the customer reply. Every write is confirmed by the user first.",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
