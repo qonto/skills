@@ -58,7 +58,7 @@
 | Le paiement du client n'apparaît pas à la date qu'il annonce | Délai de règlement carte (1-2 j) | Le skill matche sur `emitted_at`, pas `settled_at` |
 | Doute sur les liens de paiement via MCP | La doc MCP les dit non supportés | Vérifié : `list_payment_links` / `get_payment_link` / `create_payment_link` fonctionnent |
 | Réponses très longues / tronquées | Pagination oubliée | `per_page` ≤ 50 partout, fenêtres de dates autour de la facture |
-| Une facture de test traîne dans le compte | Les factures créées via MCP sont **réelles** | Répéter sur un client fictif, statut draft, puis `delete_client_invoice` / `delete_client` |
+| Une facture de test traîne dans le compte | Les factures créées via MCP sont **réelles** | Répéter sur un client fictif, statut draft, puis supprimer les données de test à la main dans Qonto |
 
 ## 🔒 Rappel sécurité
 

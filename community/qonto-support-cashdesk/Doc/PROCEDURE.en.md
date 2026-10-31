@@ -58,7 +58,7 @@
 | The customer's payment doesn't show on the date they claim | Card settlement lag (1–2 days) | The skill matches on `emitted_at`, not `settled_at` |
 | Doubts about payment links via MCP | The MCP doc says they're unsupported | Verified: `list_payment_links` / `get_payment_link` / `create_payment_link` do work |
 | Very large / truncated responses | Missing pagination | `per_page` ≤ 50 everywhere, date windows around the invoice |
-| A test invoice lingers in the account | Invoices created via MCP are **real** | Rehearse on a fictional client, draft status, then `delete_client_invoice` / `delete_client` |
+| A test invoice lingers in the account | Invoices created via MCP are **real** | Rehearse on a fictional client, draft status, then delete the test data manually in Qonto |
 
 ## 🔒 Security reminder
 
