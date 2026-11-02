@@ -1,0 +1,10 @@
+{
+  "name": "qonto-money-calendar",
+  "version": "0.1.0",
+  "description": "Two-way bridge between a Qonto account and Google Calendar. Direction 1 pushes every upcoming money date into the calendar — supplier invoices to pay, client invoices to collect, recurring charges detected from history (rent, subscriptions, tax direct debits) — with the amount in the event title…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}

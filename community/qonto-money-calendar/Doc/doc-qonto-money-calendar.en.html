@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-money-calendar — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon</span>
+  <h1>qonto-money-calendar</h1>
+  <p class="sub">Your cash flow in your calendar, both ways — deadlines become events, tagged days become invoices.</p>
+  <div class="badges">
+    <span>📆 Two directions: calendar ↔ Qonto</span><span>🔔 D-3 reminders, amount in the title</span>
+    <span>🧾 Draft invoices only</span><span>✋ Day rate never guessed</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>Money lives in <strong>deadlines</strong>, not in lists. And you live in your calendar — not in an accounting export. The skill turns Google Calendar into the dashboard of your money month:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Direction 1 — push</h4><p>Supplier invoices to pay, client invoices to collect, recurrences detected over 24–36 months — amount in the title, D-3 reminder.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Direction 2 — read</h4><p>Days tagged <code>[Client]</code> in the calendar are counted → end-of-month invoice (days × confirmed rate) drafted in Qonto.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Recap before writing</h4><p>No event created without a confirmed recap; idempotent re-runs — updates, never duplicates.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Rate never guessed</h4><p>Deduced from past invoices and the product catalog, source shown, then explicitly confirmed — every time.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>Open the calendar: the week's money is already there — and last month's work is already invoiced.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Google Calendar MCP</b></td><td><strong>Required for both directions.</strong> Absent: direction 1 degrades to a markdown table in the conversation, direction 2 is unavailable — and the skill says so</td><td>⭕ strongly recommended</td></tr>
+    <tr><td><b>Country</b></td><td><strong>Universal</strong> — invoice due dates and history-detected recurrences, never invented local tax rules. Full French tax schedule → the <code>qonto-tax-pilot</code> skill</td><td>ℹ️ all Qonto countries</td></tr>
+    <tr><td><b>24–36 months of history</b></td><td>Needed to see yearly cadences; below that, honest degradation</td><td>⭕</td></tr>
+    <tr><td><b>The <code>[Client]</code> tag convention</b></td><td>For direction 2: an event titled "[Acme] onsite sprint" = 1 billable day (explained on first use)</td><td>⭕ direction 2 only</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>No Calendar MCP?</strong> The schedule ships as a markdown table, direction 2 declares itself unavailable — no pretending</li>
+    <li><strong>Short history?</strong> Yearly cadences are flagged as unreliable (they need 24–36 months), monthly ones still detected; everything estimated is labeled 🟡</li>
+    <li><strong>Tagged client not found in Qonto?</strong> The skill lists close candidates and asks — it never creates a client on its own</li>
+    <li><strong>No past invoice and no day-type catalog product?</strong> The rate is asked outright, never defaulted</li>
+    <li><strong>Re-run after edits?</strong> Events carrying the <code>[qonto-money-calendar]</code> marker are updated in place, never duplicated</li>
+    <li>Empty account, zero invoices: direction 1 says what it found (nothing), direction 2 still works from the calendar · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Two writes, two locks:</b> calendar events exist only after a recap confirmed in the conversation; the Qonto invoice exists only as a <b>draft</b>, after the day rate and lines are confirmed. The skill moves no money and sends nothing: paying happens in the Qonto app (SCA), sending the invoice happens after review. <b>That's the security model, not a limitation.</b></p>
+  </div>
+</section>
+
+<section>
+  <h2>📆 What lands in the calendar (direction 1)</h2>
+  <div class="scroll"><table>
+    <tr><th>Event type</th><th>Qonto source</th><th>Example title (invented)</th><th>Reminder</th></tr>
+    <tr><td>Supplier invoice to pay</td><td><code>list_supplier_invoices</code> (due date)</td><td>💸 Nimbus supplier — €890</td><td>D-3</td></tr>
+    <tr><td>Client invoice to collect</td><td><code>list_client_invoices</code> (unpaid)</td><td>💰 Invoice INV-2026-042 due — €4,800</td><td>D-3</td></tr>
+    <tr><td>Monthly recurrence</td><td>24–36 months of history</td><td>💸 Rent — €1,200</td><td>D-3</td></tr>
+    <tr><td>Quarterly / yearly recurrence</td><td>24–36 months of history</td><td>💸 Yearly insurance — €640 (estimated)</td><td>D-3</td></tr>
+    <tr><td>Detected tax direct debit</td><td>History (direct debits)</td><td>💸 VAT debit — ~€2,100 (estimated)</td><td>D-3</td></tr>
+  </table></div>
+  <p><em>All amounts above are invented examples. Recurrence-based amounts are labeled "estimated" in the event.</em></p>
+</section>
+
+<section>
+  <h2>🏷 The tag convention (direction 2)</h2>
+  <div class="scroll"><table>
+    <tr><th>In the event title</th><th>Counted as</th></tr>
+    <tr><td><code>[Acme] onsite sprint</code></td><td>1 billable day for Acme</td></tr>
+    <tr><td><code>[Acme]</code> event spanning 3 days</td><td>3 days</td></tr>
+    <tr><td><code>[Acme] 0.5 workshop</code></td><td>half a day</td></tr>
+    <tr><td>No brackets</td><td>Ignored (not billable)</td></tr>
+  </table></div>
+  <p>No extra tool, no time-tracker: your calendar <strong>is</strong> the time-tracker. End of month, the skill counts, proposes the day rate with its source, waits for your confirmation — then drafts the invoice.</p>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: schedule, pre-write recap, day counts, invoice summary</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Google Calendar</b></td><td>Dated events, amount in the title, D-3 reminder, anti-duplicate marker</td><td>When the Calendar MCP is present <strong>and</strong> the recap confirmed</td></tr>
+    <tr><td><b>Qonto invoice</b></td><td><code>create_client_invoice</code> <strong>draft</strong>, Invoicing section</td><td>Direction 2, after rate &amp; lines confirmed</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the problem (money lives in deadlines) → direction 1: the recap, then the calendar filling up → the <code>[Client]</code> convention and the confirmed day rate → <strong>the split-screen moment: 12 tagged days on one side, a draft invoice appearing in Qonto on the other</strong> → wrap-up. It runs live on a real production account; all figures shown in the docs are invented examples.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Live reconciliation: mark events ✅ once the matching payment clears in the account</td><td>Medium</td><td>Reuses <code>list_transactions</code> + the event marker</td></tr>
+    <tr><td>A dedicated "Money" calendar, separate from the personal one</td><td>Low</td><td>Simple creation-time option</td></tr>
+    <tr><td>Full estimated tax schedule pushed as events</td><td>Low</td><td>Cross-skill: <code>qonto-tax-pilot</code> computes, this skill schedules</td></tr>
+    <tr><td>Quote-before-invoice for newly tagged clients</td><td>Low</td><td><code>create_quote</code> exists in the MCP</td></tr>
+    <tr><td>A "your money week" recap event every Monday</td><td>Medium</td><td>The Monday-morning ritual, ready to read</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>No calendar event without a confirmed recap</strong> in the current conversation; idempotent re-runs (marked events updated, no duplicates)</li>
+    <li><strong>The day rate is never guessed</strong>: deduced from history, then explicitly confirmed — every time</li>
+    <li>Invoices created via MCP are <strong>real</strong> → always DRAFT, review before sending; rehearsals use a fictional client + draft + <code>delete_client_invoice</code></li>
+    <li>Estimated amounts (recurrences) always labeled as estimates — never presented as booked</li>
+    <li>The skill moves no money: paying stays in the Qonto app (SCA), sending an invoice stays an explicit decision</li>
+    <li>Masked IBANs · pagination ≤ 50 everywhere</li>
+  </ul>
+</section>
+
+<footer>qonto-money-calendar · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-money-calendar.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
