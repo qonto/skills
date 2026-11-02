@@ -1,0 +1,10 @@
+{
+  "name": "qonto-oss-navigator",
+  "version": "0.1.0",
+  "description": "EU e-commerce VAT navigator (OSS One-Stop Shop) for Qonto accounts. Tracks the single €10,000 EU threshold for cross-border B2C distance sales, breaks sales down by customer country (Shopify shipping countries when connected, otherwise partial inference from Qonto data — announced as such), applies…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
