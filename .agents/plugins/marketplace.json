@@ -120,6 +120,21 @@
       ]
     },
     {
+      "name": "qonto-board-pack",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-board-pack"
+      },
+      "description": "Monthly investor and banker update generator for Qonto accounts. From one prompt, builds the full board pack \u2014 the month's numbers (cash in, spend by category, end-of-month cash, burn & runway), month-over-month and rolling-year comparisons, auto-detected highlights (big contract collected, new\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
       "name": "qonto-carbon-ledger",
       "source": {
         "source": "local",
@@ -150,6 +165,21 @@
       ]
     },
     {
+      "name": "qonto-chargeback-defender",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-chargeback-defender"
+      },
+      "description": "End-to-end payment dispute handling for Qonto accounts. Detects open chargebacks (via a Stripe/PayPal MCP when connected, otherwise by spotting clawback debits in Qonto transactions), finds the matching debit, assembles a sourced defense file (Shopify order, proof of delivery, Gmail customer\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
       "name": "qonto-counterparty-watch",
       "source": {
         "source": "local",
@@ -171,6 +201,21 @@
         "path": "./community/qonto-crew-onboard"
       },
       "description": "One-sentence financial onboarding (and offboarding) of an employee on Qonto. Reads a per-role policy defined once with the user (card caps, online-only, team), then on \"Alex starts Monday as a developer\" it invites the member, creates the team if new, and prepares a capped card request that\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
+      "name": "qonto-einvoice-ready",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-einvoice-ready"
+      },
+      "description": "French e-invoicing readiness audit for Qonto accounts. From 2026-09-01 every French VAT-registered company must be able to RECEIVE electronic invoices (issuing becomes mandatory 2026-09-01 for large companies and mid-caps, 2027-09-01 for SMEs). The skill scores the account's readiness \u2014 client\u2026",
       "policy": {
         "installation": "AVAILABLE"
       },
@@ -246,6 +291,21 @@
         "path": "./community/qonto-receipt-hunter"
       },
       "description": "Receipt hunter for Qonto accounts. Finds transactions missing their receipt, ranks them by urgency (recoverable VAT at stake, amount, age), then hunts the original receipts down in connected sources \u2014 Gmail (merchant/amount/date search around the purchase date) and Google Drive \u2014 and attaches each\u2026",
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Community",
+      "tags": [
+        "community"
+      ]
+    },
+    {
+      "name": "qonto-reimburse-batch",
+      "source": {
+        "source": "local",
+        "path": "./community/qonto-reimburse-batch"
+      },
+      "description": "Batch expense reimbursement for teams on Qonto. Checks claims against a finance-controlled verified recipient list, receipts, duplicates and expense policy; prepares one pending grouped transfer request after explicit confirmation. Review every destination and amount in Qonto before SCA approval.",
       "policy": {
         "installation": "AVAILABLE"
       },
