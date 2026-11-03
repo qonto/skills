@@ -1,0 +1,10 @@
+{
+  "name": "qonto-meeting-invoice",
+  "version": "0.1.0",
+  "description": "Turns a sales-call transcript into a Qonto quote or invoice. Extracts the negotiated terms (deliverables, quantities, prices, payment terms), matches them against the Qonto product catalog and client records, creates the document as a DRAFT, and sends it only after explicit line-by-line…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
