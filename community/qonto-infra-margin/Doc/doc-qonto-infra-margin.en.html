@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-infra-margin — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic MCP Hackathon</span>
+  <h1>qonto-infra-margin</h1>
+  <p class="sub">What does your infra really cost, per user? — everyone knows their MRR; nobody knows their infra unit economics.</p>
+  <div class="badges">
+    <span>🔍 100% read-only, zero writes</span><span>🧮 €/user measured, never invented</span>
+    <span>🔌 Multi-MCP detected dynamically</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>A SaaS founder recites their MRR by heart. Their <strong>infra cost per user</strong>? Silence. Vercel, Supabase, OpenAI and AWS bills drown in the card debits, and gross margin drifts with nobody watching. The skill answers with what <strong>actually left the bank account</strong>:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Infra debits isolated</h4><p>Vercel, Supabase, OpenAI, AWS, Scaleway, OVH… recognized at the first occurrence, spellings normalized, grouped by family: cloud, data, AI, observability, tooling.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Product telemetry</h4><p>From connected MCPs: Vercel (projects, deployments), Supabase (projects, users via read-only SELECT count), Sentry optional.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>True unit economics</h4><p>€/user, €/project (proration announced), month-by-month gross-margin drift against receipts.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>The bleeders</h4><p>Side-projects billed with zero deployments in 90 days, empty databases on paid tiers, AI spend growing faster than users.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>It's the question every technical founder asks in the shower and never answers.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><strong>Universal</strong> — identical analysis for every Qonto country (FR, DE, ES, IT, AT, NL, BE, PT). Truth = the account-side debit (EUR side of USD bills, FX included)</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Vercel MCP</b></td><td><code>list_projects</code> + <code>list_deployments</code> → per-project allocation, dead projects detected</td><td>⭕ recommended — announced degraded mode otherwise</td></tr>
+    <tr><td><b>Supabase MCP</b></td><td><code>list_projects</code> + <code>execute_sql</code> (read-only SELECT count, user-confirmed table) → measured €/user</td><td>⭕ recommended — announced degraded mode otherwise</td></tr>
+    <tr><td><b>≥ 12 months of history</b></td><td>Trends and yearly plans only show over 12–36 months; below that, honest degradation</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>No dictionary to maintain</strong>: vendors are identified from Claude's world knowledge at their first invoice — an AI API that launched last month is recognized without any update. Spellings merged (<code>AWS EMEA SARL</code> = <code>AMZN WEB SERVICES</code> = AWS; <code>OPENAI *CHATGPT</code> = OpenAI)</li>
+    <li><strong>Billed in USD, debited in EUR</strong>: the skill totals the EUR debit (FX included) and explains why vendor dashboards show a different number</li>
+    <li><strong>Card payments</strong>: invoice ↔ debit matching by <code>emitted_at</code>, not <code>settled_at</code> (1–2 day gap)</li>
+    <li><strong>Yearly plans</strong>: cadences detected across 24–36 months before any cost is called a "one-off"</li>
+    <li><strong>Ambiguous counterparty</strong> (reseller, agency) → asked once, never silently classified</li>
+    <li><strong>No product MCP</strong> → announced degraded mode: classification + monthly totals + trend, already useful. <strong>No measured count → no €/user</strong>, said plainly</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>100% read-only, on both sides.</b> Qonto side: no write tool is ever called — nothing to approve, nothing executed. Product side: <b><code>execute_sql</code> is capped at single read-only SELECT count queries</b>, on a table the user confirms before it runs — never DDL/DML, never a guessed table.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🗂 Recognized vendor families</h2>
+  <div class="scroll"><table>
+    <tr><th>Family</th><th>Typical vendors (examples, never exhaustive)</th></tr>
+    <tr><td>Cloud &amp; hosting</td><td>AWS, Google Cloud, Azure, Scaleway, OVHcloud, Hetzner, DigitalOcean, Fly.io, Railway, Render, Heroku</td></tr>
+    <tr><td>Frontend &amp; edge</td><td>Vercel, Netlify, Cloudflare</td></tr>
+    <tr><td>Data &amp; backend</td><td>Supabase, MongoDB Atlas, Neon, PlanetScale, Firebase, Upstash</td></tr>
+    <tr><td>AI APIs</td><td>OpenAI, Anthropic, Mistral, Replicate, ElevenLabs, fal.ai, Hugging Face</td></tr>
+    <tr><td>Observability</td><td>Sentry, Datadog, Better Stack, Grafana Cloud</td></tr>
+    <tr><td>Dev tooling</td><td>GitHub, GitLab, Docker, npm, JetBrains</td></tr>
+  </table></div>
+  <h3>What the report contains (fictional example — invented figures)</h3>
+  <div class="scroll"><table>
+    <tr><th>Metric</th><th>Example (fictional)</th><th>Condition</th></tr>
+    <tr><td>Infra cost / month + trend</td><td>€412/month, +18% over 12 months</td><td>Always (Qonto alone is enough)</td></tr>
+    <tr><td>€/user</td><td>Supabase €180/month ÷ 1,240 users = €0.15/user</td><td>Only when a real count was measured</td></tr>
+    <tr><td>€/project</td><td>Vercel bill prorated by deployment activity — rule shown</td><td>Vercel MCP present</td></tr>
+    <tr><td>Margin drift</td><td>Infra: 3.1% → 4.8% of receipts in 6 months</td><td>Stated MRR, or receipts as an announced proxy</td></tr>
+    <tr><td>Bleeders</td><td>1 side-project = 80% of the Vercel bill, 0 deployments in 3 months</td><td>Product MCP present</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: infra P&amp;L (vendor × month), unit economics, bleeders</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Interactive dashboard</b></td><td><strong>HTML</strong> file/artifact: stacked bars per family, €/user gauge, drift curve, bleeders spotlight</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); automatic fallback otherwise</td></tr>
+    <tr><td><b>Degraded mode</b></td><td>Same tables minus €/user and per-project allocation — announced</td><td>Without the Vercel/Supabase MCPs</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the MRR everyone knows → the infra debits isolated from a real account → product telemetry plugged in → <strong>the reveal</strong> (the real €/user, and the side-project that had been bleeding for months) → the final dashboard. The detailed shooting script is kept internal (out of the repository).</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Stripe/payments MCP for a measured MRR (no more proxy)</td><td>Low</td><td>Dynamic detection, same logic as Vercel/Supabase</td></tr>
+    <tr><td>Monthly alert: "your gross margin drifted +N points"</td><td>Medium</td><td>First-of-the-month ritual, pairs with qonto-tax-pilot</td></tr>
+    <tr><td>Internal benchmark: €/user vs 12 months ago</td><td>Low</td><td>Reuses the history already scanned</td></tr>
+    <tr><td>Per-vendor rightsizing (pricing checked online at analysis time)</td><td>Medium</td><td>Never from model memory</td></tr>
+    <tr><td>Cross-check with qonto-subscription-audit</td><td>Low</td><td>Both skills share recurrence detection</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Never invents a product metric</strong>: no measured count → no €/user, said plainly. Doc examples are fictional and flagged as such</li>
+    <li><strong>Allocation is an editorial choice, shown</strong>: every shared-cost proration is announced on the line, never silent</li>
+    <li><strong>Read-only SQL</strong>: <code>execute_sql</code> limited to single <code>SELECT count</code> queries on a user-confirmed table</li>
+    <li>Vendor pricing never asserted from memory — the account's numbers, yes; "wrong plan", no</li>
+    <li>Masked IBANs (last 4 digits) · pagination ≤ 50 everywhere · honest degradation</li>
+  </ul>
+</section>
+
+<footer>qonto-infra-margin · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-infra-margin.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
