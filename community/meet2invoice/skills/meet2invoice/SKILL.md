@@ -7,7 +7,7 @@ metadata:
 permissions:
   mcp:
     qonto: [change_client_invoice_status, create_client, create_client_invoice, create_credit_note, create_payment_link, create_quote, get_client_invoice, get_organization, get_quote, list_client_invoices, list_clients, list_quotes, send_client_invoice, update_client]
-  network: []
+  network: [claude.com, ec.europa.eu, ecosio.com, kaiser-data-ai.de, qonto.com, www.economie.gouv.fr, www.ihk.de]
   env: []
   tools: [Read]
 ---
@@ -31,16 +31,14 @@ Qonto invoice, without anyone re-typing scope, amount, VAT or payment terms.
 3. **Quote first by default.** Only go straight to invoice when the artifact
    clearly says the deal is closed ("they accepted", "signed off", "go ahead").
 4. **Never invent legal data.** Missing street address, tax ID (SIREN /
-   Steuernummer / P.IVA), or VAT number → ask the user. Placeholder values are
-   acceptable **only in sandbox testing and only with explicit approval**;
-   every assumption made must be listed in the preview at Gate 1.
+   Steuernummer / P.IVA), or VAT number → ask the user. Every assumption
+   made must be listed in the preview at Gate 1.
 5. **`terms_and_conditions` carries payment terms and legal mentions** (≤525
    chars on the invoice). Keep it short; legally required mentions win over
    free text.
 6. **No payments, no transfers.** This skill never moves money. Payment links
-   are an optional post-step and only in accounts with a connected payment
-   provider (sandbox orgs have none — expect 400 "connection with the
-   provider does not exist"; skip gracefully).
+   are an optional post-step, only in accounts with a connected payment
+   provider.
 7. **Respect invoicing law for the client's country.** Before any write,
    consult `references/invoicing-law.md`. Decide the VAT treatment from the
    parties' countries — domestic VAT / **intra-EU B2B reverse charge** /
@@ -93,8 +91,9 @@ From the transcript/notes, extract:
   pass the user's IRPF rate in `withholding_tax: { rate }` (ask for it; typical
   15%, reduced 7% for new freelancers). Never guess the rate.
 
-Set the client's `kind` (`company` vs `individual`) and `locale` correctly at
-creation — they drive both the VAT logic and the document language.
+Set the client's `kind` (`company` vs `individual`), `locale` and `currency`
+correctly at creation — they drive the VAT logic, the document language and
+the document currency. For a non-EUR deal, don't default to EUR.
 
 Show the preview table (include country + VAT treatment). **Gate 1: confirm.**
 
@@ -111,7 +110,7 @@ create_quote(
 )
 ```
 
-Notes proven against the live API:
+Notes:
 - Auto-numbering may be ON — omit `number` unless the org requires it.
 - Share the returned public `quote_url` with the user.
 
@@ -158,49 +157,12 @@ deal is cancelled, `change_client_invoice_status(id, cancel: true)`; a finalized
 invoice can't be deleted, only cancelled or corrected with a `create_credit_note`.
 Never mark paid on the client's word alone — confirm against a real transaction.
 
-## Production Notes (what changes outside the sandbox)
-
-Every call above is a GA Qonto Business API endpoint via the official MCP —
-the flow runs unchanged on a production account. Differences to expect:
-
-- **SCA prompts.** Sensitive writes go through the user's own Strong Customer
-  Authentication. That is Qonto's third gate on top of this skill's two — a
-  feature, not a failure; tell the user to expect it.
-- **IBAN choice.** Production orgs often have several accounts: use the one
-  with `main: true` from `get_organization`, and ask if the transcript implies
-  a different account.
-- **Currency.** Invoice currency must equal the client's `currency`; for a
-  non-EUR deal set it correctly at client creation, don't default to EUR.
-- **Quote changed after acceptance.** Build the invoice from the current
-  `get_quote` data, not from the transcript, and show the difference at Gate 2.
-- **Manual numbering orgs.** If auto-numbering is disabled, `create_quote` /
-  `create_client_invoice` fail without `number` — ask the user for the next
-  number in their sequence; never guess one.
-- **E-invoicing mandates.** IT already routes via SdI; FR phases in from
-  Sept 2026 (Factur-X — set the client's `e_invoicing_address`); DE from 2027.
-  Qonto emits the compliant format; surface the status, don't generate XML.
-- **Payment links** work once a provider is connected — offer them after
-  finalize in production; skip silently in sandbox (400, no provider).
-
-## Verified Tool Chain (live-tested 2026-07-12, Qonto sandbox MCP)
-
-| Tool | Status |
-|---|---|
-| `get_organization` (org IBAN, bank accounts) | ✅ |
-| `list_clients` with name/email filter | ✅ |
-| `create_quote` → public `quote_url` | ✅ |
-| `get_quote` (existing-quote entry point) | ✅ |
-| `create_client_invoice` with `terms_and_conditions` | ✅ |
-| `change_client_invoice_status` finalize | ✅ |
-| `send_client_invoice` | ✅ |
-| `create_payment_link` | ❌ in sandbox (no provider connection) — optional in production |
-
 ## Error Handling
 
 - **Client not found** → preview a `create_client` with extracted billing
   details; never create without confirmation. Include
   `tax_identification_number` (FR: SIREN) — **quote creation fails with 422
-  "`tin_number` must have a value" without it** (live-verified). If unknown,
+  "`tin_number` must have a value" without it**. If unknown,
   ask the user or fix via `update_client` and retry once.
 - **Draft invoices get a PROFORMA number** (e.g. `F-2026-003-PROFORMA`) when
   auto-numbering is on; the real number is assigned at finalize.
