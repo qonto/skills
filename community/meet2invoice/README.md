@@ -46,17 +46,6 @@ raw meeting artifact straight to a finalized, sent Qonto invoice:
    - 🇮🇹 "Deal chiuso: crea la fattura, IVA 22%, serve il codice destinatario SdI."
    - 🇪🇸 "Crea un borrador de factura con IVA 21%, pero no la emitas ni la envíes."
 
-## Production-ready
-
-Every call is a GA Qonto Business API endpoint through the official MCP, and
-the flow was validated end-to-end against the official Qonto sandbox. The
-skill documents what changes in production (SCA prompts on sensitive writes,
-multi-account IBAN selection, manual-numbering orgs, currency handling,
-FR/DE/IT e-invoicing mandates, payment links once a provider is connected) and
-handles cases beyond the happy path: existing-quote escalation, B2C vs B2B
-VAT, non-EU exports, seller small-business schemes (§19 UStG / art. 293 B CGI),
-credit notes and payment lifecycle after send.
-
 ## What this skill deliberately does NOT do
 
 - It never moves money, creates transfers, or touches payment approval.
@@ -71,7 +60,7 @@ credit notes and payment lifecycle after send.
 
 | Path | Purpose |
 |---|---|
-| `skills/meet2invoice/SKILL.md` | The skill definition (flow, gates, verified tool chain, error handling) |
+| `skills/meet2invoice/SKILL.md` | The skill definition (flow, gates, error handling) |
 | `skills/meet2invoice/references/invoicing-law.md` | Per-country VAT / e-invoicing rules used at extraction time |
 
 ---
