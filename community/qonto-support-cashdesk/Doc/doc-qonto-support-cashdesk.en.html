@@ -166,7 +166,7 @@
   <h2>🧾 The three counters</h2>
   <div class="scroll"><table>
     <tr><th>Customer says</th><th>The skill checks</th><th>Honest outcome</th></tr>
-    <tr><td>"Never received the invoice"</td><td>Invoice exists? Status? Recipient email correct on the client record?</td><td>Found → resend proposed (<code>send_client_invoice</code>, email fixed first if wrong) · no invoice → nothing to resend, said as is</td></tr>
+    <tr><td>"Never received the invoice"</td><td>Invoice exists? Status? Recipient email correct on the client record?</td><td>Found → resend proposed (<code>send_client_invoice</code>). Wrong email → pause; the user independently verifies and corrects it in Qonto, then the skill re-reads and confirms the recipient. No invoice → nothing to resend</td></tr>
     <tr><td>"The payment link expired"</td><td>Real link status (<code>get_payment_link</code>): open, expired, paid</td><td>Expired → fresh link proposed (<code>create_payment_link</code>) · already <strong>paid</strong> → flagged, no new link</td></tr>
     <tr><td>"You charged me twice"</td><td>Two credits for the same invoice: same amount, close dates — <strong>both cited with date + amount</strong></td><td>Duplicate <strong>proven</strong> → credit note proposed (<code>create_credit_note</code>) · <strong>one credit → no credit note</strong></td></tr>
   </table></div>
