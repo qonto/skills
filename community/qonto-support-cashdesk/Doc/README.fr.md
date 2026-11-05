@@ -46,7 +46,7 @@
 
 | Le client dit | Le skill vérifie | Issue honnête |
 |---|---|---|
-| « Je n'ai pas reçu ma facture » | La facture existe ? Statut ? Email destinataire correct sur la fiche client ? | Facture trouvée → renvoi proposé (email corrigé avant si besoin) · pas de facture → rien à renvoyer, dit tel quel |
+| « Je n'ai pas reçu ma facture » | La facture existe ? Statut ? Email destinataire correct sur la fiche client ? | Facture trouvée → renvoi proposé. Email incorrect → pause ; l'utilisateur le vérifie indépendamment et le corrige dans Qonto, puis le skill relit et fait confirmer le destinataire. Pas de facture → rien à renvoyer |
 | « Le lien de paiement a expiré » | Statut réel du lien (`get_payment_link`) : ouvert, expiré, payé | Expiré → nouveau lien proposé · déjà **payé** → signalé, pas de nouveau lien |
 | « Vous m'avez facturé deux fois » | Deux crédits pour la même facture : même montant, dates proches — **les deux cités** | Doublon **prouvé** → avoir proposé · **un seul crédit → pas d'avoir**, rapport de ce qui a été trouvé |
 

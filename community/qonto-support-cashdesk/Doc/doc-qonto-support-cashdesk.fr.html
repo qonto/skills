@@ -165,7 +165,7 @@
   <h2>🧾 Les trois guichets</h2>
   <div class="scroll"><table>
     <tr><th>Le client dit</th><th>Le skill vérifie</th><th>Issue honnête</th></tr>
-    <tr><td>« Je n'ai pas reçu ma facture »</td><td>La facture existe ? Statut ? Email destinataire correct sur la fiche client ?</td><td>Facture trouvée → renvoi proposé (<code>send_client_invoice</code>, email corrigé avant si besoin) · pas de facture → rien à renvoyer, dit tel quel</td></tr>
+    <tr><td>« Je n'ai pas reçu ma facture »</td><td>La facture existe ? Statut ? Email destinataire correct sur la fiche client ?</td><td>Facture trouvée → renvoi proposé (<code>send_client_invoice</code>). Email incorrect → pause ; l'utilisateur le vérifie indépendamment et le corrige dans Qonto, puis le skill relit et fait confirmer le destinataire. Pas de facture → rien à renvoyer</td></tr>
     <tr><td>« Le lien de paiement a expiré »</td><td>Statut réel du lien (<code>get_payment_link</code>) : ouvert, expiré, payé</td><td>Expiré → nouveau lien proposé (<code>create_payment_link</code>) · déjà <strong>payé</strong> → signalé, pas de nouveau lien</td></tr>
     <tr><td>« Vous m'avez facturé deux fois »</td><td>Deux crédits pour la même facture : même montant, dates proches — <strong>les deux cités date + montant</strong></td><td>Doublon <strong>prouvé</strong> → avoir proposé (<code>create_credit_note</code>) · <strong>un seul crédit → pas d'avoir</strong>, rapport de ce qui a été trouvé</td></tr>
   </table></div>

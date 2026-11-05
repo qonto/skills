@@ -58,7 +58,7 @@ Would someone use this on a Monday morning? Support inboxes fill up over the wee
 
 | Customer says | The skill checks | Honest outcome |
 |---|---|---|
-| "Never received the invoice" | Invoice exists? Status? Recipient email correct on the client record? | Found → resend proposed (email fixed first if wrong) · no invoice → nothing to resend, said as is |
+| "Never received the invoice" | Invoice exists? Status? Recipient email correct on the client record? | Found → resend proposed. Wrong email → pause; the user independently verifies and corrects it in Qonto, then the skill re-reads and confirms the recipient. No invoice → nothing to resend |
 | "The payment link expired" | Real link status (`get_payment_link`): open, expired, paid | Expired → fresh link proposed · already **paid** → flagged, no new link |
 | "You charged me twice" | Two credits for the same invoice: same amount, close dates — **both cited** | Duplicate **proven** → credit note proposed · **one credit → no credit note** |
 
