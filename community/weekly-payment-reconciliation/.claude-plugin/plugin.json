@@ -1,0 +1,12 @@
+{
+  "name": "weekly-payment-reconciliation",
+  "displayName": "Weekly payment reconciliation",
+  "version": "0.1.0",
+  "description": "Matches open client invoices against the payments that actually landed in Qonto. Marks the clear matches as paid with the invoice PDF attached as receipt, reports only the unclear cases (partial, double or unplaceable payments), and prepares friendly reminder drafts for invoices that are long overdue.",
+  "author": {
+    "name": "Moritz Heininger (snipKI)",
+    "url": "https://www.snipki.de"
+  },
+  "license": "MIT",
+  "keywords": ["reconciliation", "receivables", "invoices", "payments", "reminders"]
+}
