@@ -19,12 +19,19 @@ e-invoicing rollout per country. Scoped to Qonto's core markets: 🇫🇷 FR · 
 Decide this from the **supplier country** (your Qonto org) and the **client
 country + status**, before setting `vat_rate`.
 
+These are general rules, not a country-only decision table. Establish the
+supply type and supplier's VAT/exemption status first. Cross-border B2C
+electronic services, distance sales and other place-of-supply exceptions may
+require customer-country VAT or OSS treatment; non-EU consumer supplies need
+their own assessment. Confirm applicable exceptions and rates with the user
+or their accountant. Do not finalize an invoice while VAT treatment is unresolved.
+
 | Case | Condition | VAT rate | Mandatory mention on the invoice |
 |---|---|---|---|
 | **Domestic** | Client in the same country as the org | Standard/reduced local rate | none special |
 | **Intra-EU B2B (reverse charge)** | Client is a VAT-registered business in another EU country | **0** | reverse-charge note + **both** VAT IDs (see below) |
 | **Intra-EU B2C** | Client is a private individual in another EU country | Supplier's local rate (or OSS rules for goods/digital) | none special |
-| **Export (non-EU)** | Client outside the EU | **0** (exempt/out of scope) | "VAT exempt — export of services/goods" |
+| **Export (non-EU)** | Qualifying export or out-of-scope supply; confirm supply type and applicable conditions | **0** only when confirmed | Applicable export/out-of-scope mention |
 | **Small business** | Supplier under a small-business scheme (DE §19, etc.) | **0** | scheme note (see per-country) |
 
 **Reverse charge is the high-value case for B2B services** — most cross-border

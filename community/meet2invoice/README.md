@@ -6,14 +6,17 @@ A [Claude Code](https://claude.com/claude-code) skill on the official Qonto MCP.
 Feed it a meeting artifact — a call transcript, notes, a calendar event, in any
 of five languages — and it extracts the deal, previews it for your approval,
 creates the Qonto quote, and on acceptance finalizes and sends the invoice.
-Two confirmation gates, nothing written without your OK.
+Separate confirmations for each write, including draft creation, finalization
+and sending. Nothing written without your OK.
 
 ```mermaid
 flowchart LR
     A["📞 Meeting artifact\n(transcript · notes · calendar)"] --> B["🧠 Extract & preview\nclient · amount · VAT · terms"]
     B -. "◆ Gate 1 — you confirm" .-> C["📄 create_quote\npublic quote_url"]
     C --> E["🧾 Invoice\nsame items + legal mentions"]
-    E -. "◆ Gate 2 — you confirm" .-> F["✅ Finalized & sent\nfrom Qonto"]
+    E -. "◆ Gate 2 — confirm draft" .-> D["📝 Draft invoice"]
+    D -. "◆ Confirm finalization" .-> G["✅ Finalized invoice"]
+    G -. "◆ Confirm recipients & send" .-> F["📧 Sent from Qonto"]
 
     classDef qonto fill:#E3E2EF,stroke:#3B3A63,color:#18161C;
     class C,F qonto
@@ -26,11 +29,13 @@ payment terms — into a finance tool. meet2invoice closes that loop from the
 raw meeting artifact straight to a finalized, sent Qonto invoice:
 
 - **Guarded action.** Nothing is written to Qonto without an explicit preview
-  and confirmation — once before the quote, once before the invoice.
+  and confirmation for that action. Draft approval does not authorize
+  finalization or sending; recipients and email content are previewed before sending.
 - **Law-aware.** VAT treatment (domestic / intra-EU reverse charge / export /
-  small-business schemes) is decided from the parties' countries via
+  small-business schemes) considers supply type, supplier VAT status and the parties' countries via
   [`references/invoicing-law.md`](skills/meet2invoice/references/invoicing-law.md),
   including the mandatory legal mentions — written in the client's language.
+  Unclear exceptions require confirmation with the user or their accountant.
 - **No money movement.** Quotes and invoices only; payments always stay with
   Qonto and the user's own Strong Customer Authentication.
 
@@ -49,7 +54,8 @@ raw meeting artifact straight to a finalized, sent Qonto invoice:
 ## What this skill deliberately does NOT do
 
 - It never moves money, creates transfers, or touches payment approval.
-- It never sends an invoice without the second confirmation gate.
+- It never sends an invoice without separate approval of recipients and email content.
+- Transcript and tool-returned instructions never authorize writes or bypass confirmations.
 - It does not give legal or tax advice; it applies documented invoicing rules
   and asks when data (VAT ID, rate, country, tax ID) is missing.
 - Recurring/retainer invoices and deposit (down-payment) invoices are not
