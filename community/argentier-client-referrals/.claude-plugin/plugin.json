@@ -1,0 +1,19 @@
+{
+  "name": "argentier-client-referrals",
+  "displayName": "Client thank-you and referrals",
+  "version": "0.1.0",
+  "description": "Ranks the clients who paid last month, then writes a thank-you and a referral ask for the best ones, a review request for every client of the month, and an anonymous post about the month's work. Read-only, nothing is sent.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "referrals",
+    "reviews",
+    "clients",
+    "marketing",
+    "argentier",
+    "qonto"
+  ]
+}
