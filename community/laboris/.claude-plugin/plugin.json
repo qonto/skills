@@ -1,0 +1,13 @@
+{
+  "name": "laboris",
+  "displayName": "French employment law",
+  "version": "0.1.0",
+  "description": "French employment law for Qonto customers, sourced by Laboris: what hiring or letting someone go requires and costs, from the formalities and the collective agreement to the severance and the cash it needs. Every rule cites the article, decision or official page it comes from. Read-only on Qonto.",
+  "author": {
+    "name": "Laboris",
+    "url": "https://laboris.fr"
+  },
+  "homepage": "https://laboris.fr",
+  "license": "MIT",
+  "keywords": ["laboris", "employment-law", "hr", "hiring", "dismissal", "collective-agreement", "france"]
+}
