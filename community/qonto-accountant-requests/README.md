@@ -8,6 +8,8 @@ transfer") and get back:
 - what is still missing, with the next action for each item;
 - a draft reply to review and send yourself.
 
+![Demo with fabricated data](assets/demo.gif)
+
 The skill is read-only: it never modifies your Qonto account and never sends
 anything.
 
