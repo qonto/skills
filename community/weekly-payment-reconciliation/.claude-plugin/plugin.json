@@ -1,0 +1,12 @@
+{
+  "name": "weekly-payment-reconciliation",
+  "displayName": "Weekly payment reconciliation",
+  "version": "0.1.0",
+  "description": "Matches open client invoices against completed, same-currency Qonto payments. Proposes unique matches, books verified pairs only with current-run approval, reports uncertain cases, and prepares copyable reminder text in chat without accessing mail or CRM services.",
+  "author": {
+    "name": "Moritz Heininger (snipKI)",
+    "url": "https://www.snipki.de"
+  },
+  "license": "MIT",
+  "keywords": ["reconciliation", "receivables", "invoices", "payments", "reminders"]
+}
