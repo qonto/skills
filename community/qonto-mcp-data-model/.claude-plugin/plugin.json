@@ -1,0 +1,10 @@
+{
+  "name": "qonto-mcp-data-model",
+  "version": "0.1.0",
+  "description": "Data model reference for the Qonto MCP server. Use when reading or writing Qonto data through MCP tools (transactions, invoices, clients, cards, memberships, statements, cash flow categories) — to know entity shapes, required fields, enums, pagination formats, money representations, and cross-tool…",
+  "author": {
+    "name": "Henri Lepic",
+    "url": "https://github.com/ritoon"
+  },
+  "license": "MIT"
+}
