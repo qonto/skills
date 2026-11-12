@@ -1,0 +1,15 @@
+{
+  "_comment": "Auto-generated on the first launch (from FEC/invoice deductions), validated by the user. Do not version with real data.",
+  "client_rules": [
+    {
+      "pattern": "refint[_-]?\\d{3,4}",
+      "category": "franchise_subcontractor",
+      "foreign_supplier": false,
+      "_note": "GENERIC example of an internal-reference format — replace with the pattern actually seen in the labels"
+    }
+  ],
+  "supplier_aliases": {
+    "_note": "token seen in the labels -> canonical token. Generic example: payments under the person's name, invoices under their company's name.",
+    "firstnamelastname": "companyname"
+  }
+}
