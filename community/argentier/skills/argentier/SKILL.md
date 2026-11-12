@@ -7,7 +7,7 @@ permissions:
     qonto: [get_organization, list_bank_accounts, list_transactions, list_cash_flow_categories]
   network: []
   env: []
-  tools: [Read]
+  tools: [Write]
 ---
 
 # Find savings in my spending
@@ -26,13 +26,13 @@ Using the Qonto MCP, analyse my outflows over the last 30 days, compare them wit
    - **One-off**: travel, large isolated purchases. Excluded from the run-rate.
    Fees come as separate lines: `operation_type: qonto_fee` with `reference: fx_card` is a foreign-exchange fee, `atm` a cash withdrawal fee. A `local_currency` other than EUR means a foreign-currency payment.
 
-4. **Compute the run-rate.** A line is recurring when the same counterparty appears in both windows, or is a direct debit, or is a known subscription. Normalise each recurring line to EUR per month from its billing cadence: a monthly charge counts once, even if it shows up twice in a window. Report the controllable run-rate per month and per year, and its change versus the previous window.
+4. **Compute the run-rate.** A line is recurring when the same counterparty appears in both windows, or is a direct debit, or is a known subscription. Normalise each recurring line to EUR per month from its billing cadence: a monthly charge counts once, even if it shows up twice in a window. Report the controllable run-rate per month and per year, and its change versus the previous window. Annual plans billed in other months are invisible in these windows: say so once.
 
 5. **Run the five detectors.**
    - **Duplicate tools**: two paid tools for the same job (two AI assistants, two CRMs, two LinkedIn automation tools, two email senders, two video tools), and two plans billed by the same vendor in the same month. Recommend keeping one and say which and why.
    - **Ghost subscriptions**: small recurring amounts with no visible use, trials that turned into recurring charges. Ask "do you still use X?", never decide for the user.
-   - **New this month**: counterparties present now and absent in the previous window. Billing dates drift by a few days, so look 7 days further back before calling one new. Verdict: OK, to watch, probable duplicate.
-   - **Price increases**: same counterparty, amount up more than 10 percent versus the previous window.
+   - **New this month**: counterparties present now and absent in the previous window. Billing dates drift by a few days, and quarterly or annual plans bill once per period, so before calling one new, look for it 7 days further back and in the current window shifted 3 and 12 months earlier, widened by 7 days on each side (two more `list_transactions` windows, paginated the same way). Found there, it is a quarterly or annual renewal: count it in the run-rate at its cadence, not as new. Verdict: OK, to watch, probable duplicate.
+   - **Price increases**: same counterparty, amount up more than 10 percent versus the previous window. For foreign-currency lines compare `local_amount`, so an exchange-rate move is not read as a price increase. Seat changes and usage-based billing (cloud, ads, APIs) are flagged "to check", not called an increase.
    - **FX leakage**: sum of FX fees and number of foreign-currency subscriptions. Suggest paying them in their currency or annual billing.
 
 6. **Decide line by line.** For every controllable line: **keep** (critical or mandatory), **optimise** (lower tier, fewer seats, annual billing, renegotiation) or **cut** (duplicate or unused). Give a concrete cheaper alternative when one exists, with an indicative price clearly labelled "indicative, check current pricing". Annual billing is proposed only on lines the user keeps.
