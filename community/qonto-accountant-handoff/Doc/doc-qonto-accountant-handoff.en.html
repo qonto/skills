@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-accountant-handoff — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon · Agent Skill</span>
+  <h1>qonto-accountant-handoff</h1>
+  <p class="sub">The monthly handoff to your accountant, minus the chore — the complete pack, prepared from your Qonto account.</p>
+  <div class="badges">
+    <span>📚 Zero writes on Qonto</span><span>🗂 YYYY/MM Drive filing</span>
+    <span>✉️ Gmail draft — never auto-sent</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>Every month, the same message: <em>"could you send me March's documents?"</em> — followed by an evening of digging through emails and downloads. The skill builds the complete handoff pack straight from the Qonto account:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Statements &amp; invoices, gathered</h4><p>The period's official statements + every client and supplier invoice, with statuses.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Receipt completeness report</h4><p>Each transaction checked against its attachments: ✅ attached · ⚠️ missing · ➖ not needed — with the precise missing list.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Annotated, never booked</h4><p>Labels, VAT, factual notes ("this refund corresponds to…") — no accounting entry is ever invented.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>Letter + organized filing</h4><p>The month in ten lines, the attention points, the questions; a YYYY/MM Drive tree + a Gmail draft.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>It's literally the first Monday of the month.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td><b>Works for every Qonto country</b> — statements, invoices and receipts are universal. Local tax remarks only when detected, never invented rules</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>A closed month</b></td><td>Statements only exist once the month is over; in-progress month → partial pack, stated plainly</td><td>ℹ️</td></tr>
+    <tr><td><b>Google Drive MCP</b></td><td>For the YYYY/MM filing tree — otherwise a structured local pack (markdown + CSV)</td><td>⭕ optional</td></tr>
+    <tr><td><b>Gmail MCP</b></td><td>For the recap email draft to the firm — otherwise the letter stays in the pack</td><td>⭕ optional</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>Month not closed yet</strong>: a partial pack, clearly labelled, statements listed as "pending month close" — never presented as complete</li>
+    <li><strong>Missing receipts</strong>: the headline of the letter, not a footnote — precise list (date · counterparty · amount) + a pointer to <code>qonto-receipt-hunter</code></li>
+    <li><strong>Untagged VAT</strong>: the VAT view is announced as a floor, with the count of untagged debits disclosed</li>
+    <li><strong>Refunds and internal transfers</strong>: matched and named factually ("reverses the May 12 payment"), never allocated to an account</li>
+    <li><strong>No Drive/Gmail</strong>: the same pack lands as a structured local folder — the skill says so and carries on</li>
+    <li>Empty account or an account opened mid-month: the skill says what exists and what doesn't · pagination ≤ 50 everywhere · card settlement delays (<code>emitted_at</code> vs <code>settled_at</code>) handled at month boundaries</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Zero writes on Qonto:</b> on the Qonto side, everything is a read — nothing to approve. The only two "writes" happen on the user's side: a folder filed on <b>their</b> Google Drive (announced first), and a <b>draft</b> in <b>their</b> Gmail — the user always hits send themselves. And the skill does not do the accounting: factual annotation only, <b>the accountant stays the professional</b>.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🗂 What's in the pack</h2>
+  <div class="scroll"><table>
+    <tr><th>Item</th><th>MCP source</th><th>Shape in the pack</th></tr>
+    <tr><td><b>Handoff letter</b></td><td>Drafted by the skill (from the data it read)</td><td><code>00-handoff-letter</code> — markdown + Gmail draft body</td></tr>
+    <tr><td><b>Bank statements</b></td><td><code>list_statements</code> + <code>get_statement</code></td><td><code>01-statements</code> — official PDFs per account</td></tr>
+    <tr><td><b>Client invoices</b></td><td><code>list_client_invoices</code></td><td><code>02-client-invoices</code> — list + statuses (paid / pending)</td></tr>
+    <tr><td><b>Supplier invoices</b></td><td><code>list_supplier_invoices</code></td><td><code>03-supplier-invoices</code> — list + statuses</td></tr>
+    <tr><td><b>Receipt status</b></td><td><code>list_transactions</code> + <code>list_transaction_attachments</code></td><td><code>04-receipts-status</code> — coverage table + <b>missing list</b> (CSV)</td></tr>
+    <tr><td><b>Annotated transactions</b></td><td><code>list_transactions</code> (labels, VAT, factual notes)</td><td>CSV/markdown attached to the status</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables: pack contents, coverage, missing list, the letter</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Google Drive folder</b></td><td><code>Accounting/YYYY/MM/</code> tree: letter, statements, invoices, receipt status</td><td>When the Drive MCP is detected — filing announced first</td></tr>
+    <tr><td><b>Gmail draft</b></td><td>Recap email to the firm, letter as body, link to the folder</td><td>When the Gmail MCP is detected — <strong>never sent by the skill</strong></td></tr>
+    <tr><td><b>Local pack</b></td><td>Structured folder of markdown + CSV, described file by file</td><td>Without Drive/Gmail — forward it however you like</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the monthly chore → the pack building itself (statements, invoices, missing receipts listed) → the factual annotations and the letter → <strong>the Drive tree filling up + the Gmail draft</strong> → the local fallback. It runs live on a real production account.</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Automatic chaining with <strong>qonto-receipt-hunter</strong></td><td>Low</td><td>The missing list goes straight to the receipt chase before the handoff</td></tr>
+    <tr><td><strong>qonto-monthly-close</strong> verdict embedded in the letter</td><td>Low</td><td>The closed month's quality check, as a badge</td></tr>
+    <tr><td>Normalized CSV export for the firm's software</td><td>Medium</td><td>The format changes, the facts don't</td></tr>
+    <tr><td>Start-of-month reminder (calendar MCP detected dynamically)</td><td>Low</td><td>Optional multi-MCP enrichment, in the spirit of the kickoff</td></tr>
+    <tr><td>Pack history + open-question tracking</td><td>Medium</td><td>March's question doesn't get lost again in June</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>The skill does not do the accounting</strong>: no journal entries, no chart-of-accounts allocation, no tax advice — factual annotation only, the accountant validates everything</li>
+    <li>Nothing leaves without the user: the Gmail recap is a draft, the Drive filing is announced, no data flows to an MCP that wasn't detected and named</li>
+    <li>A pack with missing pieces is <strong>never</strong> presented as complete — the missing list leads the letter</li>
+    <li>Masked IBANs (last 4 digits) · pagination ≤ 50 everywhere · <code>403</code> on <code>list_cash_flow_categories</code> → label fallback</li>
+  </ul>
+</section>
+
+<footer>qonto-accountant-handoff · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-accountant-handoff.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
