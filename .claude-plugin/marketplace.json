@@ -92,6 +92,21 @@
       "license": "MIT"
     },
     {
+      "name": "meet2invoice",
+      "source": "./community/meet2invoice",
+      "description": "Turn a sales meeting artifact (transcript, notes, calendar event) into a Qonto quote and, on acceptance, a finalized invoice sent from Qonto \u2014 with VAT handled per country and a confirmation before every write.",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "Dr. Martin Kaiser \u2013 Kaiser Data & AI",
+        "url": "https://kaiser-data-ai.de"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "nexyzen-clearing-scout",
       "source": "./community/nexyzen-clearing-scout",
       "description": "Find money frozen in unpaid invoices and settle it without bank transfers. Builds a clearing ledger from Qonto client and supplier invoices, detects bilateral set-off opportunities (counterparties that are both client and supplier), previews multilateral clearing cycles across the network, and\u2026",
@@ -111,6 +126,21 @@
       "source": "./community/qonto-asset-registry",
       "description": "Read-only fixed-asset register and insurance inventory built from Qonto transactions and supplier invoices.",
       "version": "0.1.1",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
+      "name": "qonto-board-pack",
+      "source": "./community/qonto-board-pack",
+      "description": "Monthly investor and banker update generator for Qonto accounts. From one prompt, builds the full board pack \u2014 the month's numbers (cash in, spend by category, end-of-month cash, burn & runway), month-over-month and rolling-year comparisons, auto-detected highlights (big contract collected, new\u2026",
+      "version": "0.1.0",
       "category": "Community",
       "tags": [
         "community"
@@ -152,6 +182,21 @@
       "license": "MIT"
     },
     {
+      "name": "qonto-chargeback-defender",
+      "source": "./community/qonto-chargeback-defender",
+      "description": "End-to-end payment dispute handling for Qonto accounts. Detects open chargebacks (via a Stripe/PayPal MCP when connected, otherwise by spotting clawback debits in Qonto transactions), finds the matching debit, assembles a sourced defense file (Shopify order, proof of delivery, Gmail customer\u2026",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "qonto-counterparty-watch",
       "source": "./community/qonto-counterparty-watch",
       "description": "Legal-health radar for the clients and suppliers of a Qonto account. Ranks every counterparty by real exposure (unpaid client invoices, supplier commitments, recurring spend), measures actual payment delays against due dates, and \u2014 when a Datagouv MCP is available \u2014 cross-checks French public\u2026",
@@ -171,6 +216,21 @@
       "source": "./community/qonto-crew-onboard",
       "description": "One-sentence financial onboarding (and offboarding) of an employee on Qonto. Reads a per-role policy defined once with the user (card caps, online-only, team), then on \"Alex starts Monday as a developer\" it invites the member, creates the team if new, and prepares a capped card request that\u2026",
       "version": "0.1.1",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
+      "name": "qonto-einvoice-ready",
+      "source": "./community/qonto-einvoice-ready",
+      "description": "French e-invoicing readiness audit for Qonto accounts. From 2026-09-01 every French VAT-registered company must be able to RECEIVE electronic invoices (issuing becomes mandatory 2026-09-01 for large companies and mid-caps, 2027-09-01 for SMEs). The skill scores the account's readiness \u2014 client\u2026",
+      "version": "0.1.0",
       "category": "Community",
       "tags": [
         "community"
@@ -257,6 +317,21 @@
       "license": "MIT"
     },
     {
+      "name": "qonto-reimburse-batch",
+      "source": "./community/qonto-reimburse-batch",
+      "description": "Batch expense reimbursement for teams on Qonto. Checks claims against a finance-controlled verified recipient list, receipts, duplicates and expense policy; prepares one pending grouped transfer request after explicit confirmation. Review every destination and amount in Qonto before SCA approval.",
+      "version": "0.1.0",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "qonto-rgpd-register",
       "source": "./community/qonto-rgpd-register",
       "description": "GDPR Article 30 register drafted from a Qonto account's spending. Detects the SaaS tools that process personal data (CRM, email marketing, analytics, AI, cloud, payroll, support) in the debits, classifies them by processing activity (purpose, typical data categories, EU / non-EU vendor location)\u2026",
@@ -306,6 +381,21 @@
       "source": "./community/qonto-supplier-detective",
       "description": "Forensic audit of supplier invoices and payments on a Qonto account. Sweeps every supplier invoice and every debit to find money leaking out \u2014 duplicate invoices, invoices paid twice, invoice-vs-payment amount gaps, and the highest-value security signal, a known supplier whose payment IBAN suddenly\u2026",
       "version": "0.1.1",
+      "category": "Community",
+      "tags": [
+        "community"
+      ],
+      "author": {
+        "name": "seb",
+        "url": "https://github.com/SebDeNoocode"
+      },
+      "license": "MIT"
+    },
+    {
+      "name": "qonto-support-cashdesk",
+      "source": "./community/qonto-support-cashdesk",
+      "description": "Customer-support billing desk for Qonto accounts. Takes a customer billing complaint (invoice not received, expired payment link, double charge), from Intercom or pasted into the chat, checks the facts against Qonto invoices, payment links and transactions, then proposes the fix (resend the invoice, a fresh payment link, or a credit note when a double charge is proven) and drafts the customer reply. Every write is confirmed by the user first.",
+      "version": "0.1.0",
       "category": "Community",
       "tags": [
         "community"
