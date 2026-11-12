@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-money-calendar — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic</span>
+  <h1>qonto-money-calendar</h1>
+  <p class="sub">La trésorerie dans l'agenda, dans les deux sens — les échéances deviennent des événements, les jours tagués deviennent des factures.</p>
+  <div class="badges">
+    <span>📆 2 sens : agenda ↔ Qonto</span><span>🔔 Rappels J-3, montant dans le titre</span>
+    <span>🧾 Factures en brouillon uniquement</span><span>✋ TJM jamais deviné</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>L'argent vit dans des <strong>échéances</strong>, pas dans des listes. Et toi, tu vis dans ton agenda — pas dans un export comptable. Le skill fait de Google Calendar le tableau de bord de ton mois financier :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Sens 1 — pousser</h4><p>Factures fournisseurs à payer, factures clients à encaisser, récurrences détectées sur 24-36 mois — montant dans le titre, rappel J-3.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Sens 2 — lire</h4><p>Les jours tagués <code>[Client]</code> dans l'agenda sont comptés → facture de fin de mois (jours × TJM confirmé) en brouillon dans Qonto.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Récap avant d'écrire</h4><p>Aucun événement créé sans récapitulatif confirmé ; relances idempotentes — mise à jour, jamais de doublons.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>TJM jamais deviné</h4><p>Déduit des factures passées et du catalogue produits, source affichée, puis confirmé explicitement — à chaque fois.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>MCP Google Calendar</b></td><td><strong>Requis pour les 2 sens.</strong> Absent : sens 1 dégradé (échéancier en tableau dans la conversation), sens 2 indisponible — et le skill le dit</td><td>⭕ fortement recommandé</td></tr>
+    <tr><td><b>Pays</b></td><td><strong>Universel</strong> — dates de factures et récurrences depuis l'historique, aucune règle fiscale locale inventée. Échéancier fiscal français complet → skill <code>qonto-tax-pilot</code></td><td>ℹ️ tous pays Qonto</td></tr>
+    <tr><td><b>Historique 24-36 mois</b></td><td>Nécessaire pour voir les cadences annuelles ; en dessous, dégradation honnête</td><td>⭕</td></tr>
+    <tr><td><b>Convention de tag <code>[Client]</code></b></td><td>Pour le sens 2 : un événement « [Acme] sprint sur site » = 1 jour facturable (expliquée au premier usage)</td><td>⭕ sens 2 seulement</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Pas de MCP Google Calendar ?</strong> L'échéancier sort en tableau markdown, le sens 2 se déclare indisponible — jamais de simulation</li>
+    <li><strong>Historique court ?</strong> Les cadences annuelles sont signalées comme peu fiables (elles exigent 24-36 mois), les mensuelles restent détectées ; tout ce qui est estimé est marqué 🟡</li>
+    <li><strong>Client tagué introuvable dans Qonto ?</strong> Le skill propose les candidats proches et demande — il ne crée jamais un client tout seul</li>
+    <li><strong>Pas de facture passée ni de produit « jour » au catalogue ?</strong> Le TJM est demandé directement, jamais supposé par défaut</li>
+    <li><strong>Relance après modification ?</strong> Les événements portant le marqueur <code>[qonto-money-calendar]</code> sont mis à jour en place, jamais dupliqués</li>
+    <li>Compte vide, zéro facture : le sens 1 dit ce qu'il a trouvé (rien), le sens 2 fonctionne quand même depuis l'agenda · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Deux écritures, deux verrous :</b> les événements d'agenda n'existent qu'après le récapitulatif confirmé dans la conversation ; la facture Qonto n'existe qu'en <b>brouillon</b>, après confirmation du TJM et des lignes. Le skill ne déplace aucun argent et n'envoie rien : payer se fait dans l'app Qonto (SCA), envoyer la facture se fait après relecture. <b>C'est le modèle de sécurité, pas une limitation.</b></p>
+  </div>
+</section>
+
+<section>
+  <h2>📆 Ce qui atterrit dans l'agenda (sens 1)</h2>
+  <div class="scroll"><table>
+    <tr><th>Type d'événement</th><th>Source Qonto</th><th>Exemple de titre (inventé)</th><th>Rappel</th></tr>
+    <tr><td>Facture fournisseur à payer</td><td><code>list_supplier_invoices</code> (due date)</td><td>💸 Fournisseur Nimbus — 890 €</td><td>J-3</td></tr>
+    <tr><td>Facture client à encaisser</td><td><code>list_client_invoices</code> (impayées)</td><td>💰 Facture INV-2026-042 à encaisser — 4 800 €</td><td>J-3</td></tr>
+    <tr><td>Récurrence mensuelle</td><td>Historique 24-36 mois</td><td>💸 Loyer — 1 200 €</td><td>J-3</td></tr>
+    <tr><td>Récurrence trimestrielle / annuelle</td><td>Historique 24-36 mois</td><td>💸 Assurance annuelle — 640 € (estimé)</td><td>J-3</td></tr>
+    <tr><td>Prélèvement fiscal détecté</td><td>Historique (prélèvements)</td><td>💸 Prélèvement TVA — ~2 100 € (estimé)</td><td>J-3</td></tr>
+  </table></div>
+  <p><em>Tous les montants ci-dessus sont des exemples inventés. Les montants issus de récurrences sont marqués « estimé » dans l'événement.</em></p>
+</section>
+
+<section>
+  <h2>🏷 La convention de tag (sens 2)</h2>
+  <div class="scroll"><table>
+    <tr><th>Dans le titre de l'événement</th><th>Compté comme</th></tr>
+    <tr><td><code>[Acme] sprint sur site</code></td><td>1 jour facturable pour Acme</td></tr>
+    <tr><td>Événement <code>[Acme]</code> posé sur 3 jours</td><td>3 jours</td></tr>
+    <tr><td><code>[Acme] 0.5 atelier</code></td><td>0,5 jour</td></tr>
+    <tr><td>Sans crochets</td><td>Ignoré (pas facturable)</td></tr>
+  </table></div>
+  <p>Pas d'outil de plus, pas de time-tracker : ton agenda <strong>est</strong> le time-tracker. Fin du mois, le skill compte, propose le TJM avec sa source, attend ta confirmation — puis crée le brouillon.</p>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown : échéancier, récap avant écriture, comptage des jours, résumé de facture</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Google Calendar</b></td><td>Événements datés, montant dans le titre, rappel J-3, marqueur anti-doublons</td><td>Si le MCP Calendar est présent <strong>et</strong> le récap confirmé</td></tr>
+    <tr><td><b>Facture Qonto</b></td><td><code>create_client_invoice</code> en <strong>brouillon</strong>, section Facturation</td><td>Sens 2, après confirmation TJM + lignes</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le problème (l'argent vit dans des échéances) → sens 1 : le récap puis l'agenda qui se peuple → la convention <code>[Client]</code> et le TJM confirmé → <strong>split-screen agenda / Qonto : 12 jours tagués → facture en brouillon</strong> → wrap-up. Le script détaillé de tournage est conservé en interne (hors dépôt).</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Rapprochement au fil de l'eau : marquer ✅ les événements dont le paiement est passé en banque</td><td>Moyen</td><td>Réutilise <code>list_transactions</code> + le marqueur d'événement</td></tr>
+    <tr><td>Multi-calendriers : un agenda « Argent » dédié, séparé de l'agenda perso</td><td>Faible</td><td>Simple option à la création</td></tr>
+    <tr><td>Échéancier fiscal estimé complet dans l'agenda</td><td>Faible</td><td>Cross-skill : <code>qonto-tax-pilot</code> calcule, ce skill pousse</td></tr>
+    <tr><td>Devis avant facture pour les nouveaux clients tagués</td><td>Faible</td><td><code>create_quote</code> existe côté MCP</td></tr>
+    <tr><td>Récap hebdo « ta semaine d'argent » chaque lundi</td><td>Moyen</td><td>Le rituel du lundi matin, prêt à lire</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Aucun événement créé sans récapitulatif confirmé</strong> dans la conversation en cours ; relances idempotentes (mise à jour des événements marqués, pas de doublons)</li>
+    <li><strong>Le TJM n'est jamais deviné</strong> : déduit de l'historique puis confirmé explicitement, à chaque fois</li>
+    <li>Factures créées via MCP = <strong>réelles</strong> → toujours en brouillon, relecture avant envoi ; répétitions sur client fictif + brouillon + <code>delete_client_invoice</code></li>
+    <li>Montants estimés (récurrences) toujours marqués « estimé » — jamais présentés comme engagés</li>
+    <li>Le skill ne déplace aucun argent : payer reste dans l'app Qonto (SCA), envoyer une facture reste une décision explicite</li>
+    <li>IBAN masqués · pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<footer>qonto-money-calendar · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-money-calendar.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
