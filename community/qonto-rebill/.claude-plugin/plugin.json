@@ -1,0 +1,10 @@
+{
+  "name": "qonto-rebill",
+  "version": "0.1.0",
+  "description": "Recovers billable expenses from a Qonto account. Finds client-attributable transactions (client-named Qonto labels, teams, or history-assisted interactive attribution), groups them by client and period, inventories the receipts already attached to each transaction, explains the French \"disbursement…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
