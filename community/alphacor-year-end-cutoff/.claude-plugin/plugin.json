@@ -1,0 +1,20 @@
+{
+  "name": "alphacor-year-end-cutoff",
+  "displayName": "Year-end cut-off file",
+  "version": "0.1.0",
+  "description": "Builds the year-end cut-off file for the accountant from the Qonto account: prepaid expenses, invoices not received, revenue invoiced in advance, revenue to invoice, doubtful receivables and bank position at closing, each with its evidence. Read-only, preview before closing or final after.",
+  "author": {
+    "name": "Alexandre Cornu (AlphaCor)",
+    "url": "https://github.com/freeman20606-rgb"
+  },
+  "homepage": "https://alphacor.fr",
+  "license": "MIT",
+  "keywords": [
+    "closing",
+    "year-end",
+    "cut-off",
+    "accountant",
+    "france",
+    "qonto"
+  ]
+}
