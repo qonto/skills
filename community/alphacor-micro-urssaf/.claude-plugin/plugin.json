@@ -1,0 +1,21 @@
+{
+  "name": "alphacor-micro-urssaf",
+  "displayName": "Micro-entrepreneur URSSAF declaration",
+  "version": "0.1.0",
+  "description": "Prepares a French micro-entrepreneur's URSSAF declaration from cash actually received: amounts per activity box, refunds and personal top-ups excluded, estimated contributions, deadline, and the micro-enterprise and VAT franchise thresholds with the projected crossing month. Read-only.",
+  "author": {
+    "name": "Alexandre Cornu (AlphaCor)",
+    "url": "https://github.com/freeman20606-rgb"
+  },
+  "homepage": "https://alphacor.fr",
+  "license": "MIT",
+  "keywords": [
+    "micro-entrepreneur",
+    "urssaf",
+    "auto-entrepreneur",
+    "declaration",
+    "vat-franchise",
+    "france",
+    "qonto"
+  ]
+}
