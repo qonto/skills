@@ -1,0 +1,19 @@
+{
+  "name": "argentier-dormant-clients",
+  "displayName": "Dormant client revival",
+  "version": "0.1.0",
+  "description": "Finds recurring jobs coming due and clients gone quiet from 24 months of invoices, ranks them by revenue at stake, writes a message for each and prepares the renewal quote, created unsent after confirmation.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "win-back",
+    "maintenance",
+    "clients",
+    "relance",
+    "argentier",
+    "qonto"
+  ]
+}
