@@ -7,7 +7,7 @@ permissions:
     qonto: [get_organization, list_bank_accounts, list_transactions, list_client_invoices, list_supplier_invoices]
   network: []
   env: []
-  tools: [Read]
+  tools: []
 ---
 
 # How much can I pay myself
@@ -18,17 +18,17 @@ Using the Qonto MCP, tell me how much I can safely pay myself this month and eac
 
 1. **Profile.** `get_organization` for legal form and country. Ask in one message only what Qonto cannot know: tax regime (micro-entreprise, sole proprietorship at income tax, company at corporate tax), for companies whether the founder is a majority manager of a SARL/EURL or the president of a SAS/SASU, fiscal year end, existing shareholder current account balance, and optionally the founder's monthly personal need. Outside France, compute steps 2 to 5 and skip step 6.
 
-2. **Available cash.** `list_bank_accounts`: sum the operating accounts. Accounts named or used as savings or tax reserves are shown apart and excluded unless the user says otherwise.
+2. **Available cash.** `list_bank_accounts`: sum the operating accounts, each at the lower of `balance` and `authorized_balance`, which already deducts pending card payments. If balances are missing (the member lacks the permission to read them), stop and say so: never size a payout on a missing or zero balance. Accounts named or used as savings or tax reserves are shown apart and excluded unless the user says otherwise.
 
 3. **Commitments over the next 8 weeks.**
    - Supplier invoices still to pay. `list_supplier_invoices` has no "unpaid" status: query `to_review`, `to_approve`, `awaiting_payment`, `pending` and `scheduled` separately (`per_page: "25"`). For each status, follow `meta.next_page` until it is null; deduplicate invoices by ID. Keep those due within 8 weeks and net credit notes (`is_credit_note`) against the same supplier. Never skip an invoice solely because `matched_transactions` is non-empty: a linked payment does not prove full settlement. Deduct only amounts verified as settled through the declared read tools, keeping any remaining debt reserved. If settlement or the remaining amount cannot be verified, reserve the full invoice amount, flag the uncertainty and ask the user.
-   - Recurring outflows learned from 6 months of `list_transactions` (`side: debit`, `operation_type: ["direct_debit", "transfer"]`, `per_page: "25"`), plus card subscriptions from the last 2 months of card debits. For each account and history query, fetch every page within the requested period until `meta.next_page` is null; deduplicate transactions by ID. Identify the same counterparty, amount within 15 percent, regular monthly or quarterly interval. Typical: payroll, URSSAF and other social funds, rent, loan instalments, leasing, insurance, subscriptions. Project their next occurrences over 8 weeks.
-   - Tax payments visible in history (DGFIP: VAT, corporate tax instalments): next occurrence at the median of the last 3 amounts, labelled approximate.
+   - Recurring outflows learned from 13 months of `list_transactions` (`side: debit`, `operation_type: ["direct_debit", "transfer"]`, `per_page: "25"`), plus card subscriptions from the last 2 months of card debits. For each account and history query, fetch every page within the requested period until `meta.next_page` is null; deduplicate transactions by ID. Identify the same counterparty, amount within 15 percent, regular monthly or quarterly interval. Typical: payroll, URSSAF and other social funds, rent, loan instalments, leasing, insurance, subscriptions. A charge seen once 11 to 13 months ago (annual insurance, an annual software plan) recurs 12 months later. Project their next occurrences over 8 weeks.
+   - Tax payments (DGFIP). VAT at the monthly or quarterly rhythm seen in history, at the median of the last 3 amounts. In France, also the dated payments whose amounts vary too much to form a series: corporate tax instalments on 15 March, June, September and December, the corporate tax balance on the 15th of the fourth month after the fiscal year end from step 1 (15 May for a December year end) and CFE on 15 December. Reserve each one due within 8 weeks when the 13-month history shows a matching DGFIP payment or the user confirms it, at the last matching amount. All tax amounts are labelled approximate.
    - Existing owner draws or founder salary are excluded from commitments: they are what we are sizing.
 
 4. **Safety buffer.** One month of recurring fixed outflows by default. The user can change it.
 
-5. **Likely inflows and the two answers.** From `list_client_invoices` (`filter_status: ["unpaid"]`, `per_page: "25"`), count only invoices due within 4 weeks, at 85 percent of their amount, and nothing that is already more than 60 days late. If the business does not invoice from Qonto but money comes in every month, say so and ask for the payments already confirmed for the next 4 weeks; never project them yourself.
+5. **Likely inflows and the two answers.** From `list_client_invoices` (`filter_status: ["unpaid"]`, `exclude_imported: false` so invoices imported from another tool count, `per_page: "25"`, following `meta.next_page` until it is null), count only invoices due within 4 weeks, at 85 percent of their amount, and nothing that is already more than 60 days late. If the business does not invoice from Qonto but money comes in every month, say so and ask for the payments already confirmed for the next 4 weeks; never project them yourself.
    - **This month** = available cash - commitments (8 weeks) - tax provisions - buffer + likely inflows (4 weeks). Floor at zero.
    - **Next quarter, per month** = average monthly operating cash flow over the last 6 months (excluding one-offs and current founder pay) x 0.7. Read it from month-end balances rather than every transaction: one `list_transactions` call per month end (`per_page: "1"`, `sort_by: "settled_at:desc"`, `settled_at_to` set to that day) returns the `settled_balance`. The month-to-month change, plus founder pay (transfers to the founder's own accounts) and minus one-offs, is the operating cash flow.
    - Compare with the founder's personal need if given.
