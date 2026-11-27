@@ -1,0 +1,19 @@
+{
+  "name": "argentier-upsell",
+  "displayName": "Upsell finder",
+  "version": "0.1.0",
+  "description": "Measures which offers clients buy together or next, and how long after, from 24 months of invoice lines, lists the clients who bought one but not its complement, times the offer and writes it for each. Read-only.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "upsell",
+    "cross-sell",
+    "clients",
+    "ventes additionnelles",
+    "argentier",
+    "qonto"
+  ]
+}
