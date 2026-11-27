@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-shopify-bridge — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Hackathon Qonto × Anthropic · Skill #10</span>
+  <h1>qonto-shopify-bridge</h1>
+  <p class="sub">Ce que la boutique annonce vs ce que la banque encaisse — la réconciliation e-commerce de ton compte Qonto.</p>
+  <div class="badges">
+    <span>🌉 Multi-MCP : Qonto + Shopify</span><span>🔒 0 écriture — lecture pure</span>
+    <span>📦 Payouts groupés &amp; délais J+2/J+3 gérés</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Le pitch</h2>
+  <p>Tout marchand Shopify vit le même angle mort : les <strong>ventes brutes</strong> dans la boutique, les <strong>payouts nets</strong> sur le compte — et entre les deux, des frais, des remboursements, des délais. Le skill rapproche les deux côtés :</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Cadence des payouts</h4><p>Le rythme de chaque PSP (Shopify, Stripe, PayPal, SumUp…) appris depuis l'historique — toute rupture devient une alerte : versement manquant ou en retard.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Frais réels vs annoncés</h4><p>Taux effectif calculé payout par payout : (brut − net) ÷ brut, comparé au tarif de ton plan si tu l'indiques. Jamais de barème inventé.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Remboursements &amp; chargebacks</h4><p>Remboursé côté boutique mais pas répercuté côté compte (ou l'inverse) : détecté, documenté, référencé.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>La vraie marge</h4><p>Net encaissé par période après toutes les commissions — pas le chiffre flatteur du dashboard boutique.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Le rapport type : « <strong>14 payouts attendus, 13 reçus, 1 en retard de 4 jours ; frais réels 2,9 % + 0,30 € conformes ; net encaissé du mois : X €</strong> ».</p>
+</section>
+
+<section>
+  <h2>📋 Prérequis</h2>
+  <div class="scroll"><table>
+    <tr><th>Prérequis</th><th>Détail</th><th>Obligatoire</th></tr>
+    <tr><td><b>Compte Qonto production</b></td><td>Le skill s'adapte à toute organisation — <code>get_organization</code> d'abord, zéro donnée en dur</td><td>✅</td></tr>
+    <tr><td><b>Pays</b></td><td><strong>Tous pays Qonto</strong> (FR, DE, ES, IT, AT, NL, BE, PT) — la réconciliation de payouts est universelle. Multi-devises : rapport par devise</td><td>ℹ️ détecté</td></tr>
+    <tr><td><b>MCP Qonto connecté</b></td><td>Connecteur officiel (claude.ai / Claude Desktop), login OAuth</td><td>✅</td></tr>
+    <tr><td><b>Encaissements PSP</b></td><td>Des crédits SHOPIFY / STRIPE / PAYPAL / SUMUP… identifiables dans l'historique — la matière première du cœur Qonto pur</td><td>✅</td></tr>
+    <tr><td><b>MCP Shopify (ou Stripe)</b></td><td>Détecté dynamiquement. Avec : rapprochement fin ventes ↔ payouts. Sans : mode Qonto pur, annoncé clairement</td><td>⭕ recommandé</td></tr>
+    <tr><td><b>Historique PSP ≥ 3 mois</b></td><td>En dessous : cadence annoncée en confiance basse</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ Fonctionnement global</h2>
+  <div class="diagram"><img src="../assets/flow.fr.svg" alt="Fonctionnement global en 6 étapes"></div>
+  <h3>Ce qui rend le skill robuste sur données sales</h3>
+  <ul>
+    <li><strong>Payouts groupés gérés</strong> : un versement = <em>n</em> commandes − frais − remboursements ; le skill reconstitue le groupe par fenêtre de dates + proximité de montant, jamais par égalité naïve au jour près</li>
+    <li><strong>Délais bancaires J+2/J+3</strong> : la date Qonto est <code>settled_at</code> — le skill matche par fenêtre, pas sur la date annoncée par la boutique</li>
+    <li><strong>PayPal en retraits manuels</strong> : le pattern « à la demande » est reconnu et requalifié — pas de fausse alerte « payout manquant »</li>
+    <li><strong>Multi-boutiques &amp; multi-PSP</strong> : une ligne de réconciliation par boutique et par prestataire, synthèse consolidée au-dessus</li>
+    <li><strong>Multi-devises</strong> : rapport par devise, jamais de conversion silencieuse</li>
+    <li>MCP Shopify absent → mode Qonto pur annoncé ; historique &lt; 3 mois → confiance basse annoncée ; pagination ≤ 50 partout</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Schéma fonctionnel</h2>
+  <div class="diagram"><img src="../assets/functional.fr.svg" alt="Schéma fonctionnel"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>Lecture pure, risque zéro :</b> aucun outil d'écriture, ni côté Qonto ni côté Shopify. Le skill lit, rapproche, documente. La seule « action » qu'il produit est un texte — le brouillon de ticket support que <b>toi seul</b> décides d'envoyer.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🔍 Ce que le skill détecte</h2>
+  <div class="scroll"><table>
+    <tr><th>Anomalie</th><th>Comment</th><th>Ce que tu obtiens</th></tr>
+    <tr><td><b>Payout manquant</b></td><td>Attendu selon la cadence apprise (et/ou annoncé côté boutique), rien sur le compte au-delà du délai typique</td><td>Brouillon de ticket support : date, montant attendu, plage de commandes, référence du relevé (<code>list_statements</code>)</td></tr>
+    <tr><td><b>Payout en retard</b></td><td>Arrivé, mais N jours au-delà du délai appris</td><td>Alerte datée + historique des délais</td></tr>
+    <tr><td><b>Dérive des frais</b></td><td>Taux effectif (brut − net) ÷ brut qui bouge mois après mois</td><td>Courbe de tendance, comparaison au tarif annoncé de ton plan (si fourni)</td></tr>
+    <tr><td><b>Remboursement non répercuté</b></td><td>Remboursé côté boutique, pas de déduction correspondante côté compte (ou l'inverse)</td><td>Liste des cas, références des deux côtés</td></tr>
+    <tr><td><b>Retraits manuels (PayPal)</b></td><td>Pattern « à la demande » reconnu</td><td>Cadence requalifiée — pas de fausse alerte</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>📤 Formats de sortie</h2>
+  <div class="scroll"><table>
+    <tr><th>Sortie</th><th>Format</th><th>Quand</th></tr>
+    <tr><td><b>Réponse dans la conversation</b></td><td>Tableaux markdown (réconciliation, frais, net encaissé, anomalies)</td><td><strong>Toujours</strong> — c'est la base</td></tr>
+    <tr><td><b>Dashboard interactif</b></td><td>Fichier/artifact <strong>HTML</strong> : timeline des payouts (trous en évidence), tendance du taux de frais, barres net/mois</td><td>Si l'hôte affiche les fichiers (artifacts claude.ai, Claude Desktop, Claude Code) ; repli automatique sur les tableaux sinon</td></tr>
+    <tr><td><b>Brouillon de ticket support</b></td><td>Texte prêt à envoyer à Shopify/Stripe, toutes références incluses</td><td>À chaque payout manquant détecté</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Vidéo de démo</h2>
+  <p>La démo ≤ 3 min jointe à la PR suit le storyboard : le problème (la boutique dit X, la banque dit Y) → cadence des payouts en Qonto pur → réconciliation enrichie Shopify → <strong>le payout manquant détecté, ticket support prêt</strong> → rapport final et vraie marge. Tournée en live sur une boutique et un compte de production réels.</p>
+</section>
+
+<section>
+  <h2>💡 Améliorations possibles</h2>
+  <div class="scroll"><table>
+    <tr><th>Idée</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>MCP Stripe en second enrichissement symétrique</td><td>Faible</td><td>Même logique que Shopify — détection dynamique</td></tr>
+    <tr><td>Alerte récurrente « payout manquant » (rituel du lundi matin)</td><td>Faible</td><td>Le skill est idempotent, il suffit de le relancer</td></tr>
+    <tr><td>Rapprochement commande par commande (payout → liste exacte des orders)</td><td>Moyen</td><td><code>get-order</code> le permet déjà, coût en appels</td></tr>
+    <tr><td>Marge nette par produit (commissions ventilées)</td><td>Moyen</td><td>Combine <code>run-analytics-query</code> + frais réels</td></tr>
+    <tr><td>Multi-PSP consolidé (Shopify + PayPal + SumUp)</td><td>Faible</td><td>Le cœur Qonto pur le fait déjà par PSP</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Garde-fous</h2>
+  <ul>
+    <li><strong>Lecture pure</strong> : aucun outil d'écriture, rien n'est créé ni modifié, ni côté Qonto ni côté boutique</li>
+    <li>Jamais de barème de frais inventé : taux <strong>calculés</strong> uniquement, taille d'échantillon affichée</li>
+    <li>Un « payout manquant » est une <strong>hypothèse documentée</strong>, pas une accusation — le support a le dernier mot</li>
+    <li>Rapport par devise, jamais de conversion silencieuse · IBAN masqués (4 derniers chiffres) · pagination ≤ 50 partout</li>
+    <li>Dégradation honnête : sans MCP Shopify → Qonto pur annoncé ; historique &lt; 3 mois → confiance basse annoncée</li>
+  </ul>
+</section>
+
+<footer>qonto-shopify-bridge · Documentation FR · Hackathon Qonto × Anthropic MCP · juillet 2026<br>
+Livrable PR : <code>SKILL.md</code> · Version jury : <code>doc-qonto-shopify-bridge.en.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

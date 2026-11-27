@@ -1,0 +1,10 @@
+{
+  "name": "qonto-shopify-bridge",
+  "version": "0.1.0",
+  "description": "E-commerce payout reconciliation for Qonto accounts. Matches Shopify/Stripe/PayPal payouts against the money that actually lands on the Qonto account — missing or late payouts, effective fee rate vs announced, refunds and chargebacks not passed through, and the true net margin per period. Works…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
