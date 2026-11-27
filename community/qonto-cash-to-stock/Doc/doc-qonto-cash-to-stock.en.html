@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qonto-cash-to-stock — Documentation</title>
+<style>
+  :root{
+    --violet:#6B4EFF; --violet-dark:#4A30D9; --violet-light:#F1EDFF;
+    --noir:#1D1B29; --blanc:#FFFFFF;
+    --bg:#FFFFFF; --card:#FFFFFF; --tint:#F7F5FF; --ink:#1D1B29; --muted:#5A5670;
+    --line:#E6E2F5; --hero-ink:#FFFFFF;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#12101A; --card:#1D1B29; --tint:#242038; --ink:#EFEDF7; --muted:#A29DBE; --line:#332E4D}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 1.2rem 3rem}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--noir) 0%,#2A2153 55%,var(--violet-dark) 100%);
+    background-size:200% 200%;animation:heroShift 14s ease-in-out infinite;
+    border-radius:0 0 26px 26px;padding:3.4rem 1.2rem 2.8rem;text-align:center;color:var(--hero-ink)}
+  @keyframes heroShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero .chip{display:inline-block;background:var(--violet);color:#fff;border-radius:999px;
+    padding:.32rem 1rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+  .hero h1{font-size:2.4rem;margin:.9rem 0 .5rem;font-family:'SF Mono',Menlo,monospace;
+    animation:rise .8s .15s cubic-bezier(.2,1,.3,1) both}
+  .hero p.sub{font-size:1.12rem;color:#CFC8F5;max-width:640px;margin:0 auto;animation:rise .8s .3s cubic-bezier(.2,1,.3,1) both}
+  .hero .badges{margin-top:1.4rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
+  .hero .badges span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;padding:.3rem .85rem;font-size:.8rem;animation:rise .7s both}
+  .hero .badges span:nth-child(1){animation-delay:.45s}.hero .badges span:nth-child(2){animation-delay:.55s}
+  .hero .badges span:nth-child(3){animation-delay:.65s}.hero .badges span:nth-child(4){animation-delay:.75s}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* ---- Sections ---- */
+  section{margin-top:2.6rem;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  section.vis{opacity:1;transform:none}
+  h2{font-size:1.45rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+  h2::before{content:"";display:inline-block;width:10px;height:28px;border-radius:5px;background:var(--violet)}
+  h3{font-size:1.05rem;color:var(--violet-dark);margin:1.2rem 0 .5rem}
+  @media(prefers-color-scheme:dark){h3{color:#A798FF}}
+  p{margin-bottom:.7rem}
+  ul{padding-left:1.3rem;margin-bottom:.7rem}
+  li{margin-bottom:.4rem}
+
+  /* ---- Pitch cards ---- */
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+  .pcard{background:var(--tint);border:1.5px solid var(--line);border-radius:14px;padding:1rem;
+    transition:transform .25s ease,border-color .25s ease}
+  .pcard:hover{transform:translateY(-4px);border-color:var(--violet)}
+  .pcard .n{display:inline-flex;width:1.7rem;height:1.7rem;align-items:center;justify-content:center;
+    border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:.5rem}
+  .pcard h4{font-size:.95rem;margin-bottom:.3rem}
+  .pcard p{font-size:.85rem;color:var(--muted);margin:0}
+
+  /* ---- Tables ---- */
+  .scroll{overflow-x:auto;border-radius:12px;border:1.5px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{background:var(--violet);color:#fff;text-align:left;padding:.6rem .8rem;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.6rem .8rem;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--tint)}
+
+  /* ---- Diagrams ---- */
+  .diagram{border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--blanc)}
+  .diagram img{width:100%;display:block}
+
+  /* ---- Security banner ---- */
+  .secu{background:linear-gradient(135deg,var(--noir),#2A2153);color:#fff;border-radius:16px;
+    padding:1.4rem 1.5rem;display:flex;gap:1.1rem;align-items:center}
+  .secu .lock{font-size:2.2rem;animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .secu p{margin:0;font-size:.95rem;color:#DDD8F8}
+  .secu b{color:#fff}
+
+  /* ---- Video script ---- */
+  .scene{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1.5px solid var(--line);
+    border-radius:14px;padding:1rem 1.1rem}
+  .scene .tc{min-width:96px;font-family:'SF Mono',Menlo,monospace;font-weight:700;color:var(--violet-dark);font-size:.85rem}
+  @media(prefers-color-scheme:dark){.scene .tc{color:#A798FF}}
+  .scene .body h4{font-size:.92rem;margin-bottom:.35rem}
+  .scene .body .say{border-left:3px solid var(--violet);padding:.5rem .8rem;background:var(--tint);
+    border-radius:0 10px 10px 0;font-style:italic;font-size:.9rem}
+  .tip{background:var(--tint);border:1.5px dashed var(--violet);border-radius:12px;padding:.9rem 1rem;
+    font-size:.88rem;margin-bottom:1.1rem}
+
+  code{background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:.08rem .38rem;
+    font-family:'SF Mono',Menlo,monospace;font-size:.84em;color:var(--violet-dark)}
+  @media(prefers-color-scheme:dark){code{color:#A798FF}}
+  footer{margin-top:3rem;text-align:center;color:var(--muted);font-size:.8rem}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    section{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="chip">Qonto × Anthropic Hackathon</span>
+  <h1>qonto-cash-to-stock</h1>
+  <p class="sub">Restocking, constrained by cash — how many units you can order without endangering the account, and by when.</p>
+  <div class="badges">
+    <span>💶 Truly free cash, dated</span><span>🔒 Single write, behind SCA</span>
+    <span>🛒 Shopify optional — clean degraded mode</span><span>📄 PR-ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>🎯 Why this matters</h2>
+  <p>The real ceiling on an e-commerce restock isn't demand — it's <strong>cash</strong>. Order too much and the account is in danger the day VAT hits; order too little and a stock-out kills the momentum. The skill answers THE question — how many units, and by when:</p>
+  <div class="grid4">
+    <div class="pcard"><span class="n">1</span><h4>Truly free cash</h4><p>All balances − supplier invoices coming due − detected tax deadlines − fixed costs − a safety buffer. The dated minimum of the curve.</p></div>
+    <div class="pcard"><span class="n">2</span><h4>Velocity &amp; stock-out</h4><p>Shopify when connected (units/day, on-hand per product); otherwise estimated from receipts + catalog, clearly labeled 🟡.</p></div>
+    <div class="pcard"><span class="n">3</span><h4>Four decision numbers</h4><p>Free cash · stock-out date · fundable units · latest order date — every figure tagged 🟢🟡🔵.</p></div>
+    <div class="pcard"><span class="n">4</span><h4>One safe action</h4><p>The supplier transfer request when the user decides — money moves only after their SCA approval in the app.</p></div>
+  </div>
+  <p style="margin-top:.8rem">Would someone use this on a Monday morning? <strong>That's exactly when store owners look at the weekend's sales and wonder whether they can afford to reorder.</strong></p>
+</section>
+
+<section>
+  <h2>📋 Prerequisites</h2>
+  <div class="scroll"><table>
+    <tr><th>Prerequisite</th><th>Detail</th><th>Required</th></tr>
+    <tr><td><b>Qonto production account</b></td><td>Adapts to any organization — <code>get_organization</code> first, nothing hardcoded</td><td>✅</td></tr>
+    <tr><td><b>Country</b></td><td>Tax deadlines detected <b>from history</b> everywhere; calendar refinement: France. Other Qonto countries (DE, ES, IT…): only observed debits are projected — never invented deadlines</td><td>ℹ️ detected</td></tr>
+    <tr><td><b>Qonto MCP connected</b></td><td>Official connector (claude.ai / Claude Desktop), OAuth login</td><td>✅</td></tr>
+    <tr><td><b>Shopify MCP</b></td><td>Optional, detected dynamically: units/day + on-hand per product. Without it: clean degraded mode (🟡 estimate from receipts + catalog)</td><td>⭕ recommended</td></tr>
+    <tr><td><b>≥ 3–6 months of history</b></td><td>Below that: honest degradation (🟡 tags + warning); 24–36 months to catch annual tax cadences</td><td>⭕</td></tr>
+    <tr><td><b>E-commerce activity with suppliers</b></td><td>Otherwise the skill still works as a truly-free-cash calculator</td><td>⭕</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>⚙️ How it works</h2>
+  <div class="diagram"><img src="../assets/flow.en.svg" alt="How it works — 6 steps"></div>
+  <h3>Holds up on messy data</h3>
+  <ul>
+    <li><strong>No Shopify MCP?</strong> The skill says so and switches to the receipts-based estimate + the <code>list_products</code> catalog — every derived figure tagged 🟡, never dressed up as inventory data</li>
+    <li><strong>No supplier invoices in Qonto?</strong> Commitments are built from recurring debits only, stated plainly</li>
+    <li><strong>Unit cost or supplier lead time unknown?</strong> Asked once — never silently guessed</li>
+    <li><strong>Tax deadlines</strong>: outgoing direct debits first, the tax office merged under all its spellings (same counterparty under several names) — the <code>qonto-tax-pilot</code> logic, reused as-is when that skill is installed</li>
+    <li>Empty account, history &lt; 3 months, non-French company: the skill says what it can and can't compute instead of pretending</li>
+    <li>Pagination ≤ 50 everywhere · multi-account orgs handled · all documentation examples <strong>fictitious and labeled as such</strong></li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗 Functional diagram</h2>
+  <div class="diagram"><img src="../assets/functional.en.svg" alt="Functional diagram"></div>
+  <div class="secu" style="margin-top:1rem">
+    <div class="lock">🔒</div>
+    <p><b>The security model, not a limitation:</b> reads are risk-free; the write requires explicit consent in the conversation and only produces a <b>request</b>. The account holder's own SCA (2FA), in the Qonto app, is what moves money. Neither Claude nor the MCP can.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🔢 The four decision numbers</h2>
+  <div class="scroll"><table>
+    <tr><th>Number</th><th>How it's built</th><th>Tag</th></tr>
+    <tr><td><b>Free cash after commitments</b></td><td>Minimum of the 90-day curve: balances − suppliers − detected taxes − fixed costs − buffer (one month of fixed costs by default, adjustable)</td><td>🟢/🟡</td></tr>
+    <tr><td><b>Stock-out date</b></td><td>On-hand stock ÷ velocity (Shopify <code>run-analytics-query</code> + <code>get-inventory-levels</code>), or receipts + catalog estimate</td><td>🟢 with Shopify · 🟡 without</td></tr>
+    <tr><td><b>Fundable units</b></td><td>Free cash at the payment date ÷ landed unit cost (confirmed by the user)</td><td>🔵 depends on the cost</td></tr>
+    <tr><td><b>Latest order date</b></td><td>Stock-out date − supplier lead time (asked once)</td><td>🔵</td></tr>
+  </table></div>
+  <p style="margin-top:.8rem"><em>Example (fictitious figures, for illustration)</em>: "Free cash after commitments: €8,400. Stock-out expected on Sept 28. Unit cost €6.50 → <strong>1,290 fundable units</strong>; your supplier ships in 3 weeks → <strong>order by Sept 7</strong>." It just works — and the last word is always a human thumb on SCA.</p>
+</section>
+
+<section>
+  <h2>📤 Output formats</h2>
+  <div class="scroll"><table>
+    <tr><th>Output</th><th>Format</th><th>When</th></tr>
+    <tr><td><b>Conversation reply</b></td><td>Markdown tables (commitments calendar, curve summary, four numbers, request recap)</td><td><strong>Always</strong> — the baseline</td></tr>
+    <tr><td><b>Interactive dashboard</b></td><td><strong>HTML</strong> file/artifact: free-cash curve, deadlines as markers, stock-out countdown, fundable-units gauge</td><td>When the host renders files (claude.ai artifacts, Claude Desktop, Claude Code); automatic fallback to tables</td></tr>
+    <tr><td><b>Qonto request note</b></td><td>Text attached to the transfer request, visible at SCA approval time: the full calculation</td><td>Every time a request is created</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🎬 Demo video</h2>
+  <p>The ≤ 3-minute demo attached to the PR walks through: the restock dilemma → commitments &amp; truly free cash → dated stock-out &amp; fundable units → <strong>the SCA approval filmed on a phone</strong> → the final dashboard. The detailed shooting script is kept internal (outside the repository).</p>
+</section>
+
+<section>
+  <h2>💡 Roadmap ideas</h2>
+  <div class="scroll"><table>
+    <tr><th>Idea</th><th>Effort</th><th>Note</th></tr>
+    <tr><td>Multi-supplier arbitration: one budget split across several orders</td><td>Medium</td><td>Reuses the free-cash curve</td></tr>
+    <tr><td>Finer seasonality (velocity weighted by month, sales events)</td><td>Medium</td><td>Shopify <code>run-analytics-query</code> over 12 months</td></tr>
+    <tr><td>"Latest order date" reminder pushed to a calendar (calendar MCP detected dynamically)</td><td>Low</td><td>Optional multi-MCP enrichment, in the spirit of the kickoff</td></tr>
+    <tr><td>Supplier payment scenarios (30% deposit + balance on delivery)</td><td>Low</td><td>Two dated requests instead of one</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>🛡 Guardrails</h2>
+  <ul>
+    <li><strong>Never</strong> creates a transfer request without explicit confirmation in the current conversation; never presented as executed</li>
+    <li>Estimates ≠ purchase advice — the stock decision stays human; every assumption is displayed (unit cost, lead time, buffer)</li>
+    <li>Honest degradation without Shopify, without a catalog, without supplier invoices, or on thin history — nothing is invented</li>
+    <li>Masked IBANs · pagination ≤ 50 · rehearsals: <code>decline_request</code> after each test (<code>request_type: "multi_transfers"</code>, plural)</li>
+  </ul>
+</section>
+
+<footer>qonto-cash-to-stock · English documentation · Qonto × Anthropic MCP Hackathon · July 2026<br>
+PR deliverable: <code>SKILL.md</code> · French version: <code>doc-qonto-cash-to-stock.fr.html</code></footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

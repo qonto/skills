@@ -1,0 +1,10 @@
+{
+  "name": "qonto-cash-to-stock",
+  "version": "0.1.0",
+  "description": "Cash-constrained restocking copilot for e-commerce on Qonto. The real ceiling on a restock isn't demand — it's cash. Computes the truly available cash (all account balances minus upcoming supplier invoices, detected tax deadlines and recurring fixed costs), the sales velocity and stock cover…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
