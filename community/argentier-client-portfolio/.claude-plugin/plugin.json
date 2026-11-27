@@ -1,0 +1,19 @@
+{
+  "name": "argentier-client-portfolio",
+  "displayName": "Client concentration risk",
+  "version": "0.1.0",
+  "description": "Share of revenue of the top client and top 3, clients paying later and later or buying less, a risk score for the top 10 and the actions to take before it hits cash. Read-only.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "clients",
+    "risk",
+    "concentration",
+    "payment delays",
+    "argentier",
+    "qonto"
+  ]
+}
