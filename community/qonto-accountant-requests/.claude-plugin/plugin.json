@@ -1,0 +1,11 @@
+{
+  "name": "qonto-accountant-requests",
+  "displayName": "Answer my accountant's requests",
+  "version": "0.1.0",
+  "description": "Turns an accountant's request for missing documents into a ready-to-review reply: finds the bank statements, transaction receipts and invoices asked for in Qonto, lists what is attached and what is still to provide, and drafts the answer. Read-only, never sends anything.",
+  "author": {
+    "name": "HALLUCINE",
+    "url": "https://github.com/contact998"
+  },
+  "license": "MIT"
+}
