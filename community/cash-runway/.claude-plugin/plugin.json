@@ -1,0 +1,16 @@
+{
+  "name": "cash-runway",
+  "displayName": "Cash runway",
+  "version": "0.1.0",
+  "description": "Estimates how many months of cash a company has left from its Qonto balances and the average monthly net burn. Read-only.",
+  "author": {
+    "name": "Skill intake prototype"
+  },
+  "license": "MIT",
+  "keywords": [
+    "cash",
+    "runway",
+    "burn",
+    "forecast"
+  ]
+}
