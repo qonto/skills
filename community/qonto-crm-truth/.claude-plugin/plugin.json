@@ -1,0 +1,10 @@
+{
+  "name": "qonto-crm-truth",
+  "version": "0.1.0",
+  "description": "CRM reality check for Qonto accounts. Reconciles CRM records (HubSpot or Airtable) with actual bank activity — flags \"closed-won\" deals that never generated cash, computes real revenue per client, LTV, observed average payment delay and an A/B/C payer reliability score, then, after an…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
