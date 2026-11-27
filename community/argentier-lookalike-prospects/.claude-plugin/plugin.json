@@ -1,0 +1,19 @@
+{
+  "name": "argentier-lookalike-prospects",
+  "displayName": "Lookalike prospects",
+  "version": "0.1.0",
+  "description": "Profiles the best clients with the French company registry and finds 30 active lookalike companies that accept prospecting, or the towns to target when selling to individuals. Read-only on Qonto.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "prospects",
+    "lead generation",
+    "prospection",
+    "sirene",
+    "argentier",
+    "qonto"
+  ]
+}
