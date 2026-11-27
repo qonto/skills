@@ -1,0 +1,10 @@
+{
+  "name": "qonto-project-burn",
+  "version": "0.1.0",
+  "description": "Project-level burn tracker that bridges Qonto and the team's tracker. Maps Qonto labels to projects, computes each project's real spend (dedicated SaaS, freelancers, ads, hardware) against its declared budget, projects the overrun date at the current run rate, and — with explicit consent — posts…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
