@@ -1,0 +1,19 @@
+{
+  "name": "qonto-working-cap-bfr",
+  "displayName": "Working capital and cash (BFR)",
+  "version": "0.1.2",
+  "description": "Cash-flow and working-capital (BFR) assessment for Qonto business owners. Categorises transactions into Qonto cash flow categories (even without Qonto invoicing), builds a 13-week forecast with stress scenarios, models Overdraft, Pay Later and the Flex card, and gives the owner an interactive cash simulator.",
+  "author": {
+    "name": "Arnaud Alepee (Qonto)",
+    "email": "aalepee@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "treasury",
+    "cash-flow",
+    "working-capital",
+    "forecast",
+    "categorisation",
+    "financing"
+  ]
+}
