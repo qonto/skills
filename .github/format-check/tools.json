@@ -1,5 +1,5 @@
 {
-  "count": 65,
+  "count": 69,
   "tools": [
     {
       "name": "approve_request",
@@ -98,6 +98,12 @@
       "destructive": false
     },
     {
+      "name": "create_transfer_request",
+      "title": "Create transfer request",
+      "read_only": false,
+      "destructive": false
+    },
+    {
       "name": "decline_request",
       "title": "Decline request",
       "read_only": false,
@@ -107,19 +113,19 @@
       "name": "delete_client",
       "title": "Delete client",
       "read_only": false,
-      "destructive": false
+      "destructive": true
     },
     {
       "name": "delete_client_invoice",
       "title": "Delete client invoice",
       "read_only": false,
-      "destructive": false
+      "destructive": true
     },
     {
       "name": "delete_quote",
       "title": "Delete quote",
       "read_only": false,
-      "destructive": false
+      "destructive": true
     },
     {
       "name": "export_statements",
@@ -148,6 +154,18 @@
     {
       "name": "get_authenticated_membership",
       "title": "Get authenticated membership",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_business_summary",
+      "title": "Business summary",
+      "read_only": true,
+      "destructive": false
+    },
+    {
+      "name": "get_business_summary_period",
+      "title": "Change summary period",
       "read_only": true,
       "destructive": false
     },
@@ -341,7 +359,7 @@
       "name": "remove_transaction_attachment",
       "title": "Remove transaction attachment",
       "read_only": false,
-      "destructive": false
+      "destructive": true
     },
     {
       "name": "request_attachment_upload",
@@ -359,6 +377,12 @@
       "name": "send_quote",
       "title": "Send quote",
       "read_only": false,
+      "destructive": false
+    },
+    {
+      "name": "show_view",
+      "title": "Show a Qonto view",
+      "read_only": true,
       "destructive": false
     },
     {
