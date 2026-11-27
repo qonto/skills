@@ -1,0 +1,19 @@
+{
+  "name": "argentier-quote-followup",
+  "displayName": "Quote follow-up",
+  "version": "0.1.0",
+  "description": "Turns pending quotes into signed work: real signature rate, quotes probably won already, a ranked list to chase this week and one follow-up message per quote, with the revenue at stake. Read-only.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "quotes",
+    "follow-up",
+    "sales",
+    "devis",
+    "argentier",
+    "qonto"
+  ]
+}
