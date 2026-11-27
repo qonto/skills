@@ -1,0 +1,10 @@
+{
+  "name": "qonto-approval-brief",
+  "version": "0.1.0",
+  "description": "Approval copilot for pending team requests in Qonto. Reads every pending transfer, multi-transfer and card request, then instructs each one like a CFO would — beneficiary payment history (paid N times before? usual amounts?), IBAN seen-before or never-seen signal, amount vs habit, budget/label…",
+  "author": {
+    "name": "seb",
+    "url": "https://github.com/SebDeNoocode"
+  },
+  "license": "MIT"
+}
