@@ -1,0 +1,19 @@
+{
+  "name": "argentier-price-update",
+  "displayName": "Price update planner",
+  "version": "0.1.0",
+  "description": "Margin lost to rising direct costs over 12 months, excluding VAT on both sides, the suppliers driving it, the price increase that restores it in four options from new quotes only to targeted, and the announcement letter. Read-only.",
+  "author": {
+    "name": "Kevin MAMERI",
+    "url": "https://github.com/kevinMPO"
+  },
+  "license": "MIT",
+  "keywords": [
+    "pricing",
+    "margin",
+    "costs",
+    "tarifs",
+    "argentier",
+    "qonto"
+  ]
+}
